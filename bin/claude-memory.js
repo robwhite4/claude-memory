@@ -2,9 +2,9 @@
 
 /**
  * Claude Memory - Universal AI Memory System
- * 
+ *
  * Transform AI conversations into persistent project intelligence
- * 
+ *
  * Usage: claude-memory <command> [args...]
  */
 
@@ -28,7 +28,7 @@ class ClaudeMemory {
     this.memoryFile = path.join(this.claudeDir, 'memory.json');
     this.claudeFile = path.join(projectRoot, 'CLAUDE.md');
     this.currentSession = null;
-    
+
     this.ensureDirectories();
     this.loadMemory();
   }
@@ -103,12 +103,12 @@ class ClaudeMemory {
 
   startSession(sessionName, context = {}) {
     const sessionId = this.generateSessionId(sessionName);
-    
+
     this.currentSession = {
       id: sessionId,
       name: sessionName,
       startTime: new Date().toISOString(),
-      context: context,
+      context,
       status: 'active'
     };
 
@@ -182,9 +182,9 @@ class ClaudeMemory {
     return decisionRecord.id;
   }
 
-  learnPattern(pattern, description, context = '', frequency = 1, effectiveness = null, priority = 'medium') {
+  learnPattern(pattern, description, _context = '', frequency = 1, effectiveness = null, priority = 'medium') {
     const existingPattern = this.patterns.find(p => p.pattern === pattern);
-    
+
     if (existingPattern) {
       existingPattern.frequency += frequency;
       existingPattern.lastSeen = new Date().toISOString();
@@ -231,7 +231,7 @@ class ClaudeMemory {
     if (!this.knowledge[category]) {
       this.knowledge[category] = {};
     }
-    
+
     this.knowledge[category][key] = {
       value,
       lastUpdated: new Date().toISOString(),
@@ -312,7 +312,7 @@ class ClaudeMemory {
 
   searchMemory(query) {
     const results = {
-      decisions: this.decisions.filter(d => 
+      decisions: this.decisions.filter(d =>
         d.decision.toLowerCase().includes(query.toLowerCase()) ||
         d.reasoning.toLowerCase().includes(query.toLowerCase())
       ),
@@ -362,7 +362,7 @@ class ClaudeMemory {
   backup() {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupDir = path.join(this.claudeDir, 'backups', timestamp);
-    
+
     if (!fs.existsSync(backupDir)) {
       fs.mkdirSync(backupDir, { recursive: true });
     }
@@ -398,12 +398,12 @@ class ClaudeMemory {
     const activeTasks = this.getTasks('open');
     const inProgressTasks = this.getTasks('in-progress');
     const recentlyCompleted = this.getTasks('completed').slice(-3);
-    
+
     // Group patterns by priority
     const criticalPatterns = openPatterns.filter(p => p.priority === 'critical');
     const highPatterns = openPatterns.filter(p => p.priority === 'high');
     const mediumPatterns = openPatterns.filter(p => p.priority === 'medium');
-    
+
     return `# Claude Project Memory
 
 ## Active Session
@@ -492,7 +492,7 @@ const commands = {
       projectPath = projectName;
       projectName = path.basename(projectPath);
     }
-    
+
     if (!projectName) {
       projectName = path.basename(projectPath);
     }
@@ -500,14 +500,14 @@ const commands = {
     console.log('🧠 Initializing Claude Memory...');
     console.log(`📁 Project: ${projectName}`);
     console.log(`📂 Path: ${projectPath}`);
-    
+
     // Ensure project directory exists
     if (!fs.existsSync(projectPath)) {
       fs.mkdirSync(projectPath, { recursive: true });
     }
-    
+
     process.chdir(projectPath);
-    
+
     // Initialize memory system
     const memory = new ClaudeMemory(projectPath, projectName);
     const sessionId = memory.startSession('Project Setup', {
@@ -515,19 +515,19 @@ const commands = {
       initialized: new Date().toISOString(),
       tool: 'claude-memory'
     });
-    
+
     memory.recordDecision(
       'Install Claude Memory',
       'Enable persistent AI memory across sessions for better project intelligence',
       ['Manual documentation', 'External tools', 'No memory system']
     );
-    
+
     // Update .gitignore
     this.updateGitignore(projectPath);
-    
+
     // Update package.json if it exists
     this.updatePackageJson(projectPath);
-    
+
     console.log('✅ Claude Memory initialized!');
     console.log(`📋 Session ID: ${sessionId}`);
     console.log('');
@@ -544,7 +544,7 @@ const commands = {
     try {
       const memory = new ClaudeMemory(projectPath);
       const stats = memory.getMemoryStats();
-      
+
       console.log('\n📊 Claude Memory Statistics\n');
       console.log(`Sessions: ${stats.sessions}`);
       console.log(`Decisions: ${stats.decisions}`);
@@ -552,7 +552,7 @@ const commands = {
       console.log(`Tasks: ${stats.tasks}`);
       console.log(`Actions: ${stats.actions}`);
       console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
-      
+
       const recentSessions = memory.getSessionHistory(3);
       if (recentSessions.length > 0) {
         console.log('\n🕒 Recent Sessions:');
@@ -560,7 +560,7 @@ const commands = {
           console.log(`  • ${s.name} (${s.startTime.split('T')[0]})`);
         });
       }
-      
+
       const recentDecisions = memory.getRecentDecisions(3);
       if (recentDecisions.length > 0) {
         console.log('\n🤔 Recent Decisions:');
@@ -580,13 +580,13 @@ const commands = {
       console.log('Usage: claude-memory search "your query"');
       return;
     }
-    
+
     try {
       const memory = new ClaudeMemory(projectPath);
       const results = memory.searchMemory(query);
-      
+
       console.log(`\n🔍 Search results for: "${query}"\n`);
-      
+
       if (results.decisions.length > 0) {
         console.log('📋 Decisions:');
         results.decisions.forEach(d => {
@@ -595,7 +595,7 @@ const commands = {
         });
         console.log();
       }
-      
+
       if (results.patterns.length > 0) {
         console.log('🧩 Patterns:');
         results.patterns.forEach(p => {
@@ -603,7 +603,7 @@ const commands = {
         });
         console.log();
       }
-      
+
       if (results.knowledge.length > 0) {
         console.log('💡 Knowledge:');
         results.knowledge.forEach(k => {
@@ -611,7 +611,7 @@ const commands = {
         });
         console.log();
       }
-      
+
       if (results.decisions.length === 0 && results.patterns.length === 0 && results.knowledge.length === 0) {
         console.log('No results found.');
       }
@@ -626,12 +626,12 @@ const commands = {
       console.log('Usage: claude-memory decision "Decision text" "Reasoning" "alt1,alt2"');
       return;
     }
-    
+
     try {
       const memory = new ClaudeMemory(projectPath);
       const alternativesArray = alternatives ? alternatives.split(',').map(s => s.trim()) : [];
       const id = memory.recordDecision(decision, reasoning, alternativesArray);
-      
+
       console.log(`✅ Decision recorded: ${decision}`);
       console.log(`📋 Decision ID: ${id}`);
     } catch (error) {
@@ -641,17 +641,17 @@ const commands = {
 
   async pattern(action, ...args) {
     const projectPath = process.cwd();
-    
+
     if (action === 'resolve') {
       const patternId = args[0];
       const solution = args[1];
-      
+
       if (!patternId || !solution) {
         console.error('❌ Pattern ID and solution required');
         console.log('Usage: claude-memory pattern resolve <pattern-id> "solution"');
         return;
       }
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         const success = memory.resolvePattern(patternId, solution);
@@ -664,25 +664,24 @@ const commands = {
       } catch (error) {
         console.error('❌ Error resolving pattern:', error.message);
       }
-      
     } else {
       // Traditional pattern learning
       const pattern = action;
       const description = args[0];
       const effectiveness = args[1];
       const priority = args[2] || 'medium';
-      
+
       if (!pattern || !description) {
         console.error('❌ Pattern and description required');
         console.log('Usage: claude-memory pattern "Pattern name" "Description" [effectiveness 0-1] [priority]');
         return;
       }
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         const effectivenessScore = effectiveness ? parseFloat(effectiveness) : null;
         memory.learnPattern(pattern, description, '', 1, effectivenessScore, priority);
-        
+
         console.log(`✅ Pattern learned: ${pattern}`);
         console.log(`📝 Description: ${description}`);
         console.log(`🎯 Priority: ${priority}`);
@@ -694,13 +693,13 @@ const commands = {
 
   async task(action, ...args) {
     const projectPath = process.cwd();
-    
+
     if (action === 'add') {
       const description = args[0];
       let priority = 'medium';
       let assignee = null;
       let dueDate = null;
-      
+
       // Parse optional flags
       for (let i = 1; i < args.length; i++) {
         if (args[i] === '--priority' && args[i + 1]) {
@@ -714,34 +713,33 @@ const commands = {
           i++;
         }
       }
-      
+
       if (!description) {
         console.error('❌ Task description required');
         console.log('Usage: claude-memory task add "description" [--priority high|medium|low] [--assignee name] [--due date]');
         return;
       }
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         const taskId = memory.addTask(description, priority, 'open', assignee, dueDate);
-        
+
         console.log(`✅ Task added: ${description}`);
         console.log(`📋 Task ID: ${taskId}`);
         console.log(`🎯 Priority: ${priority}`);
       } catch (error) {
         console.error('❌ Error adding task:', error.message);
       }
-      
     } else if (action === 'complete') {
       const taskId = args[0];
       const outcome = args[1] || '';
-      
+
       if (!taskId) {
         console.error('❌ Task ID required');
         console.log('Usage: claude-memory task complete <task-id> ["outcome"]');
         return;
       }
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         const success = memory.completeTask(taskId, outcome);
@@ -754,22 +752,22 @@ const commands = {
       } catch (error) {
         console.error('❌ Error completing task:', error.message);
       }
-      
     } else if (action === 'list') {
       const status = args[0];
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         const tasks = memory.getTasks(status);
-        
+
         console.log(`\n📋 Tasks${status ? ` (${status})` : ''}:\n`);
-        
+
         if (tasks.length === 0) {
           console.log('No tasks found.');
         } else {
           tasks.forEach(task => {
-            const statusIcon = task.status === 'completed' ? '✅' : 
-                             task.status === 'in-progress' ? '🔄' : '📝';
+            const statusIcon = task.status === 'completed'
+              ? '✅'
+              : task.status === 'in-progress' ? '🔄' : '📝';
             console.log(`${statusIcon} ${task.id}: ${task.description}`);
             console.log(`   Priority: ${task.priority} | Status: ${task.status}`);
             if (task.assignee) console.log(`   Assigned: ${task.assignee}`);
@@ -781,7 +779,6 @@ const commands = {
       } catch (error) {
         console.error('❌ Error listing tasks:', error.message);
       }
-      
     } else {
       console.error('❌ Task action must be: add, complete, or list');
     }
@@ -802,7 +799,7 @@ const commands = {
       const memory = new ClaudeMemory(projectPath);
       const data = memory.exportMemory();
       const exportFile = filename || `claude-memory-export-${new Date().toISOString().split('T')[0]}.json`;
-      
+
       fs.writeFileSync(exportFile, JSON.stringify(data, null, 2));
       console.log(`✅ Memory exported to: ${exportFile}`);
       console.log(`📊 Exported ${Object.keys(data).length - 1} data categories`);
@@ -813,17 +810,17 @@ const commands = {
 
   session(action, ...args) {
     const projectPath = process.cwd();
-    
+
     if (action === 'start') {
       const sessionName = args[0];
       const context = args[1] || '{}';
-      
+
       if (!sessionName) {
         console.error('❌ Session name required');
         console.log('Usage: claude-memory session start "Session Name" [context]');
         return;
       }
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
         let contextObj = {};
@@ -832,21 +829,20 @@ const commands = {
         } catch (e) {
           console.warn('⚠️  Invalid context JSON, using empty context');
         }
-        
+
         const sessionId = memory.startSession(sessionName, contextObj);
         console.log(`🚀 Started session: ${sessionName}`);
         console.log(`📋 Session ID: ${sessionId}`);
       } catch (error) {
         console.error('❌ Error starting session:', error.message);
       }
-      
     } else if (action === 'end') {
       const sessionIdOrOutcome = args[0];
       const outcome = args[1] || 'Session completed';
-      
+
       try {
         const memory = new ClaudeMemory(projectPath);
-        
+
         // Check if first arg is a session ID
         if (sessionIdOrOutcome && sessionIdOrOutcome.match(/^\d{4}-\d{2}-\d{2}-/)) {
           const success = memory.endSessionById(sessionIdOrOutcome, outcome);
@@ -867,7 +863,6 @@ const commands = {
       } catch (error) {
         console.error('❌ Error ending session:', error.message);
       }
-      
     } else if (action === 'list') {
       try {
         const memory = new ClaudeMemory(projectPath);
@@ -879,7 +874,6 @@ const commands = {
       } catch (error) {
         console.error('❌ Error listing sessions:', error.message);
       }
-      
     } else if (action === 'cleanup') {
       try {
         const memory = new ClaudeMemory(projectPath);
@@ -888,7 +882,6 @@ const commands = {
       } catch (error) {
         console.error('❌ Error cleaning up sessions:', error.message);
       }
-      
     } else {
       console.error('❌ Session action must be: start, end, list, or cleanup');
     }
@@ -961,11 +954,11 @@ More info: https://github.com/robwhite4/claude-memory
   updateGitignore(projectPath) {
     const gitignorePath = path.join(projectPath, '.gitignore');
     let gitignoreContent = '';
-    
+
     if (fs.existsSync(gitignorePath)) {
       gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
     }
-    
+
     if (!gitignoreContent.includes('# Claude Memory')) {
       const claudeIgnore = `
 # Claude Memory - Include core files, exclude private data
@@ -983,17 +976,17 @@ More info: https://github.com/robwhite4/claude-memory
 
   updatePackageJson(projectPath) {
     const packagePath = path.join(projectPath, 'package.json');
-    
+
     if (fs.existsSync(packagePath)) {
       try {
         const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-        
+
         if (!pkg.scripts) pkg.scripts = {};
-        if (!pkg.scripts['memory']) {
-          pkg.scripts['memory'] = 'claude-memory';
+        if (!pkg.scripts.memory) {
+          pkg.scripts.memory = 'claude-memory';
           pkg.scripts['memory:stats'] = 'claude-memory stats';
           pkg.scripts['memory:search'] = 'claude-memory search';
-          
+
           fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
           console.log('✅ Added memory scripts to package.json');
         }

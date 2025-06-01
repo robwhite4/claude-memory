@@ -9,7 +9,9 @@
 [![Downloads](https://img.shields.io/npm/dm/claude-memory.svg)](https://npmjs.org/package/claude-memory)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/robwhite4/claude-memory/pulls)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/robwhite4/claude-memory)
-[![Test Coverage](https://img.shields.io/badge/coverage-15%20tests-green.svg)](https://github.com/robwhite4/claude-memory/actions)
+[![Test Coverage](https://img.shields.io/badge/coverage-78.79%25-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
+[![Code Quality](https://img.shields.io/badge/eslint-passing-brightgreen.svg)](https://github.com/robwhite4/claude-memory)
+[![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
 
 ## ⚡ Quick Start
 

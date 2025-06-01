@@ -28,6 +28,7 @@ pids
 # Coverage
 coverage/
 .nyc_output/
+.c8/
 
 # Optional npm cache directory
 .npm

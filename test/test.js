@@ -52,7 +52,7 @@ async function runTests() {
   await test('CLI executable exists', () => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     assert(fs.existsSync(cliPath), 'CLI file should exist');
-    
+
     const stats = fs.statSync(cliPath);
     assert(stats.mode & parseInt('111', 8), 'CLI should be executable');
   });
@@ -61,7 +61,7 @@ async function runTests() {
   await test('Package.json is valid', () => {
     const pkgPath = path.join(packageRoot, 'package.json');
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    
+
     assert(pkg.name === 'claude-memory', 'Package name should be claude-memory');
     assert(pkg.version, 'Package should have version');
     assert(pkg.bin['claude-memory'], 'Package should define CLI binary');
@@ -69,10 +69,10 @@ async function runTests() {
   });
 
   // Test 3: Initialize memory system
-  await test('Memory initialization', async () => {
+  await test('Memory initialization', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" init "Test Project"`);
-    
+
     assert(stdout.includes('Claude Memory initialized'), 'Should show initialization success');
     assert(fs.existsSync('.claude'), '.claude directory should be created');
     assert(fs.existsSync('.claude/memory.json'), 'memory.json should be created');
@@ -82,7 +82,7 @@ async function runTests() {
   // Test 4: Memory file structure
   await test('Memory file structure', () => {
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
-    
+
     assert(Array.isArray(memoryData.sessions), 'Should have sessions array');
     assert(Array.isArray(memoryData.decisions), 'Should have decisions array');
     assert(Array.isArray(memoryData.patterns), 'Should have patterns array');
@@ -92,22 +92,22 @@ async function runTests() {
   });
 
   // Test 5: Stats command
-  await test('Stats command', async () => {
+  await test('Stats command', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" stats`);
-    
+
     assert(stdout.includes('Claude Memory Statistics'), 'Should show statistics header');
     assert(stdout.includes('Sessions:'), 'Should show session count');
     assert(stdout.includes('Decisions:'), 'Should show decision count');
   });
 
   // Test 6: Decision recording
-  await test('Decision recording', async () => {
+  await test('Decision recording', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" decision "Use React" "Better ecosystem" "Vue,Angular"`);
-    
+
     assert(stdout.includes('Decision recorded'), 'Should confirm decision recording');
-    
+
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
     assert(memoryData.decisions.length > 1, 'Should have recorded decision'); // There's already an initial decision from init
     const reactDecision = memoryData.decisions.find(d => d.decision === 'Use React');
@@ -115,12 +115,12 @@ async function runTests() {
   });
 
   // Test 7: Pattern learning
-  await test('Pattern learning', async () => {
+  await test('Pattern learning', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" pattern "Test first" "Prevents bugs" "0.9"`);
-    
+
     assert(stdout.includes('Pattern learned'), 'Should confirm pattern learning');
-    
+
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
     assert(memoryData.patterns.length > 0, 'Should have learned pattern');
     const lastPattern = memoryData.patterns[memoryData.patterns.length - 1];
@@ -128,10 +128,10 @@ async function runTests() {
   });
 
   // Test 8: Search functionality
-  await test('Search functionality', async () => {
+  await test('Search functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" search "React"`);
-    
+
     assert(stdout.includes('Search results'), 'Should show search results');
     assert(stdout.includes('Use React'), 'Should find recorded decision');
   });
@@ -139,7 +139,7 @@ async function runTests() {
   // Test 9: CLAUDE.md generation
   await test('CLAUDE.md generation', () => {
     const claudeContent = fs.readFileSync('CLAUDE.md', 'utf8');
-    
+
     assert(claudeContent.includes('Claude Project Memory'), 'Should have header');
     assert(claudeContent.includes('Test Project'), 'Should include project name');
     assert(claudeContent.includes('Use React'), 'Should include recorded decisions');
@@ -147,13 +147,13 @@ async function runTests() {
   });
 
   // Test 10: Backup functionality
-  await test('Backup functionality', async () => {
+  await test('Backup functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" backup`);
-    
+
     assert(stdout.includes('Memory backed up'), 'Should confirm backup');
     assert(fs.existsSync('.claude/backups'), 'Should create backups directory');
-    
+
     const backupDirs = fs.readdirSync('.claude/backups');
     assert(backupDirs.length > 0, 'Should create backup directory');
   });

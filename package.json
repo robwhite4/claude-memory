@@ -12,8 +12,11 @@
     "test": "node test/test.js",
     "test:enhanced": "node test/enhanced-test.js",
     "test:all": "npm test && npm run test:enhanced",
-    "test:coverage": "echo 'Coverage: 15 test cases covering task management, pattern resolution, session handling'",
-    "lint": "echo 'Code quality checks passed'",
+    "test:coverage": "c8 --reporter=text --reporter=html --reporter=lcov npm run test:all",
+    "coverage": "npm run test:coverage && echo '\n📊 Coverage report generated in coverage/ directory'",
+    "lint": "eslint bin/ test/ --ext .js",
+    "lint:fix": "eslint bin/ test/ --ext .js --fix",
+    "quality": "npm run lint && npm run security && npm run test:coverage",
     "security": "npm audit --audit-level moderate",
     "prepublishOnly": "npm run test:all",
     "postinstall": "node postinstall.js",
@@ -55,5 +58,12 @@
   ],
   "preferGlobal": true,
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1"
+  }
 }
