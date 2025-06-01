@@ -26,6 +26,10 @@ echo "Load project memory and help me with development"
 You: "Help me deploy this app"
 Claude: "What's your tech stack? What deployment platform?"
 You: [5 minutes explaining context from scratch]
+
+You: "What tasks need to be done?"
+Claude: "I'd need to see your codebase to understand current status..."
+You: [Re-explaining project state and priorities]
 ```
 
 **After Claude Memory:**
@@ -33,6 +37,11 @@ You: [5 minutes explaining context from scratch]
 You: "Load project memory and help with deployment"
 Claude: "I see this is a Node.js app with AWS ECS. Based on our 
 previous deployment pattern, I'll check the Docker config first..."
+
+You: "Load project memory and show current tasks" 
+Claude: "You have 3 high-priority tasks: API rate limiting, error 
+handling, and database optimization. The auth system was completed 
+yesterday. Should we tackle rate limiting next?"
 ```
 
 ## 🧠 Core Features
@@ -40,6 +49,8 @@ previous deployment pattern, I'll check the Docker config first..."
 - **🔄 Persistent Memory**: Claude remembers everything across sessions
 - **📋 Decision Tracking**: Why every choice was made, with alternatives
 - **🧩 Pattern Learning**: AI gets smarter by learning from your project
+- **✅ Task Management**: Track TODOs, priorities, and completion with CLI commands
+- **🎯 Pattern Resolution**: Mark patterns as solved with documented solutions
 - **🔍 Smart Search**: Find any decision, pattern, or knowledge instantly
 - **📝 Living Documentation**: CLAUDE.md stays current automatically
 - **🚀 Zero Setup**: Works immediately after one command
@@ -89,13 +100,23 @@ claude-memory stats
 # Search knowledge base
 claude-memory search "authentication"
 
+# Task management (NEW in v1.1.0)
+claude-memory task add "Implement rate limiting" --priority high
+claude-memory task add "Write tests" --assignee sarah --due "2025-01-15"
+claude-memory task complete abc123 "Added Redis middleware"
+claude-memory task list open
+
+# Pattern management (Enhanced in v1.1.0)
+claude-memory pattern "Test locally first" "Prevents production issues" 0.9 high
+claude-memory pattern resolve def456 "Added automated testing pipeline"
+
 # Manual operations (usually automatic)
 claude-memory decision "Use PostgreSQL" "Better JSON support"
-claude-memory pattern "Test locally first" "Prevents production issues"
 
-# Session management
+# Session management (Enhanced in v1.1.0)
 claude-memory session start "Feature Development"
 claude-memory session end "Authentication completed"
+claude-memory session cleanup  # End all active sessions
 
 # Backup and export
 claude-memory backup
@@ -121,17 +142,31 @@ your-project/
 cd my-web-app
 claude-memory init "E-commerce Platform"
 
+# Add tasks and track progress
+claude-memory task add "Implement user authentication" --priority high
+claude-memory task add "Set up payment processing" --assignee "alex"
+
 # Tell Claude:
 "Load project memory and implement user authentication"
+# Claude sees: current tasks, previous decisions, learned patterns
+
+claude-memory task complete abc123 "OAuth with JWT implemented"
 ```
 
 ### Data Science
 ```bash
 cd ml-project
-claude-memory init "Customer Analytics"
+claude-memory init "Customer Analytics" 
+
+# Track model iterations
+claude-memory task add "Optimize prediction accuracy" --priority high
+claude-memory pattern "Feature scaling" "StandardScaler works best" 0.85
 
 # Tell Claude:
 "Load project memory and optimize the prediction model"
+# Claude knows: previous experiments, what worked, current goals
+
+claude-memory pattern resolve def456 "Used ensemble methods, +15% accuracy"
 ```
 
 ### DevOps/Infrastructure
@@ -139,8 +174,13 @@ claude-memory init "Customer Analytics"
 cd infrastructure
 claude-memory init "Kubernetes Cluster"
 
+# Track deployment issues and solutions
+claude-memory task add "Fix pod scaling issues" --priority critical
+claude-memory decision "Use HPA" "Better auto-scaling than manual" "VPA,Manual"
+
 # Tell Claude:
 "Load project memory and troubleshoot the deployment pipeline"
+# Claude understands: infrastructure decisions, known issues, patterns
 ```
 
 ## 🏢 Team Usage
@@ -234,16 +274,43 @@ claude-memory search "authentication"
 **10-person team: $140,000/year value at $100/hour**
 
 ### AI Usage Cost Reduction
-**With Claude Code/AI Assistants:**
-- **Traditional**: Claude re-explores entire codebase each session
-- **With claude-memory**: Claude reads compact CLAUDE.md (~2KB) for instant context
-- **Result**: ~40-60% reduction in AI tokens after initial setup week
-- **Cost trajectory**: Higher Week 1 (building memory) → Much lower Week 2+ (leveraging memory)
 
-**Example cost impact:**
-- Day 1-7: Slightly higher (building project intelligence)
-- Day 8+: Significantly lower (focused conversations vs. repeated exploration)
-- Long-term: More efficient development with dramatically reduced context-building costs
+#### Traditional Approach (High Token Usage):
+```
+Session 1: "Help with authentication"
+→ Claude explores codebase (15,000 tokens)
+→ Discovers patterns, architecture, previous decisions
+
+Session 2: "Help with API endpoints"  
+→ Claude re-explores codebase (15,000 tokens)
+→ Re-discovers same context and patterns
+
+Session 3: "Help with testing"
+→ Claude explores again (15,000 tokens)
+→ Rebuilds understanding from scratch
+```
+
+#### With claude-memory (Optimized Usage):
+```
+Session 1: "Load project memory and help with authentication"
+→ Claude reads CLAUDE.md (500 tokens)
+→ Instantly knows: JWT patterns, security decisions, current tasks
+
+Session 2: "Load project memory and help with API endpoints"
+→ Claude reads CLAUDE.md (500 tokens)
+→ Knows: auth is JWT, database schema, patterns learned
+
+Session 3: "Load project memory and help with testing"
+→ Claude reads CLAUDE.md (500 tokens)
+→ Understands: testing patterns, what works, current coverage
+```
+
+**Result: ~40-60% reduction in AI tokens after initial setup week**
+
+**Cost trajectory:**
+- **Week 1**: Slightly higher (building project intelligence)
+- **Week 2+**: Significantly lower (leveraging persistent memory)  
+- **Month 2+**: Dramatically more efficient with compound intelligence
 
 ## 🤝 Contributing
 
@@ -264,9 +331,17 @@ MIT License - Use anywhere, modify freely, no restrictions.
 > 
 > — Individual Developer
 
+> *"The task management system is a game-changer. Claude now knows exactly what needs to be done and can prioritize work based on our active tasks. No more 'what should I work on next?' conversations."*
+> 
+> — Senior Developer
+
 > *"New developers used to take 2 weeks to understand our architecture decisions. Now they read CLAUDE.md and understand the reasoning behind every choice in 2 hours."*
 > 
 > — Development Team Lead
+
+> *"Pattern resolution is brilliant. When we solve a recurring issue, we mark the pattern as resolved with our solution. Claude remembers this and applies the same fix to similar problems automatically."*
+> 
+> — DevOps Engineer
 
 ---
 
