@@ -1,6 +1,6 @@
 {
   "name": "claude-memory",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Transform AI conversations into persistent project intelligence - Universal memory system for Claude",
   "main": "src/memory.js",
   "type": "module",
@@ -11,12 +11,15 @@
   "scripts": {
     "test": "node test/test.js",
     "prepublishOnly": "npm test",
-    "postinstall": "node postinstall.js"
+    "postinstall": "node postinstall.js",
+    "memory": "claude-memory",
+    "memory:stats": "claude-memory stats",
+    "memory:search": "claude-memory search"
   },
   "keywords": [
     "ai",
     "claude",
-    "anthropic", 
+    "anthropic",
     "memory",
     "assistant",
     "project-management",
@@ -26,7 +29,7 @@
     "cli",
     "productivity"
   ],
-  "author": "Rob White <robwhite4@github.com>",
+  "author": "Rob White <robwhite4@yahoo.com>",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

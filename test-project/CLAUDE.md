@@ -9,14 +9,26 @@
 
 ### Critical Information
 - **Project Name**: Test Project
-- **Claude Memory**: v1.0.0
+- **Claude Memory**: v1.1.0
 - **Memory Created**: 2025-06-01
 
-### Learned Patterns
+### Open Patterns
+#### Medium Priority
 - **Test first**: Prevents bugs (effectiveness: 0.9)
+
+
 
 ### Project Conventions
 <!-- Discovered during development -->
+
+## Task Management
+
+### Active Tasks
+- No active tasks
+
+### In Progress
+- No tasks in progress
+
 
 ## Recent Decisions Log
 
@@ -36,23 +48,27 @@
 
 ### Claude Memory Commands
 ```bash
-# View memory statistics
-claude-memory stats
+# Session management
+claude-memory session start "Session Name"
+claude-memory session end ["outcome"]
+claude-memory session cleanup
 
-# Search memory
-claude-memory search "query"
+# Task management
+claude-memory task add "description" [--priority high|medium|low] [--assignee name]
+claude-memory task complete <task-id>
+claude-memory task list [status]
 
-# Record decision
+# Pattern management
+claude-memory pattern "Pattern" "Description" [effectiveness] [--priority critical|high|medium|low]
+claude-memory pattern resolve <pattern-id> "solution"
+
+# Decision tracking
 claude-memory decision "Choice" "Reasoning" "alternatives"
 
-# Learn pattern
-claude-memory pattern "Pattern" "Description"
+# Memory utilities
+claude-memory stats
+claude-memory search "query"
 ```
-
-## Active TODOs
-- [x] Install Claude Memory System
-- [ ] Define project architecture
-- [ ] Set up development workflow
 
 ## Session Continuation
 To resume work, tell Claude:

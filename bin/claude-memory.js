@@ -47,6 +47,7 @@ class ClaudeMemory {
         patterns: [],
         actions: [],
         knowledge: {},
+        tasks: [],
         created: new Date().toISOString(),
         version: packageJson.version,
         projectName: this.projectName
@@ -63,6 +64,7 @@ class ClaudeMemory {
       this.patterns = data.patterns || [];
       this.actions = data.actions || [];
       this.knowledge = data.knowledge || {};
+      this.tasks = data.tasks || [];
       this.metadata = {
         created: data.created,
         version: data.version,
@@ -74,6 +76,7 @@ class ClaudeMemory {
       this.patterns = [];
       this.actions = [];
       this.knowledge = {};
+      this.tasks = [];
       this.metadata = {
         created: new Date().toISOString(),
         version: packageJson.version,
@@ -89,6 +92,7 @@ class ClaudeMemory {
       patterns: this.patterns,
       actions: this.actions,
       knowledge: this.knowledge,
+      tasks: this.tasks,
       created: this.metadata.created,
       version: this.metadata.version,
       projectName: this.metadata.projectName,
@@ -119,9 +123,44 @@ class ClaudeMemory {
       this.currentSession.endTime = new Date().toISOString();
       this.currentSession.status = 'completed';
       this.currentSession.outcome = outcome;
+      this.currentSession = null; // Clear current session
       this.saveMemory();
       this.recordAction('session_ended', { outcome });
+      return true;
     }
+    return false;
+  }
+
+  endSessionById(sessionId, outcome = '') {
+    const session = this.sessions.find(s => s.id === sessionId);
+    if (session && session.status === 'active') {
+      session.endTime = new Date().toISOString();
+      session.status = 'completed';
+      session.outcome = outcome;
+      if (this.currentSession && this.currentSession.id === sessionId) {
+        this.currentSession = null;
+      }
+      this.saveMemory();
+      this.recordAction('session_ended', { sessionId, outcome });
+      return true;
+    }
+    return false;
+  }
+
+  cleanupSessions() {
+    // End all active sessions
+    let cleanedCount = 0;
+    this.sessions.forEach(session => {
+      if (session.status === 'active') {
+        session.endTime = new Date().toISOString();
+        session.status = 'completed';
+        session.outcome = 'Session cleaned up';
+        cleanedCount++;
+      }
+    });
+    this.currentSession = null;
+    this.saveMemory();
+    return cleanedCount;
   }
 
   recordDecision(decision, reasoning, alternatives = [], outcome = null) {
@@ -143,7 +182,7 @@ class ClaudeMemory {
     return decisionRecord.id;
   }
 
-  learnPattern(pattern, description, context = '', frequency = 1, effectiveness = null) {
+  learnPattern(pattern, description, context = '', frequency = 1, effectiveness = null, priority = 'medium') {
     const existingPattern = this.patterns.find(p => p.pattern === pattern);
     
     if (existingPattern) {
@@ -152,6 +191,9 @@ class ClaudeMemory {
       if (effectiveness !== null) {
         existingPattern.effectiveness = effectiveness;
       }
+      if (priority) {
+        existingPattern.priority = priority;
+      }
     } else {
       this.patterns.push({
         id: this.generateId(),
@@ -159,6 +201,8 @@ class ClaudeMemory {
         description,
         frequency,
         effectiveness,
+        priority: priority || 'medium',
+        status: 'open',
         firstSeen: new Date().toISOString(),
         lastSeen: new Date().toISOString()
       });
@@ -167,6 +211,20 @@ class ClaudeMemory {
     this.saveMemory();
     this.updateClaudeFile();
     this.recordAction('pattern_learned', { pattern, description });
+  }
+
+  resolvePattern(patternId, solution) {
+    const pattern = this.patterns.find(p => p.id === patternId);
+    if (pattern) {
+      pattern.status = 'resolved';
+      pattern.solution = solution;
+      pattern.resolvedAt = new Date().toISOString();
+      this.saveMemory();
+      this.updateClaudeFile();
+      this.recordAction('pattern_resolved', { patternId, solution });
+      return true;
+    }
+    return false;
   }
 
   storeKnowledge(key, value, category = 'general') {
@@ -182,6 +240,59 @@ class ClaudeMemory {
 
     this.saveMemory();
     this.recordAction('knowledge_stored', { key, category, value });
+  }
+
+  addTask(description, priority = 'medium', status = 'open', assignee = null, dueDate = null) {
+    const task = {
+      id: this.generateId(),
+      description,
+      priority,
+      status,
+      assignee,
+      dueDate,
+      createdAt: new Date().toISOString(),
+      sessionId: this.currentSession?.id
+    };
+
+    this.tasks.push(task);
+    this.saveMemory();
+    this.updateClaudeFile();
+    this.recordAction('task_added', { taskId: task.id, description, priority });
+    return task.id;
+  }
+
+  completeTask(taskId, outcome = '') {
+    const task = this.tasks.find(t => t.id === taskId);
+    if (task) {
+      task.status = 'completed';
+      task.completedAt = new Date().toISOString();
+      task.outcome = outcome;
+      this.saveMemory();
+      this.updateClaudeFile();
+      this.recordAction('task_completed', { taskId, outcome });
+      return true;
+    }
+    return false;
+  }
+
+  updateTaskStatus(taskId, status) {
+    const task = this.tasks.find(t => t.id === taskId);
+    if (task) {
+      task.status = status;
+      task.lastUpdated = new Date().toISOString();
+      this.saveMemory();
+      this.updateClaudeFile();
+      this.recordAction('task_updated', { taskId, status });
+      return true;
+    }
+    return false;
+  }
+
+  getTasks(status = null) {
+    if (status) {
+      return this.tasks.filter(t => t.status === status);
+    }
+    return this.tasks;
   }
 
   recordAction(actionType, details = {}, result = '') {
@@ -230,6 +341,7 @@ class ClaudeMemory {
       decisions: this.decisions.length,
       patterns: this.patterns.length,
       actions: this.actions.length,
+      tasks: this.tasks.length,
       knowledgeCategories: Object.keys(this.knowledge).length,
       totalKnowledgeItems: Object.values(this.knowledge).reduce((sum, cat) => sum + Object.keys(cat).length, 0)
     };
@@ -268,6 +380,7 @@ class ClaudeMemory {
       patterns: this.patterns,
       actions: this.actions,
       knowledge: this.knowledge,
+      tasks: this.tasks,
       metadata: this.metadata,
       exportedAt: new Date().toISOString()
     };
@@ -280,7 +393,16 @@ class ClaudeMemory {
 
   generateClaudeContent() {
     const recentDecisions = this.getRecentDecisions(5);
-    const topPatterns = this.patterns.slice(0, 5);
+    const openPatterns = this.patterns.filter(p => p.status === 'open').slice(0, 5);
+    const recentlyResolved = this.patterns.filter(p => p.status === 'resolved').slice(-3);
+    const activeTasks = this.getTasks('open');
+    const inProgressTasks = this.getTasks('in-progress');
+    const recentlyCompleted = this.getTasks('completed').slice(-3);
+    
+    // Group patterns by priority
+    const criticalPatterns = openPatterns.filter(p => p.priority === 'critical');
+    const highPatterns = openPatterns.filter(p => p.priority === 'high');
+    const mediumPatterns = openPatterns.filter(p => p.priority === 'medium');
     
     return `# Claude Project Memory
 
@@ -296,12 +418,22 @@ class ClaudeMemory {
 - **Claude Memory**: v${this.metadata.version}
 - **Memory Created**: ${this.metadata.created?.split('T')[0]}
 
-### Learned Patterns
-${topPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}
+### Open Patterns
+${criticalPatterns.length ? `#### Critical Priority\n${criticalPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}${highPatterns.length ? `#### High Priority\n${highPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}${mediumPatterns.length ? `#### Medium Priority\n${mediumPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}
 
+${recentlyResolved.length ? `### Recently Resolved\n${recentlyResolved.map(p => `- **${p.pattern}**: ${p.solution} (${p.resolvedAt?.split('T')[0]})`).join('\n')}\n` : ''}
 ### Project Conventions
 <!-- Discovered during development -->
 
+## Task Management
+
+### Active Tasks
+${activeTasks.length ? activeTasks.map(t => `- [ ] **${t.description}** (${t.priority}${t.dueDate ? `, due: ${t.dueDate}` : ''}${t.assignee ? `, assigned: ${t.assignee}` : ''})`).join('\n') : '- No active tasks'}
+
+### In Progress
+${inProgressTasks.length ? inProgressTasks.map(t => `- 🔄 **${t.description}** (${t.priority}${t.assignee ? `, assigned: ${t.assignee}` : ''})`).join('\n') : '- No tasks in progress'}
+
+${recentlyCompleted.length ? `### Recently Completed\n${recentlyCompleted.map(t => `- [x] **${t.description}** (completed: ${t.completedAt?.split('T')[0]})`).join('\n')}\n` : ''}
 ## Recent Decisions Log
 ${recentDecisions.map(d => `
 ### ${d.timestamp.split('T')[0]}: ${d.decision}
@@ -314,23 +446,27 @@ ${d.alternatives.length ? `**Alternatives Considered**: ${d.alternatives.join(',
 
 ### Claude Memory Commands
 \`\`\`bash
-# View memory statistics
-claude-memory stats
+# Session management
+claude-memory session start "Session Name"
+claude-memory session end ["outcome"]
+claude-memory session cleanup
 
-# Search memory
-claude-memory search "query"
+# Task management
+claude-memory task add "description" [--priority high|medium|low] [--assignee name]
+claude-memory task complete <task-id>
+claude-memory task list [status]
 
-# Record decision
+# Pattern management
+claude-memory pattern "Pattern" "Description" [effectiveness] [--priority critical|high|medium|low]
+claude-memory pattern resolve <pattern-id> "solution"
+
+# Decision tracking
 claude-memory decision "Choice" "Reasoning" "alternatives"
 
-# Learn pattern
-claude-memory pattern "Pattern" "Description"
+# Memory utilities
+claude-memory stats
+claude-memory search "query"
 \`\`\`
-
-## Active TODOs
-- [x] Install Claude Memory System
-- [ ] Define project architecture
-- [ ] Set up development workflow
 
 ## Session Continuation
 To resume work, tell Claude:
@@ -413,6 +549,7 @@ const commands = {
       console.log(`Sessions: ${stats.sessions}`);
       console.log(`Decisions: ${stats.decisions}`);
       console.log(`Patterns: ${stats.patterns}`);
+      console.log(`Tasks: ${stats.tasks}`);
       console.log(`Actions: ${stats.actions}`);
       console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
       
@@ -502,22 +639,151 @@ const commands = {
     }
   },
 
-  async pattern(pattern, description, effectiveness = null, projectPath = process.cwd()) {
-    if (!pattern || !description) {
-      console.error('❌ Pattern and description required');
-      console.log('Usage: claude-memory pattern "Pattern name" "Description" [effectiveness 0-1]');
-      return;
-    }
+  async pattern(action, ...args) {
+    const projectPath = process.cwd();
     
-    try {
-      const memory = new ClaudeMemory(projectPath);
-      const effectivenessScore = effectiveness ? parseFloat(effectiveness) : null;
-      memory.learnPattern(pattern, description, '', 1, effectivenessScore);
+    if (action === 'resolve') {
+      const patternId = args[0];
+      const solution = args[1];
       
-      console.log(`✅ Pattern learned: ${pattern}`);
-      console.log(`📝 Description: ${description}`);
-    } catch (error) {
-      console.error('❌ Error learning pattern:', error.message);
+      if (!patternId || !solution) {
+        console.error('❌ Pattern ID and solution required');
+        console.log('Usage: claude-memory pattern resolve <pattern-id> "solution"');
+        return;
+      }
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const success = memory.resolvePattern(patternId, solution);
+        if (success) {
+          console.log(`✅ Pattern resolved: ${patternId}`);
+          console.log(`💡 Solution: ${solution}`);
+        } else {
+          console.error(`❌ Pattern not found: ${patternId}`);
+        }
+      } catch (error) {
+        console.error('❌ Error resolving pattern:', error.message);
+      }
+      
+    } else {
+      // Traditional pattern learning
+      const pattern = action;
+      const description = args[0];
+      const effectiveness = args[1];
+      const priority = args[2] || 'medium';
+      
+      if (!pattern || !description) {
+        console.error('❌ Pattern and description required');
+        console.log('Usage: claude-memory pattern "Pattern name" "Description" [effectiveness 0-1] [priority]');
+        return;
+      }
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const effectivenessScore = effectiveness ? parseFloat(effectiveness) : null;
+        memory.learnPattern(pattern, description, '', 1, effectivenessScore, priority);
+        
+        console.log(`✅ Pattern learned: ${pattern}`);
+        console.log(`📝 Description: ${description}`);
+        console.log(`🎯 Priority: ${priority}`);
+      } catch (error) {
+        console.error('❌ Error learning pattern:', error.message);
+      }
+    }
+  },
+
+  async task(action, ...args) {
+    const projectPath = process.cwd();
+    
+    if (action === 'add') {
+      const description = args[0];
+      let priority = 'medium';
+      let assignee = null;
+      let dueDate = null;
+      
+      // Parse optional flags
+      for (let i = 1; i < args.length; i++) {
+        if (args[i] === '--priority' && args[i + 1]) {
+          priority = args[i + 1];
+          i++;
+        } else if (args[i] === '--assignee' && args[i + 1]) {
+          assignee = args[i + 1];
+          i++;
+        } else if (args[i] === '--due' && args[i + 1]) {
+          dueDate = args[i + 1];
+          i++;
+        }
+      }
+      
+      if (!description) {
+        console.error('❌ Task description required');
+        console.log('Usage: claude-memory task add "description" [--priority high|medium|low] [--assignee name] [--due date]');
+        return;
+      }
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const taskId = memory.addTask(description, priority, 'open', assignee, dueDate);
+        
+        console.log(`✅ Task added: ${description}`);
+        console.log(`📋 Task ID: ${taskId}`);
+        console.log(`🎯 Priority: ${priority}`);
+      } catch (error) {
+        console.error('❌ Error adding task:', error.message);
+      }
+      
+    } else if (action === 'complete') {
+      const taskId = args[0];
+      const outcome = args[1] || '';
+      
+      if (!taskId) {
+        console.error('❌ Task ID required');
+        console.log('Usage: claude-memory task complete <task-id> ["outcome"]');
+        return;
+      }
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const success = memory.completeTask(taskId, outcome);
+        if (success) {
+          console.log(`✅ Task completed: ${taskId}`);
+          if (outcome) console.log(`📝 Outcome: ${outcome}`);
+        } else {
+          console.error(`❌ Task not found: ${taskId}`);
+        }
+      } catch (error) {
+        console.error('❌ Error completing task:', error.message);
+      }
+      
+    } else if (action === 'list') {
+      const status = args[0];
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const tasks = memory.getTasks(status);
+        
+        console.log(`\n📋 Tasks${status ? ` (${status})` : ''}:\n`);
+        
+        if (tasks.length === 0) {
+          console.log('No tasks found.');
+        } else {
+          tasks.forEach(task => {
+            const statusIcon = task.status === 'completed' ? '✅' : 
+                             task.status === 'in-progress' ? '🔄' : '📝';
+            console.log(`${statusIcon} ${task.id}: ${task.description}`);
+            console.log(`   Priority: ${task.priority} | Status: ${task.status}`);
+            if (task.assignee) console.log(`   Assigned: ${task.assignee}`);
+            if (task.dueDate) console.log(`   Due: ${task.dueDate}`);
+            if (task.completedAt) console.log(`   Completed: ${task.completedAt.split('T')[0]}`);
+            console.log('');
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error listing tasks:', error.message);
+      }
+      
+    } else {
+      console.error('❌ Task action must be: add, complete, or list');
     }
   },
 
@@ -575,12 +841,29 @@ const commands = {
       }
       
     } else if (action === 'end') {
-      const outcome = args[0] || 'Session completed';
+      const sessionIdOrOutcome = args[0];
+      const outcome = args[1] || 'Session completed';
       
       try {
         const memory = new ClaudeMemory(projectPath);
-        memory.endSession(outcome);
-        console.log(`✅ Session ended: ${outcome}`);
+        
+        // Check if first arg is a session ID
+        if (sessionIdOrOutcome && sessionIdOrOutcome.match(/^\d{4}-\d{2}-\d{2}-/)) {
+          const success = memory.endSessionById(sessionIdOrOutcome, outcome);
+          if (success) {
+            console.log(`✅ Session ${sessionIdOrOutcome} ended: ${outcome}`);
+          } else {
+            console.error(`❌ Session not found or already ended: ${sessionIdOrOutcome}`);
+          }
+        } else {
+          // End current session
+          const success = memory.endSession(sessionIdOrOutcome || outcome);
+          if (success) {
+            console.log(`✅ Current session ended: ${sessionIdOrOutcome || outcome}`);
+          } else {
+            console.log('ℹ️  No active session to end');
+          }
+        }
       } catch (error) {
         console.error('❌ Error ending session:', error.message);
       }
@@ -597,8 +880,17 @@ const commands = {
         console.error('❌ Error listing sessions:', error.message);
       }
       
+    } else if (action === 'cleanup') {
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const cleanedCount = memory.cleanupSessions();
+        console.log(`✅ Cleaned up ${cleanedCount} active sessions`);
+      } catch (error) {
+        console.error('❌ Error cleaning up sessions:', error.message);
+      }
+      
     } else {
-      console.error('❌ Session action must be: start, end, or list');
+      console.error('❌ Session action must be: start, end, list, or cleanup');
     }
   },
 
@@ -610,17 +902,38 @@ INSTALLATION:
   npm install -g claude-memory
   
 COMMANDS:
-  init ["Project Name"] [path]           Initialize memory in project
-  stats [path]                          Show memory statistics
-  search "query" [path]                 Search memory
-  decision "text" "reasoning" [alts]    Record a decision
-  pattern "name" "description" [score]  Learn a pattern
-  backup [path]                         Backup memory
-  export [filename] [path]              Export memory to JSON
-  session start "name" [context]       Start session
-  session end ["outcome"]               End session  
-  session list                          List sessions
-  help                                  Show this help
+  init ["Project Name"] [path]                    Initialize memory in project
+  stats [path]                                   Show memory statistics
+  search "query" [path]                          Search memory
+  decision "text" "reasoning" [alts]             Record a decision
+  pattern "name" "description" [score] [priority] Learn a pattern
+  pattern resolve <pattern-id> "solution"       Resolve a pattern
+  task add "description" [--priority] [--assignee] Add a task
+  task complete <task-id> ["outcome"]           Complete a task
+  task list [status]                            List tasks
+  backup [path]                                 Backup memory
+  export [filename] [path]                      Export memory to JSON
+  session start "name" [context]               Start session
+  session end [session-id] ["outcome"]         End session  
+  session list                                  List sessions
+  session cleanup                               End all active sessions
+  help                                          Show this help
+
+TASK MANAGEMENT:
+  claude-memory task add "Implement error handling" --priority high
+  claude-memory task add "Write tests" --assignee "developer" --due "2024-01-15"
+  claude-memory task complete abc123 "Successfully implemented"
+  claude-memory task list open
+
+PATTERN MANAGEMENT:
+  claude-memory pattern "Security First" "Always validate input" 0.9 high
+  claude-memory pattern resolve def456 "Added input validation middleware"
+
+SESSION MANAGEMENT:
+  claude-memory session start "Feature Development" 
+  claude-memory session end "Feature completed successfully"
+  claude-memory session end 2024-01-01-feature-dev "Paused for review"
+  claude-memory session cleanup
 
 USAGE PATTERN:
   Tell Claude: "Load project memory and continue [your task]"
@@ -630,15 +943,16 @@ USAGE PATTERN:
   • Apply learned patterns
   • Record new decisions and knowledge
   • Update living documentation
+  • Sync with task management system
 
 EXAMPLES:
   claude-memory init "My Web App"
   claude-memory decision "Use React" "Better ecosystem" "Vue,Angular"
-  claude-memory pattern "Test locally first" "Prevents production issues" "0.9"
+  claude-memory pattern "Test locally first" "Prevents production issues" "0.9" "high"
+  claude-memory task add "Setup CI/CD" --priority high
   claude-memory search "authentication"
-  claude-memory session start "Feature Development"
 
-Transform AI conversations from stateless Q&A into persistent project intelligence!
+Transform AI conversations into persistent project intelligence with proper task management!
 
 More info: https://github.com/robwhite4/claude-memory
 `);
