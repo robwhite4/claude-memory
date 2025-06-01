@@ -3,30 +3,30 @@
     {
       "id": "2025-06-01-project-setup",
       "name": "Project Setup",
-      "startTime": "2025-06-01T23:26:28.446Z",
+      "startTime": "2025-06-01T23:28:46.980Z",
       "context": {
         "project": "Enhanced Test Project",
-        "initialized": "2025-06-01T23:26:28.446Z",
+        "initialized": "2025-06-01T23:28:46.980Z",
         "tool": "claude-memory"
       },
       "status": "completed",
-      "endTime": "2025-06-01T23:26:29.333Z",
+      "endTime": "2025-06-01T23:28:47.698Z",
       "outcome": "Session cleaned up"
     },
     {
       "id": "2025-06-01-test-session",
       "name": "Test Session",
-      "startTime": "2025-06-01T23:26:29.112Z",
+      "startTime": "2025-06-01T23:28:47.530Z",
       "context": {},
       "status": "completed",
-      "endTime": "2025-06-01T23:26:29.333Z",
+      "endTime": "2025-06-01T23:28:47.698Z",
       "outcome": "Session cleaned up"
     }
   ],
   "decisions": [
     {
-      "id": "88530df9",
-      "timestamp": "2025-06-01T23:26:29.434Z",
+      "id": "7a1c5ea3",
+      "timestamp": "2025-06-01T23:28:47.777Z",
       "decision": "Use TypeScript",
       "reasoning": "Better type safety",
       "alternatives": [
@@ -37,9 +37,9 @@
       "context": {}
     },
     {
-      "id": "1a3a9cfd",
+      "id": "b3876ddf",
       "sessionId": "2025-06-01-project-setup",
-      "timestamp": "2025-06-01T23:26:28.453Z",
+      "timestamp": "2025-06-01T23:28:46.989Z",
       "decision": "Install Claude Memory",
       "reasoning": "Enable persistent AI memory across sessions for better project intelligence",
       "alternatives": [
@@ -50,77 +50,77 @@
       "outcome": null,
       "context": {
         "project": "Enhanced Test Project",
-        "initialized": "2025-06-01T23:26:28.446Z",
+        "initialized": "2025-06-01T23:28:46.980Z",
         "tool": "claude-memory"
       }
     }
   ],
   "patterns": [
     {
-      "id": "453d0e98",
+      "id": "93bfbf26",
       "pattern": "Security First",
       "description": "Always validate input",
       "frequency": 1,
       "effectiveness": 0.9,
       "priority": "high",
       "status": "resolved",
-      "firstSeen": "2025-06-01T23:26:28.880Z",
-      "lastSeen": "2025-06-01T23:26:28.880Z",
+      "firstSeen": "2025-06-01T23:28:47.341Z",
+      "lastSeen": "2025-06-01T23:28:47.341Z",
       "solution": "Implemented input validation middleware",
-      "resolvedAt": "2025-06-01T23:26:28.996Z"
+      "resolvedAt": "2025-06-01T23:28:47.435Z"
     }
   ],
   "actions": [
     {
-      "id": "31d84daa",
+      "id": "64a53a0f",
       "sessionId": "2025-06-01-project-setup",
-      "timestamp": "2025-06-01T23:26:28.448Z",
+      "timestamp": "2025-06-01T23:28:46.983Z",
       "actionType": "session_started",
       "details": {
         "sessionName": "Project Setup",
         "context": {
           "project": "Enhanced Test Project",
-          "initialized": "2025-06-01T23:26:28.446Z",
+          "initialized": "2025-06-01T23:28:46.980Z",
           "tool": "claude-memory"
         }
       },
       "result": ""
     },
     {
-      "id": "7e83b654",
+      "id": "e5ef0838",
       "sessionId": "2025-06-01-project-setup",
-      "timestamp": "2025-06-01T23:26:28.458Z",
+      "timestamp": "2025-06-01T23:28:46.995Z",
       "actionType": "decision_recorded",
       "details": {
         "decision": "Install Claude Memory",
-        "decisionId": "1a3a9cfd"
+        "decisionId": "b3876ddf"
       },
       "result": ""
     },
     {
-      "id": "f420491f",
-      "timestamp": "2025-06-01T23:26:28.562Z",
+      "id": "fa152869",
+      "timestamp": "2025-06-01T23:28:47.078Z",
       "actionType": "task_added",
       "details": {
-        "taskId": "f46f1456",
+        "taskId": "cb095a80",
         "description": "Test task management",
         "priority": "high"
       },
       "result": ""
     },
     {
-      "id": "b3ab11fa",
-      "timestamp": "2025-06-01T23:26:28.764Z",
+      "id": "42abe3e4",
+      "timestamp": "2025-06-01T23:28:47.253Z",
       "actionType": "task_completed",
       "details": {
-        "taskId": "f46f1456",
+        "taskId": "cb095a80",
         "outcome": "Successfully tested"
       },
       "result": ""
     },
     {
-      "id": "c703b24f",
-      "timestamp": "2025-06-01T23:26:28.884Z",
+      "id": "fa899ca7",
+      "timestamp": "2025-06-01T23:28:47.345Z",
       "actionType": "pattern_learned",
       "details": {
         "pattern": "Security First",
@@ -129,19 +129,19 @@
       "result": ""
     },
     {
-      "id": "f0d9a320",
-      "timestamp": "2025-06-01T23:26:29.001Z",
+      "id": "2a78a429",
+      "timestamp": "2025-06-01T23:28:47.439Z",
       "actionType": "pattern_resolved",
       "details": {
-        "patternId": "453d0e98",
+        "patternId": "93bfbf26",
         "solution": "Implemented input validation middleware"
       },
       "result": ""
     },
     {
-      "id": "259bf903",
+      "id": "5a70fd06",
       "sessionId": "2025-06-01-test-session",
-      "timestamp": "2025-06-01T23:26:29.115Z",
+      "timestamp": "2025-06-01T23:28:47.532Z",
       "actionType": "session_started",
       "details": {
         "sessionName": "Test Session",
@@ -150,12 +150,12 @@
       "result": ""
     },
     {
-      "id": "748285d1",
-      "timestamp": "2025-06-01T23:26:29.438Z",
+      "id": "20460aee",
+      "timestamp": "2025-06-01T23:28:47.780Z",
       "actionType": "decision_recorded",
       "details": {
         "decision": "Use TypeScript",
-        "decisionId": "88530df9"
+        "decisionId": "7a1c5ea3"
       },
       "result": ""
     }
@@ -163,21 +163,21 @@
   "knowledge": {},
   "tasks": [
     {
-      "id": "f46f1456",
+      "id": "cb095a80",
       "description": "Test task management",
       "priority": "high",
       "status": "completed",
       "assignee": null,
       "dueDate": null,
-      "createdAt": "2025-06-01T23:26:28.558Z",
-      "completedAt": "2025-06-01T23:26:28.760Z",
+      "createdAt": "2025-06-01T23:28:47.076Z",
+      "completedAt": "2025-06-01T23:28:47.250Z",
       "outcome": "Successfully tested"
     }
   ],
   "metadata": {
-    "created": "2025-06-01T23:26:28.436Z",
-    "version": "1.1.0",
+    "created": "2025-06-01T23:28:46.970Z",
+    "version": "1.1.1",
     "projectName": "Enhanced Test Project"
   },
-  "exportedAt": "2025-06-01T23:26:29.847Z"
+  "exportedAt": "2025-06-01T23:28:48.126Z"
 }
