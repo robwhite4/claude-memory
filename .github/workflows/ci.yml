@@ -1,0 +1,157 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run basic tests
+      run: npm test
+      
+    - name: Run enhanced tests
+      run: node test/enhanced-test.js
+      
+    - name: Test CLI installation
+      run: |
+        npm install -g .
+        claude-memory --help
+        
+    - name: Generate test coverage
+      run: |
+        # Basic coverage check - count test assertions
+        echo "Test Coverage Summary:" >> $GITHUB_STEP_SUMMARY
+        echo "- Basic Tests: $(grep -c '✅' test/test.js || echo 0) assertions" >> $GITHUB_STEP_SUMMARY
+        echo "- Enhanced Tests: $(grep -c 'await test' test/enhanced-test.js || echo 0) test cases" >> $GITHUB_STEP_SUMMARY
+        echo "- Features Covered: Task Management, Pattern Resolution, Session Management, Decision Tracking" >> $GITHUB_STEP_SUMMARY
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Check code style
+      run: |
+        echo "Checking code style..."
+        # Basic checks
+        if grep -r "console.log" bin/ --exclude-dir=node_modules; then
+          echo "Warning: console.log found in production code"
+        fi
+        echo "✅ Code style check completed"
+        
+    - name: Security audit
+      run: npm audit --audit-level moderate
+      
+    - name: Check package vulnerabilities
+      run: |
+        echo "Checking for vulnerabilities..."
+        npm audit --audit-level high
+        echo "✅ Security audit completed"
+
+  compatibility:
+    name: Compatibility Tests
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Test basic functionality
+      run: npm test
+      
+    - name: Test CLI on ${{ matrix.os }}
+      run: |
+        npm install -g .
+        claude-memory init "Test Project"
+        claude-memory stats
+        
+  publish-check:
+    name: Publish Readiness
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Check package.json
+      run: |
+        echo "Validating package.json..."
+        node -e "
+          const pkg = require('./package.json');
+          console.log('✅ Package name:', pkg.name);
+          console.log('✅ Version:', pkg.version);
+          console.log('✅ License:', pkg.license);
+          console.log('✅ Author:', pkg.author);
+          if (!pkg.version.match(/^\d+\.\d+\.\d+$/)) {
+            throw new Error('Invalid semver version');
+          }
+        "
+        
+    - name: Dry run publish
+      run: npm pack --dry-run
+      
+    - name: Check file structure
+      run: |
+        echo "Checking published files..."
+        if [ ! -f "bin/claude-memory.js" ]; then echo "❌ Missing CLI binary"; exit 1; fi
+        if [ ! -f "README.md" ]; then echo "❌ Missing README"; exit 1; fi
+        if [ ! -f "package.json" ]; then echo "❌ Missing package.json"; exit 1; fi
+        echo "✅ All required files present"
