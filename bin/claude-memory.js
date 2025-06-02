@@ -1000,8 +1000,14 @@ More info: https://github.com/robwhite4/claude-memory
 // Parse command line arguments
 const [,, command, ...args] = process.argv;
 
-if (!command || !commands[command]) {
-  console.error('❌ Unknown command:', command || '(none)');
+// Handle help flags
+if (!command || command === 'help' || command === '--help' || command === '-h') {
+  commands.help();
+  process.exit(0);
+}
+
+if (!commands[command]) {
+  console.error('❌ Unknown command:', command);
   commands.help();
   process.exit(1);
 }
