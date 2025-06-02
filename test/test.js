@@ -53,8 +53,11 @@ async function runTests() {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     assert(fs.existsSync(cliPath), 'CLI file should exist');
 
-    const stats = fs.statSync(cliPath);
-    assert(stats.mode & parseInt('111', 8), 'CLI should be executable');
+    // Skip executable check on Windows
+    if (process.platform !== 'win32') {
+      const stats = fs.statSync(cliPath);
+      assert(stats.mode & parseInt('111', 8), 'CLI should be executable');
+    }
   });
 
   // Test 2: Package.json is valid

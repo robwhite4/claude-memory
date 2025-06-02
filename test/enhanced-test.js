@@ -59,8 +59,11 @@ async function runTests() {
   await test('CLI executable exists and package is valid', () => {
     assert(fs.existsSync(cliPath), 'CLI file should exist');
 
-    const stats = fs.statSync(cliPath);
-    assert(stats.mode & parseInt('111', 8), 'CLI should be executable');
+    // Skip executable check on Windows
+    if (process.platform !== 'win32') {
+      const stats = fs.statSync(cliPath);
+      assert(stats.mode & parseInt('111', 8), 'CLI should be executable');
+    }
 
     const pkgPath = path.join(packageRoot, 'package.json');
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
