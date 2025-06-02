@@ -2,11 +2,11 @@
 
 > Transform any AI conversation into persistent project intelligence
 
-[![npm version](https://badge.fury.io/js/claude-memory.svg)](https://badge.fury.io/js/claude-memory)
+[![npm version](https://img.shields.io/npm/v/claude-memory.svg)](https://www.npmjs.com/package/claude-memory)
 [![CI/CD Pipeline](https://github.com/robwhite4/claude-memory/actions/workflows/ci.yml/badge.svg)](https://github.com/robwhite4/claude-memory/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Downloads](https://img.shields.io/npm/dm/claude-memory.svg)](https://npmjs.org/package/claude-memory)
+[![Downloads](https://img.shields.io/npm/dt/claude-memory.svg)](https://www.npmjs.com/package/claude-memory)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/robwhite4/claude-memory/pulls)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/robwhite4/claude-memory)
 [![Test Coverage](https://img.shields.io/badge/coverage-78.79%25-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
