@@ -103,6 +103,46 @@ jobs:
             echo 'EOF'
           } >> $GITHUB_OUTPUT
       
+      - name: Build release artifacts
+        run: |
+          mkdir -p dist
+          
+          # Create distributable package
+          npm pack --pack-destination=dist
+          
+          # Generate installation guide
+          cat > dist/INSTALL.md << 'EOF'
+          # Claude Memory v${{ steps.version.outputs.version }} - Installation Guide
+          
+          ## Quick Install
+          ```bash
+          npm install -g claude-memory@${{ steps.version.outputs.version }}
+          ```
+          
+          ## Verify Installation
+          ```bash
+          claude-memory --version
+          cmem --help
+          ```
+          
+          ## First Run
+          ```bash
+          # Initialize in your project
+          cd your-project
+          claude-memory session start "Getting Started"
+          ```
+          
+          ## Documentation
+          - [Full README](https://github.com/robwhite4/claude-memory#readme)
+          - [Contributing Guide](https://github.com/robwhite4/claude-memory/blob/main/CONTRIBUTING.md)
+          - [Changelog](https://github.com/robwhite4/claude-memory/blob/main/CHANGELOG.md)
+          EOF
+          
+          # Create checksums
+          cd dist
+          sha256sum * > checksums.txt
+          ls -la
+      
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -112,3 +152,7 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
+          files: |
+            dist/claude-memory-${{ steps.version.outputs.version }}.tgz
+            dist/INSTALL.md
+            dist/checksums.txt
