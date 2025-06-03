@@ -22,7 +22,9 @@
     "postinstall": "node postinstall.js",
     "memory": "claude-memory",
     "memory:stats": "claude-memory stats",
-    "memory:search": "claude-memory search"
+    "memory:search": "claude-memory search",
+    "check:release": "npm test && npm run lint && npm audit --audit-level=high",
+    "version:check": "echo Current version: && npm view claude-memory version && echo Local version: && node -p \"require('./package.json').version\""
   },
   "keywords": [
     "ai",
