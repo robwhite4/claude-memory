@@ -1096,6 +1096,184 @@ const commands = {
     }
   },
 
+  async handoff(format = 'markdown', include = 'all', projectPath) {
+    // AI Handoff command - Generate comprehensive context summary for assistant transitions
+    const targetPath = projectPath || process.cwd();
+
+    try {
+      const memory = new ClaudeMemory(targetPath, null, { silent: true });
+
+      // Parse format option (support --format=json syntax)
+      if (format?.startsWith('--format=')) {
+        format = format.split('=')[1];
+      }
+      if (include?.startsWith('--include=')) {
+        include = include.split('=')[1];
+      }
+
+      // Gather comprehensive context
+      const handoffData = {
+        timestamp: new Date().toISOString(),
+        project: {
+          name: memory.metadata.projectName || 'Unknown Project',
+          path: targetPath,
+          lastActivity: memory.metadata.lastUpdated
+        },
+        session: memory.currentSession ? {
+          name: memory.currentSession.name,
+          id: memory.currentSession.id,
+          duration: memory.currentSession.startTime ? 
+            `${((Date.now() - new Date(memory.currentSession.startTime).getTime()) / (1000 * 60 * 60)).toFixed(1)}h` : 'Unknown',
+          status: memory.currentSession.status || 'active'
+        } : null,
+        tasks: {
+          total: memory.tasks.length,
+          open: memory.getTasks('open').slice(0, 10),
+          inProgress: memory.getTasks('in-progress'),
+          recentlyCompleted: memory.getTasks('completed').slice(-5)
+        },
+        decisions: {
+          total: memory.decisions.length,
+          recent: memory.getRecentDecisions(5)
+        },
+        patterns: {
+          total: memory.patterns.length,
+          critical: memory.patterns.filter(p => p.priority === 'critical'),
+          high: memory.patterns.filter(p => p.priority === 'high'),
+          unresolved: memory.patterns.filter(p => p.status === 'open')
+        },
+        stats: memory.getMemoryStats(),
+        keyContext: memory.generateOptimizedContext ? memory.generateOptimizedContext() : null
+      };
+
+      if (format === 'json') {
+        console.log(JSON.stringify(handoffData, null, 2));
+        return;
+      }
+
+      // Generate markdown handoff summary
+      const markdown = this.generateHandoffMarkdown(handoffData, include);
+      console.log(markdown);
+
+    } catch (error) {
+      if (format === 'json') {
+        console.error(JSON.stringify({ error: error.message }));
+      } else {
+        console.error('❌ Error generating handoff summary:', error.message);
+      }
+      process.exit(1);
+    }
+  },
+
+  generateHandoffMarkdown(data, include) {
+    const sections = [];
+
+    // Header
+    sections.push(`# 🤖 AI Handoff Summary`);
+    sections.push(`**Project**: ${data.project.name}`);
+    sections.push(`**Generated**: ${new Date(data.timestamp).toLocaleString()}`);
+    sections.push('');
+
+    // Current Session
+    if (data.session) {
+      sections.push(`## 📍 Current Session`);
+      sections.push(`- **Name**: ${data.session.name}`);
+      sections.push(`- **Duration**: ${data.session.duration} active`);
+      sections.push(`- **Status**: ${data.session.status}`);
+      sections.push('');
+    }
+
+    // Active Tasks (always included)
+    if (include === 'all' || include === 'tasks') {
+      sections.push(`## ✅ Active Tasks (${data.tasks.open.length} open, ${data.tasks.inProgress.length} in-progress)`);
+      
+      if (data.tasks.inProgress.length > 0) {
+        sections.push(`### In Progress:`);
+        data.tasks.inProgress.forEach(task => {
+          sections.push(`- **[${task.id.slice(0, 8)}]** ${task.description} (${task.priority})`);
+          if (task.assignee) sections.push(`  - Assignee: ${task.assignee}`);
+        });
+        sections.push('');
+      }
+
+      if (data.tasks.open.length > 0) {
+        sections.push(`### Open Tasks:`);
+        data.tasks.open.slice(0, 8).forEach(task => {
+          sections.push(`- **[${task.id.slice(0, 8)}]** ${task.description} (${task.priority})`);
+        });
+        if (data.tasks.open.length > 8) {
+          sections.push(`- ... and ${data.tasks.open.length - 8} more`);
+        }
+        sections.push('');
+      }
+
+      if (data.tasks.recentlyCompleted.length > 0) {
+        sections.push(`### Recently Completed:`);
+        data.tasks.recentlyCompleted.forEach(task => {
+          sections.push(`- ✅ ${task.description}`);
+        });
+        sections.push('');
+      }
+    }
+
+    // Recent Decisions (always included)
+    if (include === 'all' || include === 'decisions') {
+      sections.push(`## 🎯 Recent Decisions`);
+      if (data.decisions.recent.length > 0) {
+        data.decisions.recent.forEach(decision => {
+          sections.push(`### ${decision.decision}`);
+          sections.push(`**Reasoning**: ${decision.reasoning}`);
+          if (decision.alternativesConsidered) {
+            sections.push(`**Alternatives**: ${decision.alternativesConsidered}`);
+          }
+          sections.push(`*${new Date(decision.timestamp).toLocaleDateString()}*`);
+          sections.push('');
+        });
+      } else {
+        sections.push('No recent decisions recorded.');
+        sections.push('');
+      }
+    }
+
+    // Critical Patterns
+    if (include === 'all') {
+      const criticalPatterns = [...data.patterns.critical, ...data.patterns.high.slice(0, 3)];
+      if (criticalPatterns.length > 0) {
+        sections.push(`## ⚡ Key Patterns & Learnings`);
+        criticalPatterns.forEach(pattern => {
+          sections.push(`### ${pattern.name} (${pattern.priority})`);
+          sections.push(`${pattern.description}`);
+          if (pattern.status === 'resolved' && pattern.solution) {
+            sections.push(`**Solution**: ${pattern.solution}`);
+          }
+          sections.push('');
+        });
+      }
+    }
+
+    // Project Statistics
+    sections.push(`## 📊 Project Intelligence`);
+    sections.push(`- **Total Decisions**: ${data.decisions.total}`);
+    sections.push(`- **Total Tasks**: ${data.tasks.total}`);
+    sections.push(`- **Total Patterns**: ${data.patterns.total}`);
+    sections.push(`- **Memory Health**: ${data.stats.tokensUsed || 'Unknown'} tokens used`);
+    sections.push('');
+
+    // Handoff Notes
+    sections.push(`## 🔄 Handoff Context`);
+    sections.push(`This summary provides essential context for AI assistant transitions.`);
+    sections.push(`- Focus on in-progress tasks and recent decisions`);
+    sections.push(`- Apply critical/high priority patterns to new work`);
+    sections.push(`- Continue the current session or start appropriately`);
+    if (data.session) {
+      sections.push(`- Current session "${data.session.name}" has been active for ${data.session.duration}`);
+    }
+    sections.push('');
+    sections.push(`*Use \`claude-memory context\` for JSON integration data*`);
+
+    return sections.join('\n');
+  },
+
   async config(action, key, value) {
     const projectPath = process.cwd();
     const configPath = path.join(projectPath, '.claude', 'config.json');
@@ -1154,6 +1332,7 @@ COMMANDS:
   session list                                  List sessions
   session cleanup                               End all active sessions
   context [path]                                Get context for AI integration (JSON output)
+  handoff [--format=json|markdown] [--include=all|tasks|decisions] [path]  Generate AI handoff summary
   config get [key]                             View configuration
   config set <key> <value>                     Update configuration
   help                                          Show this help
@@ -1173,6 +1352,11 @@ SESSION MANAGEMENT:
   claude-memory session end "Feature completed successfully"
   claude-memory session end 2024-01-01-feature-dev "Paused for review"
   claude-memory session cleanup
+
+AI HANDOFF:
+  claude-memory handoff                                    Generate markdown summary
+  claude-memory handoff --format=json                     Generate JSON data
+  claude-memory handoff --include=tasks                   Focus on tasks only
 
 USAGE PATTERN:
   Tell Claude: "Load project memory and continue [your task]"
