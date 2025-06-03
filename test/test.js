@@ -141,7 +141,18 @@ async function runTests() {
   });
 
   // Test 9: CLAUDE.md generation
-  await test('CLAUDE.md generation', () => {
+  await test('CLAUDE.md generation', async() => {
+    // Disable token optimization to ensure all patterns show
+    if (fs.existsSync('.claude/config.json')) {
+      const config = JSON.parse(fs.readFileSync('.claude/config.json', 'utf8'));
+      config.tokenOptimization = false;
+      fs.writeFileSync('.claude/config.json', JSON.stringify(config, null, 2));
+    }
+    
+    // Force CLAUDE.md regeneration by adding another pattern
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    await execAsync(`node "${cliPath}" pattern "Dummy" "Force update" 0.5`);
+    
     const claudeContent = fs.readFileSync('CLAUDE.md', 'utf8');
 
     assert(claudeContent.includes('Claude Project Memory'), 'Should have header');
