@@ -112,7 +112,8 @@ async function runTests() {
     assert(stdout.includes('Decision recorded'), 'Should confirm decision recording');
 
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
-    assert(memoryData.decisions.length > 1, 'Should have recorded decision'); // There's already an initial decision from init
+    // There's already an initial decision from init
+    assert(memoryData.decisions.length > 1, 'Should have recorded decision');
     const reactDecision = memoryData.decisions.find(d => d.decision === 'Use React');
     assert(reactDecision, 'Should store decision text');
   });

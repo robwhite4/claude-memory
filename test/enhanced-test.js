@@ -150,7 +150,9 @@ async function runTests() {
 
   // Test 7: Enhanced Pattern System (v1.1.0)
   await test('Enhanced pattern learning with priority', async() => {
-    const { stdout } = await execAsync(`node "${cliPath}" pattern "Security First" "Always validate input" "0.9" "high"`);
+    const { stdout } = await execAsync(
+      `node "${cliPath}" pattern "Security First" "Always validate input" "0.9" "high"`
+    );
 
     assertIncludes(stdout, 'Pattern learned', 'Should confirm pattern learning');
     assertIncludes(stdout, 'Priority: high', 'Should show priority');
@@ -170,7 +172,9 @@ async function runTests() {
     const pattern = memoryData.patterns.find(p => p.pattern === 'Security First');
     const patternId = pattern.id;
 
-    const { stdout } = await execAsync(`node "${cliPath}" pattern resolve ${patternId} "Implemented input validation middleware"`);
+    const { stdout } = await execAsync(
+      `node "${cliPath}" pattern resolve ${patternId} "Implemented input validation middleware"`
+    );
 
     assertIncludes(stdout, 'Pattern resolved', 'Should confirm pattern resolution');
 
@@ -203,7 +207,9 @@ async function runTests() {
 
   // Test 10: Decision recording with enhanced tracking
   await test('Decision recording with context', async() => {
-    const { stdout } = await execAsync(`node "${cliPath}" decision "Use TypeScript" "Better type safety" "JavaScript,Flow"`);
+    const { stdout } = await execAsync(
+      `node "${cliPath}" decision "Use TypeScript" "Better type safety" "JavaScript,Flow"`
+    );
 
     assertIncludes(stdout, 'Decision recorded', 'Should confirm decision recording');
 

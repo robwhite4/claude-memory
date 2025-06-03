@@ -419,21 +419,55 @@ class ClaudeMemory {
 - **Memory Created**: ${this.metadata.created?.split('T')[0]}
 
 ### Open Patterns
-${criticalPatterns.length ? `#### Critical Priority\n${criticalPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}${highPatterns.length ? `#### High Priority\n${highPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}${mediumPatterns.length ? `#### Medium Priority\n${mediumPatterns.map(p => `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`).join('\n')}\n` : ''}
+${criticalPatterns.length
+    ? `#### Critical Priority
+${criticalPatterns.map(p =>
+    `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`
+  ).join('\n')}\n`
+    : ''}${highPatterns.length
+  ? `#### High Priority
+${highPatterns.map(p =>
+    `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`
+  ).join('\n')}\n`
+  : ''}${mediumPatterns.length
+  ? `#### Medium Priority
+${mediumPatterns.map(p =>
+    `- **${p.pattern}**: ${p.description}${p.effectiveness ? ` (effectiveness: ${p.effectiveness})` : ''}`
+  ).join('\n')}\n`
+  : ''}
 
-${recentlyResolved.length ? `### Recently Resolved\n${recentlyResolved.map(p => `- **${p.pattern}**: ${p.solution} (${p.resolvedAt?.split('T')[0]})`).join('\n')}\n` : ''}
+${recentlyResolved.length
+    ? `### Recently Resolved
+${recentlyResolved.map(p =>
+    `- **${p.pattern}**: ${p.solution} (${p.resolvedAt?.split('T')[0]})`
+  ).join('\n')}\n`
+    : ''}
 ### Project Conventions
 <!-- Discovered during development -->
 
 ## Task Management
 
 ### Active Tasks
-${activeTasks.length ? activeTasks.map(t => `- [ ] **${t.description}** (${t.priority}${t.dueDate ? `, due: ${t.dueDate}` : ''}${t.assignee ? `, assigned: ${t.assignee}` : ''})`).join('\n') : '- No active tasks'}
+${activeTasks.length
+    ? activeTasks.map(t =>
+      `- [ ] **${t.description}** (${t.priority}${t.dueDate ? `, due: ${t.dueDate}` : ''}${
+        t.assignee ? `, assigned: ${t.assignee}` : ''})`
+    ).join('\n')
+    : '- No active tasks'}
 
 ### In Progress
-${inProgressTasks.length ? inProgressTasks.map(t => `- 🔄 **${t.description}** (${t.priority}${t.assignee ? `, assigned: ${t.assignee}` : ''})`).join('\n') : '- No tasks in progress'}
+${inProgressTasks.length
+    ? inProgressTasks.map(t =>
+      `- 🔄 **${t.description}** (${t.priority}${t.assignee ? `, assigned: ${t.assignee}` : ''})`
+    ).join('\n')
+    : '- No tasks in progress'}
 
-${recentlyCompleted.length ? `### Recently Completed\n${recentlyCompleted.map(t => `- [x] **${t.description}** (completed: ${t.completedAt?.split('T')[0]})`).join('\n')}\n` : ''}
+${recentlyCompleted.length
+    ? `### Recently Completed
+${recentlyCompleted.map(t =>
+    `- [x] **${t.description}** (completed: ${t.completedAt?.split('T')[0]})`
+  ).join('\n')}\n`
+    : ''}
 ## Recent Decisions Log
 ${recentDecisions.map(d => `
 ### ${d.timestamp.split('T')[0]}: ${d.decision}
@@ -543,7 +577,7 @@ const commands = {
   async stats(projectPath) {
     // Use current directory if no path provided
     const targetPath = projectPath || process.cwd();
-    
+
     try {
       const memory = new ClaudeMemory(targetPath);
       const stats = memory.getMemoryStats();
@@ -729,7 +763,8 @@ const commands = {
 
       if (!description) {
         console.error('❌ Task description required');
-        console.log('Usage: claude-memory task add "description" [--priority high|medium|low] [--assignee name] [--due date]');
+        console.log('Usage: claude-memory task add "description" ' +
+          '[--priority high|medium|low] [--assignee name] [--due date]');
         return;
       }
 
@@ -800,7 +835,7 @@ const commands = {
   async backup(projectPath) {
     // Use current directory if no path provided
     const targetPath = projectPath || process.cwd();
-    
+
     try {
       const memory = new ClaudeMemory(targetPath);
       memory.backup();
@@ -813,7 +848,7 @@ const commands = {
   async export(filename, projectPath) {
     // Use current directory if no path provided
     const targetPath = projectPath || process.cwd();
-    
+
     try {
       const memory = new ClaudeMemory(targetPath);
       const data = memory.exportMemory();
