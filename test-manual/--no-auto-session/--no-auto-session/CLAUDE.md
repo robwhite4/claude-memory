@@ -1,7 +1,7 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Evening Development
+- **Current**: Project Setup
 - **Started**: 2025-06-03
 - **Project**: Test Project
 
@@ -13,9 +13,6 @@
 - **Memory Created**: 2025-06-03
 
 ### Open Patterns
-#### Medium Priority
-- **Test first**: Prevents bugs (effectiveness: 0.9)
-- **Dummy**: Force update (effectiveness: 0.5)
 
 
 
@@ -32,12 +29,6 @@
 
 
 ## Recent Decisions Log
-
-### 2025-06-03: Use React
-**Decision**: Use React
-**Reasoning**: Better ecosystem
-**Alternatives Considered**: Vue, Angular
-
 
 ### 2025-06-03: Install Claude Memory
 **Decision**: Install Claude Memory

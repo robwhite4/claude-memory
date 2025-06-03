@@ -34,12 +34,12 @@ class ClaudeMemory {
     this.ensureDirectories();
     this.loadConfig();
     this.loadMemory();
-    
+
     // Auto-session management
     if (this.config.autoSession !== false && !options.noAutoSession) {
       this.checkAutoSession();
     }
-    
+
     // Auto-backup check
     if (this.config.autoBackup !== false) {
       this.checkAutoBackup();
@@ -109,7 +109,7 @@ class ClaudeMemory {
         lastBackup: data.lastBackup,
         actionsSinceBackup: data.actionsSinceBackup || 0
       };
-      
+
       // Find current active session
       this.currentSession = this.sessions.find(s => s.status === 'active') || null;
     } catch (error) {
@@ -157,7 +157,7 @@ class ClaudeMemory {
       else if (hour < 17) sessionName = 'Afternoon Development';
       else if (hour < 21) sessionName = 'Evening Development';
       else sessionName = 'Night Development';
-      
+
       if (!this.options.silent && !this.config.silentMode) {
         console.log(`🤖 Auto-starting session: ${sessionName}`);
       }
@@ -166,16 +166,16 @@ class ClaudeMemory {
       // Check if session is too old
       const sessionAge = Date.now() - new Date(this.currentSession.startTime).getTime();
       const maxAge = this.config.autoSessionHours * 60 * 60 * 1000;
-      
+
       if (sessionAge > maxAge) {
         // Generate summary of session activity
         const sessionActions = this.actions.filter(a => a.sessionId === this.currentSession.id);
         const summary = `Completed ${sessionActions.length} actions`;
-        
+
         if (!this.options.silent && !this.config.silentMode) {
           console.log(`🔄 Auto-rotating session after ${this.config.autoSessionHours} hours`);
         }
-        
+
         this.endSession(summary);
         this.checkAutoSession(); // Recursive to start new session
       }
@@ -186,7 +186,7 @@ class ClaudeMemory {
     const shouldBackup = !this.metadata.lastBackup ||
       this.metadata.actionsSinceBackup >= this.config.backupInterval ||
       (Date.now() - new Date(this.metadata.lastBackup).getTime() > 24 * 60 * 60 * 1000);
-    
+
     if (shouldBackup) {
       this.backup();
       this.cleanOldBackups();
@@ -196,15 +196,15 @@ class ClaudeMemory {
   cleanOldBackups() {
     const backupsDir = path.join(this.claudeDir, 'backups');
     const maxAge = this.config.maxBackupDays * 24 * 60 * 60 * 1000;
-    
+
     if (fs.existsSync(backupsDir)) {
       const backups = fs.readdirSync(backupsDir);
       const now = Date.now();
-      
+
       backups.forEach(backup => {
         const backupPath = path.join(backupsDir, backup);
         const stats = fs.statSync(backupPath);
-        
+
         if (now - stats.mtime.getTime() > maxAge) {
           fs.rmSync(backupPath, { recursive: true, force: true });
         }
@@ -419,12 +419,12 @@ class ClaudeMemory {
     this.actions.push(actionRecord);
     this.metadata.actionsSinceBackup = (this.metadata.actionsSinceBackup || 0) + 1;
     this.saveMemory();
-    
+
     // Check if auto-backup needed
     if (this.config.autoBackup) {
       this.checkAutoBackup();
     }
-    
+
     return actionRecord.id;
   }
 
@@ -489,14 +489,14 @@ class ClaudeMemory {
     if (fs.existsSync(this.claudeFile)) {
       fs.copyFileSync(this.claudeFile, path.join(backupDir, 'CLAUDE.md'));
     }
-    
+
     // Update backup metadata
     this.metadata.lastBackup = new Date().toISOString();
     this.metadata.actionsSinceBackup = 0;
     this.saveMemory();
-    
+
     if (!this.options.silent && !this.config.silentMode) {
-      console.log(`💾 Auto-backup created`);
+      console.log('💾 Auto-backup created');
     }
   }
 
@@ -521,7 +521,7 @@ class ClaudeMemory {
   generateClaudeContent() {
     // Token optimization: reduce content when enabled
     const isOptimized = this.config.tokenOptimization !== false;
-    
+
     const recentDecisions = this.getRecentDecisions(isOptimized ? 3 : 5);
     const openPatterns = this.patterns.filter(p => p.status === 'open').slice(0, isOptimized ? 3 : 5);
     const recentlyResolved = this.patterns.filter(p => p.status === 'resolved').slice(isOptimized ? -2 : -3);
@@ -1074,10 +1074,10 @@ const commands = {
   async context(projectPath) {
     // Integration command for claude-code
     const targetPath = projectPath || process.cwd();
-    
+
     try {
       const memory = new ClaudeMemory(targetPath, null, { silent: true });
-      
+
       // Return structured data for integration
       const context = {
         session: memory.currentSession,
@@ -1087,7 +1087,7 @@ const commands = {
         projectName: memory.metadata.projectName,
         stats: memory.getMemoryStats()
       };
-      
+
       // Output as JSON for integration
       console.log(JSON.stringify(context, null, 2));
     } catch (error) {
@@ -1099,7 +1099,7 @@ const commands = {
   async config(action, key, value) {
     const projectPath = process.cwd();
     const configPath = path.join(projectPath, '.claude', 'config.json');
-    
+
     if (action === 'get') {
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -1118,7 +1118,7 @@ const commands = {
         if (value === 'true') value = true;
         else if (value === 'false') value = false;
         else if (!isNaN(value)) value = parseFloat(value);
-        
+
         config[key] = value;
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         console.log(`✅ Config updated: ${key} = ${value}`);
