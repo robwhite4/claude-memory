@@ -13,6 +13,43 @@ import path from 'path';
 import fs from 'fs';
 import { createHash } from 'crypto';
 
+// Input validation utilities
+function sanitizeInput(input, maxLength = 1000) {
+  if (typeof input !== 'string') return '';
+  return input
+    .replace(/[<>]/g, '') // Remove potential HTML/script tags
+    .replace(/\.\./g, '') // Remove path traversal attempts
+    .slice(0, maxLength)
+    .trim();
+}
+
+function validatePath(inputPath) {
+  if (!inputPath) return process.cwd();
+
+  // Resolve and normalize the path
+  const resolvedPath = path.resolve(inputPath);
+
+  // Ensure it doesn't contain path traversal
+  if (resolvedPath.includes('..')) {
+    throw new Error('Invalid path: path traversal not allowed');
+  }
+
+  return resolvedPath;
+}
+
+function sanitizeDescription(description, maxLength = 500) {
+  if (!description || typeof description !== 'string') {
+    throw new Error('Description is required and must be a string');
+  }
+
+  const sanitized = sanitizeInput(description, maxLength);
+  if (sanitized.length === 0) {
+    throw new Error('Description cannot be empty after sanitization');
+  }
+
+  return sanitized;
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, '..');
 
@@ -104,11 +141,19 @@ class ClaudeMemory {
       this.tasks = data.tasks || [];
       this.metadata = {
         created: data.created,
-        version: data.version,
+        version: packageJson.version, // Always use current package version
         projectName: data.projectName || this.projectName,
         lastBackup: data.lastBackup,
         actionsSinceBackup: data.actionsSinceBackup || 0
       };
+
+      // Version migration - update if memory file has old version
+      if (data.version !== packageJson.version) {
+        if (!this.options.silent && !this.config.silentMode) {
+          console.log(`🔄 Migrating memory from v${data.version || 'unknown'} to v${packageJson.version}`);
+        }
+        this.saveMemory(); // Save with updated version
+      }
 
       // Find current active session
       this.currentSession = this.sessions.find(s => s.status === 'active') || null;
@@ -805,11 +850,19 @@ const commands = {
     }
 
     try {
-      const memory = new ClaudeMemory(projectPath);
-      const alternativesArray = alternatives ? alternatives.split(',').map(s => s.trim()) : [];
-      const id = memory.recordDecision(decision, reasoning, alternativesArray);
+      // Sanitize inputs
+      const sanitizedDecision = sanitizeDescription(decision, 200);
+      const sanitizedReasoning = sanitizeDescription(reasoning, 1000);
+      const validatedPath = validatePath(projectPath);
 
-      console.log(`✅ Decision recorded: ${decision}`);
+      const memory = new ClaudeMemory(validatedPath);
+      const alternativesArray = alternatives
+        ? alternatives.split(',').map(s => sanitizeInput(s.trim(), 100)).filter(s => s.length > 0)
+        : [];
+
+      const id = memory.recordDecision(sanitizedDecision, sanitizedReasoning, alternativesArray);
+
+      console.log(`✅ Decision recorded: ${sanitizedDecision}`);
       console.log(`📋 Decision ID: ${id}`);
     } catch (error) {
       console.error('❌ Error recording decision:', error.message);
@@ -899,12 +952,18 @@ const commands = {
       }
 
       try {
-        const memory = new ClaudeMemory(projectPath);
-        const taskId = memory.addTask(description, priority, 'open', assignee, dueDate);
+        // Sanitize and validate inputs
+        const sanitizedDescription = sanitizeDescription(description, 300);
+        const validPriorities = ['high', 'medium', 'low'];
+        const validPriority = validPriorities.includes(priority) ? priority : 'medium';
+        const sanitizedAssignee = assignee ? sanitizeInput(assignee, 50) : null;
 
-        console.log(`✅ Task added: ${description}`);
+        const memory = new ClaudeMemory(projectPath);
+        const taskId = memory.addTask(sanitizedDescription, validPriority, 'open', sanitizedAssignee, dueDate);
+
+        console.log(`✅ Task added: ${sanitizedDescription}`);
         console.log(`📋 Task ID: ${taskId}`);
-        console.log(`🎯 Priority: ${priority}`);
+        console.log(`🎯 Priority: ${validPriority}`);
       } catch (error) {
         console.error('❌ Error adding task:', error.message);
       }
@@ -975,21 +1034,86 @@ const commands = {
     }
   },
 
-  async export(filename, projectPath) {
+  async export(...args) {
+    let filename = null;
+    let projectPath = null;
+    let sanitized = false;
+
+    // Parse arguments and flags
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg === '--sanitized') {
+        sanitized = true;
+      } else if (arg?.startsWith('--')) {
+        console.error(`❌ Unknown flag: ${arg}`);
+        console.log('Usage: claude-memory export [filename] [--sanitized] [path]');
+        return;
+      } else if (!filename && !arg?.startsWith('/') && !arg?.startsWith('.')) {
+        // First non-flag, non-path argument is filename
+        filename = sanitizeInput(arg, 100);
+      } else if (!projectPath) {
+        // Path-like argument
+        projectPath = arg;
+      }
+    }
+
     // Use current directory if no path provided
-    const targetPath = projectPath || process.cwd();
+    const targetPath = validatePath(projectPath || process.cwd());
 
     try {
       const memory = new ClaudeMemory(targetPath);
-      const data = memory.exportMemory();
-      const exportFile = filename || `claude-memory-export-${new Date().toISOString().split('T')[0]}.json`;
+      let data = memory.exportMemory();
+
+      // Sanitize data if requested
+      if (sanitized) {
+        data = this.sanitizeExportData(data);
+      }
+
+      const dateStr = new Date().toISOString().split('T')[0];
+      const sanitizedSuffix = sanitized ? '-sanitized' : '';
+      const exportFile = filename || `claude-memory-export-${dateStr}${sanitizedSuffix}.json`;
 
       fs.writeFileSync(exportFile, JSON.stringify(data, null, 2));
       console.log(`✅ Memory exported to: ${exportFile}`);
       console.log(`📊 Exported ${Object.keys(data).length - 1} data categories`);
+      if (sanitized) {
+        console.log('🧹 Data sanitized (sensitive information removed)');
+      }
     } catch (error) {
       console.error('❌ Error exporting memory:', error.message);
     }
+  },
+
+  sanitizeExportData(data) {
+    // Create a deep copy and remove sensitive information
+    const sanitized = JSON.parse(JSON.stringify(data));
+
+    // Remove or anonymize sensitive fields
+    if (sanitized.sessions) {
+      sanitized.sessions = sanitized.sessions.map(session => ({
+        ...session,
+        context: sanitized.context ? {} : session.context // Remove context details
+      }));
+    }
+
+    if (sanitized.decisions) {
+      sanitized.decisions = sanitized.decisions.map(decision => ({
+        ...decision,
+        reasoning: decision.reasoning?.length > 100
+          ? decision.reasoning.substring(0, 100) + '...'
+          : decision.reasoning
+      }));
+    }
+
+    // Remove personal identifiers
+    if (sanitized.tasks) {
+      sanitized.tasks = sanitized.tasks.map(task => ({
+        ...task,
+        assignee: task.assignee ? 'REDACTED' : null
+      }));
+    }
+
+    return sanitized;
   },
 
   session(action, ...args) {

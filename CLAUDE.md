@@ -1,7 +1,7 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: No active session
+- **Current**: Evening Development
 - **Started**: 2025-06-03
 - **Project**: Claude Memory NPM Package
 
@@ -9,18 +9,10 @@
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.0.0
+- **Claude Memory**: v1.3.1
 - **Memory Created**: 2025-06-01
 
 ### Open Patterns
-#### Critical Priority
-- **Fix linting before release**: Always run npm run lint before publishing (effectiveness: 1)
-- **Automatic by default**: Make tools work without manual intervention - users should get value immediately (effectiveness: 1)
-#### High Priority
-- **Dogfooding validates design**: Using your own product reveals real usability issues and missing features (effectiveness: 0.95)
-- **Selective git strategy**: Commit curated knowledge (CLAUDE.md) but keep personal memory private (.claude/ folder) (effectiveness: 0.9)
-#### Medium Priority
-- **Cost transparency builds trust**: Being upfront about initial costs vs long-term savings helps users make informed decisions (effectiveness: 0.85)
 
 
 
@@ -33,45 +25,33 @@
 - [ ] **Test edge cases in CLI argument parsing** (medium)
 - [ ] **Add task status update command (in-progress, blocked, etc)** (low)
 - [ ] **Consider JSON import/export for task migration** (low)
+- [ ] **Test task with tag** (medium, assigned: /test)
 
 ### In Progress
 - No tasks in progress
 
 ### Recently Completed
-- [x] **Implement real code coverage and linting tools** (completed: 2025-06-01)
 - [x] **Update NPM badges to use shields.io** (completed: 2025-06-03)
 - [x] **Implement default directory for stats/search/backup/export** (completed: 2025-06-03)
 
 ## Recent Decisions Log
 
-### 2025-06-03: Implement automatic session management
-**Decision**: Implement automatic session management
-**Reasoning**: Zero-friction AI context - sessions rotate every 4 hours automatically
-**Alternatives Considered**: Manual sessions only, No session management
+### 2025-06-03: Test scriptalert('xss')/script
+**Decision**: Test scriptalert('xss')/script
+**Reasoning**: Path //etc/passwd traversal test
+**Alternatives Considered**: /malicious/path
 
 
-### 2025-06-03: Implement GitHub workflow templates
-**Decision**: Implement GitHub workflow templates
-**Reasoning**: Establish professional open-source practices
-**Alternatives Considered**: Manual process, No templates
+### 2025-06-03: ../../../etc/passwd
+**Decision**: ../../../etc/passwd
+**Reasoning**: test
+**Alternatives Considered**: test
 
 
-### 2025-06-01: Bump version to 1.1.1 for quality infrastructure release
-**Decision**: Bump version to 1.1.1 for quality infrastructure release
-**Reasoning**: Patch release to include professional code coverage, ESLint integration, and enhanced CI/CD pipeline
-**Alternatives Considered**: Skip version bump, Major version bump, Beta release
-
-
-### 2025-06-01: Implemented professional code coverage and linting infrastructure
-**Decision**: Implemented professional code coverage and linting infrastructure
-**Reasoning**: Added c8 coverage tool achieving 78.79% coverage, ESLint for code quality, comprehensive CI/CD pipeline, and updated badges with real metrics
-**Alternatives Considered**: Manual code review, Basic testing only, External coverage service
-
-
-### 2025-06-01: Added comprehensive test coverage and CI/CD infrastructure
-**Decision**: Added comprehensive test coverage and CI/CD infrastructure
-**Reasoning**: Enhanced project legitimacy with 25 total tests, GitHub Actions CI/CD, security policy, and professional badges
-**Alternatives Considered**: Basic tests only, External CI service, Manual testing
+### 2025-06-03: Use latest cmem for dogfooding
+**Decision**: Use latest cmem for dogfooding
+**Reasoning**: Always update global claude-memory to latest NPM version when working on the project to test real usage
+**Alternatives Considered**: Use local development version, Ignore version updates
 
 
 ## Commands & Workflows
