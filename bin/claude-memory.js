@@ -21,16 +21,29 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.j
 
 // Memory system implementation
 class ClaudeMemory {
-  constructor(projectRoot, projectName = 'My Project') {
+  constructor(projectRoot, projectName = 'My Project', options = {}) {
     this.projectRoot = projectRoot;
     this.projectName = projectName;
     this.claudeDir = path.join(projectRoot, '.claude');
     this.memoryFile = path.join(this.claudeDir, 'memory.json');
+    this.configFile = path.join(this.claudeDir, 'config.json');
     this.claudeFile = path.join(projectRoot, 'CLAUDE.md');
     this.currentSession = null;
+    this.options = options;
 
     this.ensureDirectories();
+    this.loadConfig();
     this.loadMemory();
+    
+    // Auto-session management
+    if (this.config.autoSession !== false && !options.noAutoSession) {
+      this.checkAutoSession();
+    }
+    
+    // Auto-backup check
+    if (this.config.autoBackup !== false) {
+      this.checkAutoBackup();
+    }
   }
 
   ensureDirectories() {
@@ -56,6 +69,30 @@ class ClaudeMemory {
     }
   }
 
+  loadConfig() {
+    const defaultConfig = {
+      autoSession: true,
+      autoSessionHours: 4,
+      autoBackup: true,
+      backupInterval: 10, // actions
+      maxBackupDays: 7,
+      tokenOptimization: true,
+      silentMode: false
+    };
+
+    try {
+      if (fs.existsSync(this.configFile)) {
+        const userConfig = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
+        this.config = { ...defaultConfig, ...userConfig };
+      } else {
+        this.config = defaultConfig;
+        fs.writeFileSync(this.configFile, JSON.stringify(defaultConfig, null, 2));
+      }
+    } catch (error) {
+      this.config = defaultConfig;
+    }
+  }
+
   loadMemory() {
     try {
       const data = JSON.parse(fs.readFileSync(this.memoryFile, 'utf8'));
@@ -68,8 +105,13 @@ class ClaudeMemory {
       this.metadata = {
         created: data.created,
         version: data.version,
-        projectName: data.projectName || this.projectName
+        projectName: data.projectName || this.projectName,
+        lastBackup: data.lastBackup,
+        actionsSinceBackup: data.actionsSinceBackup || 0
       };
+      
+      // Find current active session
+      this.currentSession = this.sessions.find(s => s.status === 'active') || null;
     } catch (error) {
       this.sessions = [];
       this.decisions = [];
@@ -80,7 +122,9 @@ class ClaudeMemory {
       this.metadata = {
         created: new Date().toISOString(),
         version: packageJson.version,
-        projectName: this.projectName
+        projectName: this.projectName,
+        lastBackup: null,
+        actionsSinceBackup: 0
       };
     }
   }
@@ -96,9 +140,76 @@ class ClaudeMemory {
       created: this.metadata.created,
       version: this.metadata.version,
       projectName: this.metadata.projectName,
+      lastBackup: this.metadata.lastBackup,
+      actionsSinceBackup: this.metadata.actionsSinceBackup,
       lastUpdated: new Date().toISOString()
     };
     fs.writeFileSync(this.memoryFile, JSON.stringify(data, null, 2));
+  }
+
+  checkAutoSession() {
+    if (!this.currentSession) {
+      // Auto-start session based on time of day
+      const hour = new Date().getHours();
+      let sessionName;
+      if (hour < 6) sessionName = 'Late Night Development';
+      else if (hour < 12) sessionName = 'Morning Development';
+      else if (hour < 17) sessionName = 'Afternoon Development';
+      else if (hour < 21) sessionName = 'Evening Development';
+      else sessionName = 'Night Development';
+      
+      if (!this.options.silent && !this.config.silentMode) {
+        console.log(`🤖 Auto-starting session: ${sessionName}`);
+      }
+      this.startSession(sessionName, { auto: true, startTime: new Date().toISOString() });
+    } else {
+      // Check if session is too old
+      const sessionAge = Date.now() - new Date(this.currentSession.startTime).getTime();
+      const maxAge = this.config.autoSessionHours * 60 * 60 * 1000;
+      
+      if (sessionAge > maxAge) {
+        // Generate summary of session activity
+        const sessionActions = this.actions.filter(a => a.sessionId === this.currentSession.id);
+        const summary = `Completed ${sessionActions.length} actions`;
+        
+        if (!this.options.silent && !this.config.silentMode) {
+          console.log(`🔄 Auto-rotating session after ${this.config.autoSessionHours} hours`);
+        }
+        
+        this.endSession(summary);
+        this.checkAutoSession(); // Recursive to start new session
+      }
+    }
+  }
+
+  checkAutoBackup() {
+    const shouldBackup = !this.metadata.lastBackup ||
+      this.metadata.actionsSinceBackup >= this.config.backupInterval ||
+      (Date.now() - new Date(this.metadata.lastBackup).getTime() > 24 * 60 * 60 * 1000);
+    
+    if (shouldBackup) {
+      this.backup();
+      this.cleanOldBackups();
+    }
+  }
+
+  cleanOldBackups() {
+    const backupsDir = path.join(this.claudeDir, 'backups');
+    const maxAge = this.config.maxBackupDays * 24 * 60 * 60 * 1000;
+    
+    if (fs.existsSync(backupsDir)) {
+      const backups = fs.readdirSync(backupsDir);
+      const now = Date.now();
+      
+      backups.forEach(backup => {
+        const backupPath = path.join(backupsDir, backup);
+        const stats = fs.statSync(backupPath);
+        
+        if (now - stats.mtime.getTime() > maxAge) {
+          fs.rmSync(backupPath, { recursive: true, force: true });
+        }
+      });
+    }
   }
 
   startSession(sessionName, context = {}) {
@@ -306,7 +417,14 @@ class ClaudeMemory {
     };
 
     this.actions.push(actionRecord);
+    this.metadata.actionsSinceBackup = (this.metadata.actionsSinceBackup || 0) + 1;
     this.saveMemory();
+    
+    // Check if auto-backup needed
+    if (this.config.autoBackup) {
+      this.checkAutoBackup();
+    }
+    
     return actionRecord.id;
   }
 
@@ -371,6 +489,15 @@ class ClaudeMemory {
     if (fs.existsSync(this.claudeFile)) {
       fs.copyFileSync(this.claudeFile, path.join(backupDir, 'CLAUDE.md'));
     }
+    
+    // Update backup metadata
+    this.metadata.lastBackup = new Date().toISOString();
+    this.metadata.actionsSinceBackup = 0;
+    this.saveMemory();
+    
+    if (!this.options.silent && !this.config.silentMode) {
+      console.log(`💾 Auto-backup created`);
+    }
   }
 
   exportMemory() {
@@ -392,17 +519,20 @@ class ClaudeMemory {
   }
 
   generateClaudeContent() {
-    const recentDecisions = this.getRecentDecisions(5);
-    const openPatterns = this.patterns.filter(p => p.status === 'open').slice(0, 5);
-    const recentlyResolved = this.patterns.filter(p => p.status === 'resolved').slice(-3);
-    const activeTasks = this.getTasks('open');
-    const inProgressTasks = this.getTasks('in-progress');
-    const recentlyCompleted = this.getTasks('completed').slice(-3);
+    // Token optimization: reduce content when enabled
+    const isOptimized = this.config.tokenOptimization !== false;
+    
+    const recentDecisions = this.getRecentDecisions(isOptimized ? 3 : 5);
+    const openPatterns = this.patterns.filter(p => p.status === 'open').slice(0, isOptimized ? 3 : 5);
+    const recentlyResolved = this.patterns.filter(p => p.status === 'resolved').slice(isOptimized ? -2 : -3);
+    const activeTasks = this.getTasks('open').slice(0, isOptimized ? 5 : 10);
+    const inProgressTasks = this.getTasks('in-progress').slice(0, isOptimized ? 3 : 5);
+    const recentlyCompleted = this.getTasks('completed').slice(isOptimized ? -2 : -3);
 
-    // Group patterns by priority
+    // Only show high-priority patterns when optimized
     const criticalPatterns = openPatterns.filter(p => p.priority === 'critical');
-    const highPatterns = openPatterns.filter(p => p.priority === 'high');
-    const mediumPatterns = openPatterns.filter(p => p.priority === 'medium');
+    const highPatterns = isOptimized ? [] : openPatterns.filter(p => p.priority === 'high');
+    const mediumPatterns = isOptimized ? [] : openPatterns.filter(p => p.priority === 'medium');
 
     return `# Claude Project Memory
 
@@ -941,6 +1071,65 @@ const commands = {
     }
   },
 
+  async context(projectPath) {
+    // Integration command for claude-code
+    const targetPath = projectPath || process.cwd();
+    
+    try {
+      const memory = new ClaudeMemory(targetPath, null, { silent: true });
+      
+      // Return structured data for integration
+      const context = {
+        session: memory.currentSession,
+        recentDecisions: memory.getRecentDecisions(3),
+        activeTasks: memory.getTasks('open').slice(0, 5),
+        openPatterns: memory.patterns.filter(p => p.status === 'open' && p.priority !== 'low').slice(0, 3),
+        projectName: memory.metadata.projectName,
+        stats: memory.getMemoryStats()
+      };
+      
+      // Output as JSON for integration
+      console.log(JSON.stringify(context, null, 2));
+    } catch (error) {
+      console.error(JSON.stringify({ error: error.message }));
+      process.exit(1);
+    }
+  },
+
+  async config(action, key, value) {
+    const projectPath = process.cwd();
+    const configPath = path.join(projectPath, '.claude', 'config.json');
+    
+    if (action === 'get') {
+      try {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        if (key) {
+          console.log(`${key}: ${config[key]}`);
+        } else {
+          console.log(JSON.stringify(config, null, 2));
+        }
+      } catch (error) {
+        console.error('❌ Error reading config:', error.message);
+      }
+    } else if (action === 'set' && key && value !== undefined) {
+      try {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        // Parse boolean values
+        if (value === 'true') value = true;
+        else if (value === 'false') value = false;
+        else if (!isNaN(value)) value = parseFloat(value);
+        
+        config[key] = value;
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        console.log(`✅ Config updated: ${key} = ${value}`);
+      } catch (error) {
+        console.error('❌ Error setting config:', error.message);
+      }
+    } else {
+      console.error('❌ Usage: claude-memory config get [key] | claude-memory config set <key> <value>');
+    }
+  },
+
   help() {
     console.log(`
 🧠 Claude Memory v${packageJson.version}
@@ -964,6 +1153,9 @@ COMMANDS:
   session end [session-id] ["outcome"]         End session  
   session list                                  List sessions
   session cleanup                               End all active sessions
+  context [path]                                Get context for AI integration (JSON output)
+  config get [key]                             View configuration
+  config set <key> <value>                     Update configuration
   help                                          Show this help
 
 TASK MANAGEMENT:

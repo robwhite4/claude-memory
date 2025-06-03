@@ -2,7 +2,7 @@
 
 ## Active Session
 - **Current**: No active session
-- **Started**: 2025-06-01
+- **Started**: 2025-06-03
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
@@ -13,6 +13,9 @@
 - **Memory Created**: 2025-06-01
 
 ### Open Patterns
+#### Critical Priority
+- **Fix linting before release**: Always run npm run lint before publishing (effectiveness: 1)
+- **Automatic by default**: Make tools work without manual intervention - users should get value immediately (effectiveness: 1)
 #### High Priority
 - **Dogfooding validates design**: Using your own product reveals real usability issues and missing features (effectiveness: 0.95)
 - **Selective git strategy**: Commit curated knowledge (CLAUDE.md) but keep personal memory private (.claude/ folder) (effectiveness: 0.9)
@@ -35,11 +38,23 @@
 - No tasks in progress
 
 ### Recently Completed
-- [x] **Test enhanced task management in production** (completed: 2025-06-01)
-- [x] **Add comprehensive test coverage and CI/CD badges** (completed: 2025-06-01)
 - [x] **Implement real code coverage and linting tools** (completed: 2025-06-01)
+- [x] **Update NPM badges to use shields.io** (completed: 2025-06-03)
+- [x] **Implement default directory for stats/search/backup/export** (completed: 2025-06-03)
 
 ## Recent Decisions Log
+
+### 2025-06-03: Implement automatic session management
+**Decision**: Implement automatic session management
+**Reasoning**: Zero-friction AI context - sessions rotate every 4 hours automatically
+**Alternatives Considered**: Manual sessions only, No session management
+
+
+### 2025-06-03: Implement GitHub workflow templates
+**Decision**: Implement GitHub workflow templates
+**Reasoning**: Establish professional open-source practices
+**Alternatives Considered**: Manual process, No templates
+
 
 ### 2025-06-01: Bump version to 1.1.1 for quality infrastructure release
 **Decision**: Bump version to 1.1.1 for quality infrastructure release
@@ -57,18 +72,6 @@
 **Decision**: Added comprehensive test coverage and CI/CD infrastructure
 **Reasoning**: Enhanced project legitimacy with 25 total tests, GitHub Actions CI/CD, security policy, and professional badges
 **Alternatives Considered**: Basic tests only, External CI service, Manual testing
-
-
-### 2025-06-01: Successfully updated GitHub with enhanced documentation
-**Decision**: Successfully updated GitHub with enhanced documentation
-**Reasoning**: README now includes comprehensive v1.1.0 workflow examples, concrete cost savings, and success stories
-**Alternatives Considered**: Leave docs as-is, Update later, Create wiki instead
-
-
-### 2025-06-01: Enhanced README with v1.1.0 workflow examples
-**Decision**: Enhanced README with v1.1.0 workflow examples
-**Reasoning**: Added comprehensive task management examples, concrete AI cost savings scenarios, and success stories showcasing new features
-**Alternatives Considered**: Keep basic docs, Create separate guide, Add simple examples
 
 
 ## Commands & Workflows

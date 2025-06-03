@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-06-03
+
+### Added
+- Automatic session management - sessions start and rotate every 4 hours
+- Automatic backups - triggered by actions, time, and session rotation
+- Configuration system with `.claude/config.json`
+- Token optimization mode - reduces CLAUDE.md size for efficiency
+- `context` command for AI integration (returns JSON)
+- `config` command to view and modify settings
+- Silent mode for background operation
+- Automatic cleanup of old backups (keeps 7 days)
+- Integration hooks for claude-code
+
+### Changed
+- Sessions now auto-start based on time of day
+- Memory class accepts options for silent/automatic operation
+- CLAUDE.md content optimized when tokenOptimization enabled
+- Backup system now tracks actions and time since last backup
+- README completely rewritten to emphasize automatic operation
+
+### Fixed
+- Current session now properly loaded on memory initialization
+- Session status tracking improved
+
 ## [1.1.3] - 2025-06-02
 
 ### Added
