@@ -47,7 +47,7 @@ class ClaudeMemory {
   }
 
   ensureDirectories() {
-    [this.claudeDir, path.join(this.claudeDir, 'sessions'), path.join(this.claudeDir, 'backups')].forEach(dir => {
+    [this.claudeDir, path.join(this.claudeDir, 'backups')].forEach(dir => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
