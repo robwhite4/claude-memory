@@ -351,6 +351,19 @@ MIT License - Use anywhere, modify freely, no restrictions.
 > 
 > — DevOps Engineer
 
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+- 🐛 [Report bugs](https://github.com/robwhite4/claude-memory/issues/new?template=bug_report.md)
+- 💡 [Request features](https://github.com/robwhite4/claude-memory/issues/new?template=feature_request.md)
+- 📖 [Read contribution guidelines](CONTRIBUTING.md)
+- 📜 [View code of conduct](CODE_OF_CONDUCT.md)
+
+## 📄 License
+
+MIT © Rob White
+
 ---
 
 **Transform your AI conversations today. Install Claude Memory and never lose context again.**
