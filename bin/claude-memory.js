@@ -540,9 +540,12 @@ const commands = {
     console.log('💡 Use "claude-memory stats" to view memory statistics');
   },
 
-  async stats(projectPath = process.cwd()) {
+  async stats(projectPath) {
+    // Use current directory if no path provided
+    const targetPath = projectPath || process.cwd();
+    
     try {
-      const memory = new ClaudeMemory(projectPath);
+      const memory = new ClaudeMemory(targetPath);
       const stats = memory.getMemoryStats();
 
       console.log('\n📊 Claude Memory Statistics\n');
@@ -569,20 +572,30 @@ const commands = {
         });
       }
     } catch (error) {
-      console.error('❌ Error reading memory:', error.message);
-      console.log('💡 Try running: claude-memory init');
+      if (error.message.includes('not initialized')) {
+        console.error('❌ Claude Memory not initialized in this directory');
+        console.log('💡 Run: claude-memory init');
+        console.log('   Or specify a path: claude-memory stats /path/to/project');
+      } else {
+        console.error('❌ Error reading memory:', error.message);
+        console.log('💡 Try: claude-memory init');
+        console.log('   Or: claude-memory stats /path/to/project');
+      }
     }
   },
 
-  async search(query, projectPath = process.cwd()) {
+  async search(query, projectPath) {
     if (!query) {
       console.error('❌ Search query required');
       console.log('Usage: claude-memory search "your query"');
       return;
     }
 
+    // Use current directory if no path provided
+    const targetPath = projectPath || process.cwd();
+
     try {
-      const memory = new ClaudeMemory(projectPath);
+      const memory = new ClaudeMemory(targetPath);
       const results = memory.searchMemory(query);
 
       console.log(`\n🔍 Search results for: "${query}"\n`);
@@ -784,9 +797,12 @@ const commands = {
     }
   },
 
-  async backup(projectPath = process.cwd()) {
+  async backup(projectPath) {
+    // Use current directory if no path provided
+    const targetPath = projectPath || process.cwd();
+    
     try {
-      const memory = new ClaudeMemory(projectPath);
+      const memory = new ClaudeMemory(targetPath);
       memory.backup();
       console.log('✅ Memory backed up');
     } catch (error) {
@@ -794,9 +810,12 @@ const commands = {
     }
   },
 
-  async export(filename, projectPath = process.cwd()) {
+  async export(filename, projectPath) {
+    // Use current directory if no path provided
+    const targetPath = projectPath || process.cwd();
+    
     try {
-      const memory = new ClaudeMemory(projectPath);
+      const memory = new ClaudeMemory(targetPath);
       const data = memory.exportMemory();
       const exportFile = filename || `claude-memory-export-${new Date().toISOString().split('T')[0]}.json`;
 
@@ -896,16 +915,16 @@ INSTALLATION:
   
 COMMANDS:
   init ["Project Name"] [path]                    Initialize memory in project
-  stats [path]                                   Show memory statistics
-  search "query" [path]                          Search memory
+  stats [path]                                   Show memory statistics (defaults to current dir)
+  search "query" [path]                          Search memory (defaults to current dir)
   decision "text" "reasoning" [alts]             Record a decision
   pattern "name" "description" [score] [priority] Learn a pattern
   pattern resolve <pattern-id> "solution"       Resolve a pattern
   task add "description" [--priority] [--assignee] Add a task
   task complete <task-id> ["outcome"]           Complete a task
   task list [status]                            List tasks
-  backup [path]                                 Backup memory
-  export [filename] [path]                      Export memory to JSON
+  backup [path]                                 Backup memory (defaults to current dir)
+  export [filename] [path]                      Export memory to JSON (defaults to current dir)
   session start "name" [context]               Start session
   session end [session-id] ["outcome"]         End session  
   session list                                  List sessions
