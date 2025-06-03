@@ -80,14 +80,35 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          # Extract changelog section for this version
+          CHANGELOG_SECTION=$(awk "/^## \[$VERSION\]/, /^## \[/ { if (!/^## \[/ || /^## \[$VERSION\]/) print }" CHANGELOG.md | head -n -1)
+          # Remove the version header line
+          CHANGELOG_BODY=$(echo "$CHANGELOG_SECTION" | tail -n +2)
+          # Set output using heredoc to handle multiline
+          {
+            echo 'body<<EOF'
+            echo "## What's Changed"
+            echo ""
+            if [ -n "$CHANGELOG_BODY" ]; then
+              echo "$CHANGELOG_BODY"
+            else
+              echo "See [CHANGELOG.md](https://github.com/robwhite4/claude-memory/blob/main/CHANGELOG.md) for details."
+            fi
+            echo ""
+            echo "**Full Changelog**: https://github.com/robwhite4/claude-memory/compare/v1.2.0...v$VERSION"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+      
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          release_name: Release v${{ steps.version.outputs.version }}
-          body: |
-            See [CHANGELOG.md](https://github.com/robwhite4/claude-memory/blob/main/CHANGELOG.md) for details.
+          name: Release v${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
           draft: false
           prerelease: false
+          generate_release_notes: true
