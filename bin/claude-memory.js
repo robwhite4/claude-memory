@@ -1119,13 +1119,16 @@ const commands = {
           path: targetPath,
           lastActivity: memory.metadata.lastUpdated
         },
-        session: memory.currentSession ? {
-          name: memory.currentSession.name,
-          id: memory.currentSession.id,
-          duration: memory.currentSession.startTime ? 
-            `${((Date.now() - new Date(memory.currentSession.startTime).getTime()) / (1000 * 60 * 60)).toFixed(1)}h` : 'Unknown',
-          status: memory.currentSession.status || 'active'
-        } : null,
+        session: memory.currentSession
+          ? {
+            name: memory.currentSession.name,
+            id: memory.currentSession.id,
+            duration: memory.currentSession.startTime
+              ? `${((Date.now() - new Date(memory.currentSession.startTime).getTime()) / (1000 * 60 * 60)).toFixed(1)}h`
+              : 'Unknown',
+            status: memory.currentSession.status || 'active'
+          }
+          : null,
         tasks: {
           total: memory.tasks.length,
           open: memory.getTasks('open').slice(0, 10),
@@ -1154,7 +1157,6 @@ const commands = {
       // Generate markdown handoff summary
       const markdown = this.generateHandoffMarkdown(handoffData, include);
       console.log(markdown);
-
     } catch (error) {
       if (format === 'json') {
         console.error(JSON.stringify({ error: error.message }));
@@ -1169,14 +1171,14 @@ const commands = {
     const sections = [];
 
     // Header
-    sections.push(`# 🤖 AI Handoff Summary`);
+    sections.push('# 🤖 AI Handoff Summary');
     sections.push(`**Project**: ${data.project.name}`);
     sections.push(`**Generated**: ${new Date(data.timestamp).toLocaleString()}`);
     sections.push('');
 
     // Current Session
     if (data.session) {
-      sections.push(`## 📍 Current Session`);
+      sections.push('## 📍 Current Session');
       sections.push(`- **Name**: ${data.session.name}`);
       sections.push(`- **Duration**: ${data.session.duration} active`);
       sections.push(`- **Status**: ${data.session.status}`);
@@ -1186,9 +1188,9 @@ const commands = {
     // Active Tasks (always included)
     if (include === 'all' || include === 'tasks') {
       sections.push(`## ✅ Active Tasks (${data.tasks.open.length} open, ${data.tasks.inProgress.length} in-progress)`);
-      
+
       if (data.tasks.inProgress.length > 0) {
-        sections.push(`### In Progress:`);
+        sections.push('### In Progress:');
         data.tasks.inProgress.forEach(task => {
           sections.push(`- **[${task.id.slice(0, 8)}]** ${task.description} (${task.priority})`);
           if (task.assignee) sections.push(`  - Assignee: ${task.assignee}`);
@@ -1197,7 +1199,7 @@ const commands = {
       }
 
       if (data.tasks.open.length > 0) {
-        sections.push(`### Open Tasks:`);
+        sections.push('### Open Tasks:');
         data.tasks.open.slice(0, 8).forEach(task => {
           sections.push(`- **[${task.id.slice(0, 8)}]** ${task.description} (${task.priority})`);
         });
@@ -1208,7 +1210,7 @@ const commands = {
       }
 
       if (data.tasks.recentlyCompleted.length > 0) {
-        sections.push(`### Recently Completed:`);
+        sections.push('### Recently Completed:');
         data.tasks.recentlyCompleted.forEach(task => {
           sections.push(`- ✅ ${task.description}`);
         });
@@ -1218,7 +1220,7 @@ const commands = {
 
     // Recent Decisions (always included)
     if (include === 'all' || include === 'decisions') {
-      sections.push(`## 🎯 Recent Decisions`);
+      sections.push('## 🎯 Recent Decisions');
       if (data.decisions.recent.length > 0) {
         data.decisions.recent.forEach(decision => {
           sections.push(`### ${decision.decision}`);
@@ -1239,7 +1241,7 @@ const commands = {
     if (include === 'all') {
       const criticalPatterns = [...data.patterns.critical, ...data.patterns.high.slice(0, 3)];
       if (criticalPatterns.length > 0) {
-        sections.push(`## ⚡ Key Patterns & Learnings`);
+        sections.push('## ⚡ Key Patterns & Learnings');
         criticalPatterns.forEach(pattern => {
           sections.push(`### ${pattern.name} (${pattern.priority})`);
           sections.push(`${pattern.description}`);
@@ -1252,7 +1254,7 @@ const commands = {
     }
 
     // Project Statistics
-    sections.push(`## 📊 Project Intelligence`);
+    sections.push('## 📊 Project Intelligence');
     sections.push(`- **Total Decisions**: ${data.decisions.total}`);
     sections.push(`- **Total Tasks**: ${data.tasks.total}`);
     sections.push(`- **Total Patterns**: ${data.patterns.total}`);
@@ -1260,16 +1262,16 @@ const commands = {
     sections.push('');
 
     // Handoff Notes
-    sections.push(`## 🔄 Handoff Context`);
-    sections.push(`This summary provides essential context for AI assistant transitions.`);
-    sections.push(`- Focus on in-progress tasks and recent decisions`);
-    sections.push(`- Apply critical/high priority patterns to new work`);
-    sections.push(`- Continue the current session or start appropriately`);
+    sections.push('## 🔄 Handoff Context');
+    sections.push('This summary provides essential context for AI assistant transitions.');
+    sections.push('- Focus on in-progress tasks and recent decisions');
+    sections.push('- Apply critical/high priority patterns to new work');
+    sections.push('- Continue the current session or start appropriately');
     if (data.session) {
       sections.push(`- Current session "${data.session.name}" has been active for ${data.session.duration}`);
     }
     sections.push('');
-    sections.push(`*Use \`claude-memory context\` for JSON integration data*`);
+    sections.push('*Use `claude-memory context` for JSON integration data*');
 
     return sections.join('\n');
   },
