@@ -39,6 +39,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-04: Created PR #10 for v1.4.1 hotfixes
+**Decision**: Created PR #10 for v1.4.1 hotfixes
+**Reasoning**: All 4 critical usability issues implemented and ready for review. PR includes comprehensive testing, documentation updates, and GitHub issue references for auto-closure on merge
+**Alternatives Considered**: Wait for more testing, Create separate PRs for each issue
+
+
 ### 2025-06-04: Successfully implemented v1.4.1 hotfixes
 **Decision**: Successfully implemented v1.4.1 hotfixes
 **Reasoning**: Completed all 4 GitHub issues: fixed pattern parsing, ensured ID display, improved search to include tasks, and added pattern list command. All changes are in fix/v1.4.1-hotfixes branch and ready for PR
@@ -49,12 +55,6 @@
 **Decision**: Test
 **Reasoning**: Testing
 **Alternatives Considered**: None
-
-
-### 2025-06-04: Test decision ID
-**Decision**: Test decision ID
-**Reasoning**: Testing ID display
-**Alternatives Considered**: No alternatives
 
 
 ## Commands & Workflows
@@ -83,40 +83,6 @@ claude-memory stats
 claude-memory search "query"
 ```
 
-## Development Workflow
-
-### GitHub Issues & Branch Management
-1. **Issue Creation**: Break down feedback/features into logical GitHub issues
-2. **Branch Strategy**: Create feature branches for each major chunk
-3. **Implementation**: Work on one issue group at a time
-4. **Progress Tracking**: Update GitHub issues with implementation progress
-5. **PR Process**: Reference issues with "Fixes #1, #2, #3" for auto-closure
-
-### Current Status (2025-06-04)
-- **Active Branch**: `fix/v1.4.1-hotfixes`
-- **Completed Issues**: #1-4 (pattern parsing, ID display, search fix, pattern list)
-- **Pending**: Create PR, run tests, merge to main
-- **Next**: v1.5.0 features (Issues #5-9)
-
-### Session Handoff Commands
-```bash
-# Check current state
-claude-memory stats
-claude-memory handoff  # AI handoff summary
-git status
-gh issue list
-
-# Resume development
-git checkout fix/v1.4.1-hotfixes  # or appropriate branch
-claude-memory task list
-```
-
 ## Session Continuation
 To resume work, tell Claude:
 "Load project memory for Claude Memory NPM Package and continue development"
-
-### Key Context for New Sessions
-- Claude Memory NPM Package v1.4.0 (hotfixes implemented in branch)
-- 9 GitHub issues created from user feedback
-- Branch: `fix/v1.4.1-hotfixes` ready for PR
-- Pattern: Always update claude-memory with work progress
