@@ -399,6 +399,7 @@ class ClaudeMemory {
     };
 
     this.saveMemory();
+    this.updateClaudeFile();
     this.recordAction('knowledge_stored', { key, category, value });
   }
 
@@ -601,6 +602,18 @@ class ClaudeMemory {
 - **Claude Memory**: v${this.metadata.version}
 - **Memory Created**: ${this.metadata.created?.split('T')[0]}
 
+### Knowledge Base
+${Object.keys(this.knowledge).length > 0
+    ? Object.entries(this.knowledge).map(([category, items]) => {
+      const itemCount = Object.keys(items).length;
+      const sampleItems = Object.entries(items).slice(0, isOptimized ? 2 : 3);
+      return `#### ${category} (${itemCount} items)
+${sampleItems.map(([key, data]) =>
+    `- **${key}**: ${data.value.length > 80 ? data.value.substring(0, 80) + '...' : data.value}`
+  ).join('\n')}${itemCount > sampleItems.length ? `\n- ... and ${itemCount - sampleItems.length} more items` : ''}`;
+    }).join('\n\n') + '\n'
+    : '- No knowledge stored yet\n'}
+
 ### Open Patterns
 ${criticalPatterns.length
     ? `#### Critical Priority
@@ -681,6 +694,11 @@ claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
 claude-memory decision "Choice" "Reasoning" "alternatives"
+
+# Knowledge management
+claude-memory knowledge add "key" "value" --category category
+claude-memory knowledge get "key" [category]
+claude-memory knowledge list [category]
 
 # Memory utilities
 claude-memory stats
@@ -1639,6 +1657,167 @@ const commands = {
     }
   },
 
+  async knowledge(action, ...args) {
+    const projectPath = process.cwd();
+
+    if (action === 'add') {
+      const key = args[0];
+      const value = args[1];
+      let category = 'general';
+
+      // Parse optional category flag
+      for (let i = 2; i < args.length; i++) {
+        if (args[i] === '--category' && args[i + 1]) {
+          category = args[i + 1];
+          break;
+        }
+      }
+
+      if (!key || !value) {
+        console.error('❌ Key and value required');
+        console.log('Usage: claude-memory knowledge add <key> <value> [--category category]');
+        return;
+      }
+
+      try {
+        const sanitizedKey = sanitizeInput(key, 100);
+        const sanitizedValue = sanitizeInput(value, 1000);
+        const sanitizedCategory = sanitizeInput(category, 50);
+
+        const memory = new ClaudeMemory(projectPath);
+        memory.storeKnowledge(sanitizedKey, sanitizedValue, sanitizedCategory);
+
+        console.log(`✅ Knowledge stored: ${sanitizedKey}`);
+        console.log(`📂 Category: ${sanitizedCategory}`);
+        console.log(`📝 Value: ${sanitizedValue}`);
+      } catch (error) {
+        console.error('❌ Error storing knowledge:', error.message);
+      }
+    } else if (action === 'get') {
+      const key = args[0];
+      const category = args[1] || null;
+
+      if (!key) {
+        console.error('❌ Key required');
+        console.log('Usage: claude-memory knowledge get <key> [category]');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (category) {
+          // Get from specific category
+          const categoryData = memory.knowledge[category];
+          if (categoryData && categoryData[key]) {
+            console.log(`📂 [${category}] ${key}:`);
+            console.log(`   ${categoryData[key].value}`);
+            console.log(`   Last updated: ${categoryData[key].lastUpdated.split('T')[0]}`);
+          } else {
+            console.log(`❌ Knowledge not found: ${key} in category ${category}`);
+          }
+        } else {
+          // Search across all categories
+          let found = false;
+          Object.entries(memory.knowledge).forEach(([cat, items]) => {
+            if (items[key]) {
+              console.log(`📂 [${cat}] ${key}:`);
+              console.log(`   ${items[key].value}`);
+              console.log(`   Last updated: ${items[key].lastUpdated.split('T')[0]}`);
+              found = true;
+            }
+          });
+          if (!found) {
+            console.log(`❌ Knowledge not found: ${key}`);
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error retrieving knowledge:', error.message);
+      }
+    } else if (action === 'list') {
+      const category = args[0] || null;
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (category) {
+          // List specific category
+          const categoryData = memory.knowledge[category];
+          if (categoryData && Object.keys(categoryData).length > 0) {
+            console.log(`\n📂 Knowledge: ${category}\n`);
+            Object.entries(categoryData).forEach(([key, data]) => {
+              console.log(`• ${key}: ${data.value}`);
+              console.log(`  Updated: ${data.lastUpdated.split('T')[0]}`);
+              console.log('');
+            });
+          } else {
+            console.log(`📂 No knowledge found in category: ${category}`);
+          }
+        } else {
+          // List all categories
+          const categories = Object.keys(memory.knowledge);
+          if (categories.length === 0) {
+            console.log('📂 No knowledge stored yet');
+            return;
+          }
+
+          console.log(`\n📚 Knowledge Base (${categories.length} categories)\n`);
+          categories.forEach(cat => {
+            const items = Object.keys(memory.knowledge[cat]);
+            console.log(`📂 ${cat} (${items.length} items)`);
+            items.slice(0, 3).forEach(key => {
+              const data = memory.knowledge[cat][key];
+              console.log(`  • ${key}: ${data.value.length > 50 ? data.value.substring(0, 50) + '...' : data.value}`);
+            });
+            if (items.length > 3) {
+              console.log(`  ... and ${items.length - 3} more`);
+            }
+            console.log('');
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error listing knowledge:', error.message);
+      }
+    } else if (action === 'delete') {
+      const key = args[0];
+      const category = args[1];
+
+      if (!key || !category) {
+        console.error('❌ Key and category required');
+        console.log('Usage: claude-memory knowledge delete <key> <category>');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (memory.knowledge[category] && memory.knowledge[category][key]) {
+          delete memory.knowledge[category][key];
+
+          // Remove empty category
+          if (Object.keys(memory.knowledge[category]).length === 0) {
+            delete memory.knowledge[category];
+          }
+
+          memory.saveMemory();
+          memory.updateClaudeFile();
+          console.log(`✅ Knowledge deleted: ${key} from ${category}`);
+        } else {
+          console.log(`❌ Knowledge not found: ${key} in category ${category}`);
+        }
+      } catch (error) {
+        console.error('❌ Error deleting knowledge:', error.message);
+      }
+    } else {
+      console.error('❌ Knowledge action must be: add, get, list, or delete');
+      console.log('Examples:');
+      console.log('  claude-memory knowledge add "API_URL" "https://api.example.com" --category config');
+      console.log('  claude-memory knowledge get "API_URL"');
+      console.log('  claude-memory knowledge list config');
+      console.log('  claude-memory knowledge delete "API_URL" config');
+    }
+  },
+
   help() {
     console.log(`
 🧠 Claude Memory v${packageJson.version}
@@ -1664,6 +1843,10 @@ COMMANDS:
   session cleanup                               End all active sessions
   context [path]                                Get context for AI integration (JSON output)
   handoff [--format=json|markdown] [--include=all|tasks|decisions] [path]  Generate AI handoff summary
+  knowledge add <key> <value> [--category cat]  Store knowledge
+  knowledge get <key> [category]               Retrieve knowledge
+  knowledge list [category]                    List knowledge
+  knowledge delete <key> <category>            Delete knowledge
   config get [key]                             View configuration
   config set <key> <value>                     Update configuration
   help                                          Show this help
@@ -1677,6 +1860,13 @@ TASK MANAGEMENT:
 PATTERN MANAGEMENT:
   claude-memory pattern "Security First" "Always validate input" 0.9 high
   claude-memory pattern resolve def456 "Added input validation middleware"
+
+KNOWLEDGE MANAGEMENT:
+  claude-memory knowledge add "API_KEY" "sk-abc123..." --category config
+  claude-memory knowledge add "Database_URL" "postgresql://..." --category config
+  claude-memory knowledge get "API_KEY"
+  claude-memory knowledge list config
+  claude-memory knowledge delete "API_KEY" config
 
 SESSION MANAGEMENT:
   claude-memory session start "Feature Development" 
@@ -1704,6 +1894,7 @@ EXAMPLES:
   claude-memory decision "Use React" "Better ecosystem" "Vue,Angular"
   claude-memory pattern "Test locally first" "Prevents production issues" "0.9" "high"
   claude-memory task add "Setup CI/CD" --priority high
+  claude-memory knowledge add "Auth_Provider" "Firebase Auth" --category config
   claude-memory search "authentication"
 
 Transform AI conversations into persistent project intelligence with proper task management!
