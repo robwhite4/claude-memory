@@ -1,9 +1,0 @@
-{
-  "autoSession": true,
-  "autoSessionHours": 4,
-  "autoBackup": true,
-  "backupInterval": 10,
-  "maxBackupDays": 7,
-  "tokenOptimization": true,
-  "silentMode": false
-}

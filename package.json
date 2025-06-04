@@ -10,8 +10,9 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "test:enhanced": "node test/enhanced-test.js",
-    "test:all": "npm test && npm run test:enhanced",
+    "test:enhanced": "node test/enhanced-test.js", 
+    "test:security": "node test/security-test.js",
+    "test:all": "npm test && npm run test:enhanced && npm run test:security",
     "test:coverage": "c8 --reporter=text --reporter=html --reporter=lcov npm run test:all",
     "coverage": "npm run test:coverage && echo '\n📊 Coverage report generated in coverage/ directory'",
     "lint": "eslint bin/ test/ --ext .js",
@@ -54,7 +55,6 @@
   "homepage": "https://github.com/robwhite4/claude-memory#readme",
   "files": [
     "bin/",
-    "src/",
     "README.md",
     "postinstall.js"
   ],

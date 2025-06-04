@@ -38,6 +38,12 @@
 
 ### 2025-06-03: Test scriptalert('xss')/script
 **Decision**: Test scriptalert('xss')/script
+**Reasoning**: Clean input
+
+
+
+### 2025-06-03: Test scriptalert('xss')/script
+**Decision**: Test scriptalert('xss')/script
 **Reasoning**: Path //etc/passwd traversal test
 **Alternatives Considered**: /malicious/path
 
@@ -46,12 +52,6 @@
 **Decision**: ../../../etc/passwd
 **Reasoning**: test
 **Alternatives Considered**: test
-
-
-### 2025-06-03: Use latest cmem for dogfooding
-**Decision**: Use latest cmem for dogfooding
-**Reasoning**: Always update global claude-memory to latest NPM version when working on the project to test real usage
-**Alternatives Considered**: Use local development version, Ignore version updates
 
 
 ## Commands & Workflows

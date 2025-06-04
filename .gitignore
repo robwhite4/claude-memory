@@ -42,3 +42,13 @@ coverage/
 
 # But include the core system
 !CLAUDE.md
+
+# Test artifacts and temporary files
+/coverage/
+/test-enhanced/
+/test-manual/
+/test-project/
+/fresh-test/
+--sanitized
+*.export.json
+*-export-*.json

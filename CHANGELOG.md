@@ -1,6 +1,4 @@
-## [Unreleased]
-
-## [1.3.1] - 2025-06-03
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -8,6 +6,54 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.4.0] - 2025-06-03
+
+### Added
+- Comprehensive input sanitization and validation system
+- AI handoff command for seamless assistant transitions (`claude-memory handoff`)
+- Export data sanitization with `--sanitized` flag
+- Security protection against XSS and path traversal attacks
+- Automatic version migration for memory files
+- Comprehensive security test suite
+
+### Changed
+- Enhanced export command with proper flag parsing
+- Improved input validation across all commands
+- Updated Node.js badge to match package.json requirements (14+)
+- Strengthened error handling and user input processing
+
+### Fixed
+- Version inconsistencies between README and package.json
+- Export --sanitized flag functionality (was treating as filename)
+- Memory file version tracking and migration
+- Path traversal vulnerability in user inputs
+- XSS vulnerability in decision and task descriptions
+
+### Security
+- Added input length limits to prevent buffer overflow
+- Implemented path validation to prevent directory traversal
+- Added HTML/script tag filtering to prevent XSS attacks
+- Enhanced data sanitization for export functionality
+
+## [1.3.1] - 2025-06-03
+
+### Added
+- Enhanced GitHub release automation with assets and changelog content
+- License file (MIT)
+- Professional release workflow
+- GitHub releases for all versions
+
+### Fixed
+- GitHub Actions workflow permissions for automated releases
+- Release process now includes downloadable assets
+
+## [1.3.0] - 2025-06-03
+
+### Added
+- GitHub workflow templates for professional development
+- Enhanced release automation
+- Comprehensive development documentation
 
 ## [1.2.0] - 2025-06-03
 
