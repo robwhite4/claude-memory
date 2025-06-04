@@ -1,4 +1,6 @@
-# Changelog
+## [Unreleased]
+
+## [1.4.0] - 2025-06-04
 
 All notable changes to this project will be documented in this file.
 
