@@ -17,6 +17,7 @@
 
 ### Recently Resolved
 - **Test parsing 3**: Tested and working (2025-06-04)
+- **Subcommand structure test**: Fully implemented with all subcommands working (2025-06-04)
 
 ### Project Conventions
 <!-- Discovered during development -->
@@ -38,6 +39,12 @@
 - [x] **Implement v1.4.1 hotfixes (Issues #1-4)** (completed: 2025-06-04)
 
 ## Recent Decisions Log
+
+### 2025-06-04: Implemented pattern subcommands structure
+**Decision**: Implemented pattern subcommands structure
+**Reasoning**: Successfully created flag-based pattern commands (add, list, search, resolve) with backward compatibility. Provides clearer syntax while maintaining existing functionality
+**Alternatives Considered**: Implement without backward compatibility, Wait for user feedback first
+
 
 ### 2025-06-04: Created PR #10 for v1.4.1 hotfixes
 **Decision**: Created PR #10 for v1.4.1 hotfixes
@@ -72,7 +79,9 @@ claude-memory task complete <task-id>
 claude-memory task list [status]
 
 # Pattern management
-claude-memory pattern "Pattern" "Description" [effectiveness] [--priority critical|high|medium|low]
+claude-memory pattern add "Pattern" "Description" [--effectiveness 0.8] [--priority high]
+claude-memory pattern list [--priority high]
+claude-memory pattern search "query"
 claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking

@@ -674,8 +674,9 @@ claude-memory task complete <task-id>
 claude-memory task list [status]
 
 # Pattern management
-claude-memory pattern "Pattern" "Description" [effectiveness] [priority]
-claude-memory pattern list
+claude-memory pattern add "Pattern" "Description" [--effectiveness 0.8] [--priority high]
+claude-memory pattern list [--priority high]
+claude-memory pattern search "query"
 claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
@@ -852,7 +853,7 @@ const commands = {
         console.log();
       }
 
-      const totalResults = results.decisions.length + results.patterns.length +
+      const totalResults = results.decisions.length + results.patterns.length + 
                           (results.tasks ? results.tasks.length : 0) + results.knowledge.length;
       if (totalResults === 0) {
         console.log('No results found.');
@@ -892,7 +893,163 @@ const commands = {
   async pattern(action, ...args) {
     const projectPath = process.cwd();
 
-    if (action === 'resolve') {
+    if (action === 'add') {
+      const pattern = args[0];
+      const description = args[1];
+      let effectiveness = null;
+      let priority = 'medium';
+
+      // Parse optional flags
+      for (let i = 2; i < args.length; i++) {
+        if (args[i] === '--effectiveness' && args[i + 1]) {
+          const val = parseFloat(args[i + 1]);
+          if (!isNaN(val) && val >= 0 && val <= 1) {
+            effectiveness = val;
+          } else {
+            console.error('❌ Effectiveness must be a number between 0 and 1');
+            return;
+          }
+          i++;
+        } else if (args[i] === '--priority' && args[i + 1]) {
+          if (['critical', 'high', 'medium', 'low'].includes(args[i + 1])) {
+            priority = args[i + 1];
+          } else {
+            console.error('❌ Priority must be: critical, high, medium, or low');
+            return;
+          }
+          i++;
+        }
+      }
+
+      if (!pattern || !description) {
+        console.error('❌ Pattern name and description required');
+        console.log('Usage: claude-memory pattern add "Pattern name" "Description" [--effectiveness 0.8] [--priority high]');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const patternId = memory.learnPattern(pattern, description, '', 1, effectiveness, priority);
+
+        console.log(`✅ Pattern added: ${pattern}`);
+        console.log(`📋 Pattern ID: ${patternId}`);
+        console.log(`📝 Description: ${description}`);
+        console.log(`🎯 Priority: ${priority}`);
+        if (effectiveness !== null) {
+          console.log(`📊 Effectiveness: ${effectiveness}`);
+        }
+      } catch (error) {
+        console.error('❌ Error adding pattern:', error.message);
+      }
+    } else if (action === 'list') {
+      let priorityFilter = null;
+
+      // Parse optional flags
+      for (let i = 0; i < args.length; i++) {
+        if (args[i] === '--priority' && args[i + 1]) {
+          if (['critical', 'high', 'medium', 'low'].includes(args[i + 1])) {
+            priorityFilter = args[i + 1];
+          } else {
+            console.error('❌ Priority must be: critical, high, medium, or low');
+            return;
+          }
+          i++;
+        }
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        let patterns = memory.patterns.filter(p => p.status === 'open');
+        
+        if (priorityFilter) {
+          patterns = patterns.filter(p => p.priority === priorityFilter);
+        }
+
+        if (patterns.length === 0) {
+          const filterMsg = priorityFilter ? ` with priority '${priorityFilter}'` : '';
+          console.log(`📋 No open patterns found${filterMsg}.`);
+          return;
+        }
+
+        // Group by priority
+        const byPriority = {
+          critical: patterns.filter(p => p.priority === 'critical'),
+          high: patterns.filter(p => p.priority === 'high'),
+          medium: patterns.filter(p => p.priority === 'medium'),
+          low: patterns.filter(p => p.priority === 'low')
+        };
+
+        const filterMsg = priorityFilter ? ` (${priorityFilter} priority)` : '';
+        console.log(`📋 Patterns${filterMsg} (${patterns.length} total)\n`);
+
+        ['critical', 'high', 'medium', 'low'].forEach(priority => {
+          if (byPriority[priority].length > 0) {
+            byPriority[priority].forEach(p => {
+              const priorityEmoji = {
+                critical: '🔴',
+                high: '🟠',
+                medium: '🟡',
+                low: '🟢'
+              }[priority];
+              
+              console.log(`[${p.id}] ${priorityEmoji} ${priority.toUpperCase()}: ${p.pattern}`);
+              console.log(`         ${p.description}`);
+              if (p.effectiveness !== null && p.effectiveness !== undefined) {
+                console.log(`         Effectiveness: ${p.effectiveness}`);
+              }
+              console.log();
+            });
+          }
+        });
+      } catch (error) {
+        console.error('❌ Error listing patterns:', error.message);
+      }
+    } else if (action === 'search') {
+      const query = args[0];
+
+      if (!query) {
+        console.error('❌ Search query required');
+        console.log('Usage: claude-memory pattern search "query"');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const patterns = memory.patterns.filter(p =>
+          p.pattern.toLowerCase().includes(query.toLowerCase()) ||
+          p.description.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (patterns.length === 0) {
+          console.log(`🔍 No patterns found for: "${query}"`);
+          return;
+        }
+
+        console.log(`🔍 Pattern search results for: "${query}" (${patterns.length} found)\n`);
+        
+        patterns.forEach(p => {
+          const status = p.status === 'resolved' ? '✅' : '🟢';
+          const priorityEmoji = {
+            critical: '🔴',
+            high: '🟠',
+            medium: '🟡',
+            low: '🟢'
+          }[p.priority];
+          
+          console.log(`${status} [${p.id}] ${priorityEmoji} ${p.pattern}`);
+          console.log(`    ${p.description}`);
+          if (p.effectiveness !== null && p.effectiveness !== undefined) {
+            console.log(`    Effectiveness: ${p.effectiveness} | Priority: ${p.priority}`);
+          }
+          if (p.status === 'resolved') {
+            console.log(`    Solution: ${p.solution}`);
+          }
+          console.log();
+        });
+      } catch (error) {
+        console.error('❌ Error searching patterns:', error.message);
+      }
+    } else if (action === 'resolve') {
       const patternId = args[0];
       const solution = args[1];
 
@@ -914,60 +1071,18 @@ const commands = {
       } catch (error) {
         console.error('❌ Error resolving pattern:', error.message);
       }
-    } else if (action === 'list') {
-      try {
-        const memory = new ClaudeMemory(projectPath);
-        const patterns = memory.patterns.filter(p => p.status === 'open');
-
-        if (patterns.length === 0) {
-          console.log('📋 No open patterns found.');
-          return;
-        }
-
-        // Group by priority
-        const byPriority = {
-          critical: patterns.filter(p => p.priority === 'critical'),
-          high: patterns.filter(p => p.priority === 'high'),
-          medium: patterns.filter(p => p.priority === 'medium'),
-          low: patterns.filter(p => p.priority === 'low')
-        };
-
-        console.log(`📋 Patterns (${patterns.length} total)\n`);
-
-        ['critical', 'high', 'medium', 'low'].forEach(priority => {
-          if (byPriority[priority].length > 0) {
-            byPriority[priority].forEach(p => {
-              const priorityEmoji = {
-                critical: '🔴',
-                high: '🟠',
-                medium: '🟡',
-                low: '🟢'
-              }[priority];
-
-              console.log(`[${p.id}] ${priorityEmoji} ${priority.toUpperCase()}: ${p.pattern}`);
-              console.log(`         ${p.description}`);
-              if (p.effectiveness !== null && p.effectiveness !== undefined) {
-                console.log(`         Effectiveness: ${p.effectiveness}`);
-              }
-              console.log();
-            });
-          }
-        });
-      } catch (error) {
-        console.error('❌ Error listing patterns:', error.message);
-      }
     } else {
-      // Traditional pattern learning
+      // Backward compatibility: Traditional pattern learning
       const pattern = action;
       const description = args[0];
       let effectiveness = null;
       let priority = 'medium';
 
-      // Smart argument parsing
+      // Smart argument parsing for backward compatibility
       if (args[1]) {
         const arg1 = args[1];
         const num = parseFloat(arg1);
-
+        
         // Check if it's a valid effectiveness score (0-1)
         if (!isNaN(num) && num >= 0 && num <= 1) {
           effectiveness = num;
@@ -982,9 +1097,14 @@ const commands = {
       }
 
       if (!pattern || !description) {
-        console.error('❌ Pattern and description required');
-        console.log('Usage: claude-memory pattern "Pattern name" "Description" [effectiveness 0-1] [priority]');
-        console.log('   or: claude-memory pattern "Pattern name" "Description" [priority]');
+        console.error('❌ Pattern name and description required');
+        console.log('\nUsage:');
+        console.log('  claude-memory pattern add "Pattern name" "Description" [--effectiveness 0.8] [--priority high]');
+        console.log('  claude-memory pattern list [--priority high]');
+        console.log('  claude-memory pattern search "query"');
+        console.log('  claude-memory pattern resolve <pattern-id> "solution"');
+        console.log('\nBackward compatibility:');
+        console.log('  claude-memory pattern "Pattern name" "Description" [effectiveness] [priority]');
         return;
       }
 
