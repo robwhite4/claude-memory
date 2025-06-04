@@ -852,7 +852,7 @@ const commands = {
         console.log();
       }
 
-      const totalResults = results.decisions.length + results.patterns.length + 
+      const totalResults = results.decisions.length + results.patterns.length +
                           (results.tasks ? results.tasks.length : 0) + results.knowledge.length;
       if (totalResults === 0) {
         console.log('No results found.');
@@ -918,7 +918,7 @@ const commands = {
       try {
         const memory = new ClaudeMemory(projectPath);
         const patterns = memory.patterns.filter(p => p.status === 'open');
-        
+
         if (patterns.length === 0) {
           console.log('📋 No open patterns found.');
           return;
@@ -943,7 +943,7 @@ const commands = {
                 medium: '🟡',
                 low: '🟢'
               }[priority];
-              
+
               console.log(`[${p.id}] ${priorityEmoji} ${priority.toUpperCase()}: ${p.pattern}`);
               console.log(`         ${p.description}`);
               if (p.effectiveness !== null && p.effectiveness !== undefined) {
@@ -967,7 +967,7 @@ const commands = {
       if (args[1]) {
         const arg1 = args[1];
         const num = parseFloat(arg1);
-        
+
         // Check if it's a valid effectiveness score (0-1)
         if (!isNaN(num) && num >= 0 && num <= 1) {
           effectiveness = num;
