@@ -340,6 +340,7 @@ class ClaudeMemory {
 
   learnPattern(pattern, description, _context = '', frequency = 1, effectiveness = null, priority = 'medium') {
     const existingPattern = this.patterns.find(p => p.pattern === pattern);
+    let patternId;
 
     if (existingPattern) {
       existingPattern.frequency += frequency;
@@ -350,9 +351,11 @@ class ClaudeMemory {
       if (priority) {
         existingPattern.priority = priority;
       }
+      patternId = existingPattern.id;
     } else {
+      patternId = this.generateId();
       this.patterns.push({
-        id: this.generateId(),
+        id: patternId,
         pattern,
         description,
         frequency,
@@ -366,7 +369,8 @@ class ClaudeMemory {
 
     this.saveMemory();
     this.updateClaudeFile();
-    this.recordAction('pattern_learned', { pattern, description });
+    this.recordAction('pattern_learned', { pattern, description, patternId });
+    return patternId;
   }
 
   resolvePattern(patternId, solution) {
@@ -482,6 +486,10 @@ class ClaudeMemory {
       patterns: this.patterns.filter(p =>
         p.pattern.toLowerCase().includes(query.toLowerCase()) ||
         p.description.toLowerCase().includes(query.toLowerCase())
+      ),
+      tasks: this.tasks.filter(t =>
+        t.description.toLowerCase().includes(query.toLowerCase()) ||
+        (t.assignee && t.assignee.toLowerCase().includes(query.toLowerCase()))
       ),
       knowledge: []
     };
@@ -666,7 +674,8 @@ claude-memory task complete <task-id>
 claude-memory task list [status]
 
 # Pattern management
-claude-memory pattern "Pattern" "Description" [effectiveness] [--priority critical|high|medium|low]
+claude-memory pattern "Pattern" "Description" [effectiveness] [priority]
+claude-memory pattern list
 claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
@@ -826,6 +835,15 @@ const commands = {
         console.log();
       }
 
+      if (results.tasks && results.tasks.length > 0) {
+        console.log('✅ Tasks:');
+        results.tasks.forEach(t => {
+          const status = t.completed ? '✓' : '○';
+          console.log(`  ${status} ${t.description} (${t.priority})`);
+        });
+        console.log();
+      }
+
       if (results.knowledge.length > 0) {
         console.log('💡 Knowledge:');
         results.knowledge.forEach(k => {
@@ -834,7 +852,9 @@ const commands = {
         console.log();
       }
 
-      if (results.decisions.length === 0 && results.patterns.length === 0 && results.knowledge.length === 0) {
+      const totalResults = results.decisions.length + results.patterns.length + 
+                          (results.tasks ? results.tasks.length : 0) + results.knowledge.length;
+      if (totalResults === 0) {
         console.log('No results found.');
       }
     } catch (error) {
@@ -894,27 +914,91 @@ const commands = {
       } catch (error) {
         console.error('❌ Error resolving pattern:', error.message);
       }
+    } else if (action === 'list') {
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const patterns = memory.patterns.filter(p => p.status === 'open');
+        
+        if (patterns.length === 0) {
+          console.log('📋 No open patterns found.');
+          return;
+        }
+
+        // Group by priority
+        const byPriority = {
+          critical: patterns.filter(p => p.priority === 'critical'),
+          high: patterns.filter(p => p.priority === 'high'),
+          medium: patterns.filter(p => p.priority === 'medium'),
+          low: patterns.filter(p => p.priority === 'low')
+        };
+
+        console.log(`📋 Patterns (${patterns.length} total)\n`);
+
+        ['critical', 'high', 'medium', 'low'].forEach(priority => {
+          if (byPriority[priority].length > 0) {
+            byPriority[priority].forEach(p => {
+              const priorityEmoji = {
+                critical: '🔴',
+                high: '🟠',
+                medium: '🟡',
+                low: '🟢'
+              }[priority];
+              
+              console.log(`[${p.id}] ${priorityEmoji} ${priority.toUpperCase()}: ${p.pattern}`);
+              console.log(`         ${p.description}`);
+              if (p.effectiveness !== null && p.effectiveness !== undefined) {
+                console.log(`         Effectiveness: ${p.effectiveness}`);
+              }
+              console.log();
+            });
+          }
+        });
+      } catch (error) {
+        console.error('❌ Error listing patterns:', error.message);
+      }
     } else {
       // Traditional pattern learning
       const pattern = action;
       const description = args[0];
-      const effectiveness = args[1];
-      const priority = args[2] || 'medium';
+      let effectiveness = null;
+      let priority = 'medium';
+
+      // Smart argument parsing
+      if (args[1]) {
+        const arg1 = args[1];
+        const num = parseFloat(arg1);
+        
+        // Check if it's a valid effectiveness score (0-1)
+        if (!isNaN(num) && num >= 0 && num <= 1) {
+          effectiveness = num;
+          // Check for priority as third argument
+          if (args[2] && ['critical', 'high', 'medium', 'low'].includes(args[2])) {
+            priority = args[2];
+          }
+        } else if (['critical', 'high', 'medium', 'low'].includes(arg1)) {
+          // First optional arg is priority
+          priority = arg1;
+        }
+      }
 
       if (!pattern || !description) {
         console.error('❌ Pattern and description required');
         console.log('Usage: claude-memory pattern "Pattern name" "Description" [effectiveness 0-1] [priority]');
+        console.log('   or: claude-memory pattern "Pattern name" "Description" [priority]');
         return;
       }
 
       try {
         const memory = new ClaudeMemory(projectPath);
-        const effectivenessScore = effectiveness ? parseFloat(effectiveness) : null;
-        memory.learnPattern(pattern, description, '', 1, effectivenessScore, priority);
+        const patternId = memory.learnPattern(pattern, description, '', 1, effectiveness, priority);
 
         console.log(`✅ Pattern learned: ${pattern}`);
+        console.log(`📋 Pattern ID: ${patternId}`);
         console.log(`📝 Description: ${description}`);
         console.log(`🎯 Priority: ${priority}`);
+        if (effectiveness !== null) {
+          console.log(`📊 Effectiveness: ${effectiveness}`);
+        }
       } catch (error) {
         console.error('❌ Error learning pattern:', error.message);
       }
