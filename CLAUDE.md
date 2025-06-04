@@ -1,20 +1,22 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Evening Development
-- **Started**: 2025-06-03
+- **Current**: Afternoon Development
+- **Started**: 2025-06-04
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.3.1
+- **Claude Memory**: v1.4.0
 - **Memory Created**: 2025-06-01
 
 ### Open Patterns
 
 
+### Recently Resolved
+- **Test parsing 3**: Tested and working (2025-06-04)
 
 ### Project Conventions
 <!-- Discovered during development -->
@@ -22,36 +24,37 @@
 ## Task Management
 
 ### Active Tasks
-- [ ] **Test edge cases in CLI argument parsing** (medium)
 - [ ] **Add task status update command (in-progress, blocked, etc)** (low)
 - [ ] **Consider JSON import/export for task migration** (low)
 - [ ] **Test task with tag** (medium, assigned: /test)
+- [ ] **Design and implement v1.5.0 features (Issues #5-9)** (medium)
+- [ ] **Test task** (medium)
 
 ### In Progress
 - No tasks in progress
 
 ### Recently Completed
-- [x] **Update NPM badges to use shields.io** (completed: 2025-06-03)
 - [x] **Implement default directory for stats/search/backup/export** (completed: 2025-06-03)
+- [x] **Implement v1.4.1 hotfixes (Issues #1-4)** (completed: 2025-06-04)
 
 ## Recent Decisions Log
 
-### 2025-06-03: Test scriptalert('xss')/script
-**Decision**: Test scriptalert('xss')/script
-**Reasoning**: Clean input
+### 2025-06-04: Created PR #10 for v1.4.1 hotfixes
+**Decision**: Created PR #10 for v1.4.1 hotfixes
+**Reasoning**: All 4 critical usability issues implemented and ready for review. PR includes comprehensive testing, documentation updates, and GitHub issue references for auto-closure on merge
+**Alternatives Considered**: Wait for more testing, Create separate PRs for each issue
 
 
+### 2025-06-04: Successfully implemented v1.4.1 hotfixes
+**Decision**: Successfully implemented v1.4.1 hotfixes
+**Reasoning**: Completed all 4 GitHub issues: fixed pattern parsing, ensured ID display, improved search to include tasks, and added pattern list command. All changes are in fix/v1.4.1-hotfixes branch and ready for PR
+**Alternatives Considered**: Continue working on other issues, Implement in main branch directly
 
-### 2025-06-03: Test scriptalert('xss')/script
-**Decision**: Test scriptalert('xss')/script
-**Reasoning**: Path //etc/passwd traversal test
-**Alternatives Considered**: /malicious/path
 
-
-### 2025-06-03: ../../../etc/passwd
-**Decision**: ../../../etc/passwd
-**Reasoning**: test
-**Alternatives Considered**: test
+### 2025-06-04: Test
+**Decision**: Test
+**Reasoning**: Testing
+**Alternatives Considered**: None
 
 
 ## Commands & Workflows
