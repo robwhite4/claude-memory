@@ -2088,6 +2088,12 @@ GET DETAILED HELP:
   claude-memory help search             🔍 Advanced search and filtering options
   claude-memory help examples           📚 Common usage patterns and workflows
 
+SUBCOMMANDS:
+  pattern add "name" "desc" [score] [priority]    Learn patterns
+  pattern resolve <pattern-id> "solution"         Resolve patterns
+  task add "description" [options]                Add new tasks
+  session cleanup                                 End all sessions
+
 QUICK EXAMPLES:
   claude-memory task add "Setup CI/CD" --priority high
   claude-memory decision "Use React" "Better ecosystem than Vue"
