@@ -17,6 +17,7 @@
 
 ### Recently Resolved
 - **Test parsing 3**: Tested and working (2025-06-04)
+- **Subcommand structure test**: Fully implemented with all subcommands working (2025-06-04)
 
 ### Project Conventions
 <!-- Discovered during development -->
@@ -39,22 +40,22 @@
 
 ## Recent Decisions Log
 
-### 2025-06-04: Created PR #10 for v1.4.1 hotfixes
-**Decision**: Created PR #10 for v1.4.1 hotfixes
-**Reasoning**: All 4 critical usability issues implemented and ready for review. PR includes comprehensive testing, documentation updates, and GitHub issue references for auto-closure on merge
-**Alternatives Considered**: Wait for more testing, Create separate PRs for each issue
+### 2025-06-04: Successfully rebased pattern subcommands on v1.4.1
+**Decision**: Successfully rebased pattern subcommands on v1.4.1
+**Reasoning**: Resolved merge conflicts and combined the advanced pattern subcommands structure with the v1.4.1 hotfixes, ensuring tasks are included in search and all ID display functionality works
+**Alternatives Considered**: Restart from scratch, Create separate branch
 
 
-### 2025-06-04: Successfully implemented v1.4.1 hotfixes
-**Decision**: Successfully implemented v1.4.1 hotfixes
-**Reasoning**: Completed all 4 GitHub issues: fixed pattern parsing, ensured ID display, improved search to include tasks, and added pattern list command. All changes are in fix/v1.4.1-hotfixes branch and ready for PR
-**Alternatives Considered**: Continue working on other issues, Implement in main branch directly
+### 2025-06-04: PR #10 is ready for merge
+**Decision**: PR #10 is ready for merge
+**Reasoning**: Completed comprehensive testing including security tests, functionality tests, linting fixes, and package installation verification. All tests pass and the PR addresses all 4 critical usability issues
+**Alternatives Considered**: Merge immediately, Wait for additional review, Test more edge cases
 
 
-### 2025-06-04: Test
-**Decision**: Test
-**Reasoning**: Testing
-**Alternatives Considered**: None
+### 2025-06-04: Implemented pattern subcommands structure
+**Decision**: Implemented pattern subcommands structure
+**Reasoning**: Successfully created flag-based pattern commands (add, list, search, resolve) with backward compatibility. Provides clearer syntax while maintaining existing functionality
+**Alternatives Considered**: Implement without backward compatibility, Wait for user feedback first
 
 
 ## Commands & Workflows
@@ -72,7 +73,9 @@ claude-memory task complete <task-id>
 claude-memory task list [status]
 
 # Pattern management
-claude-memory pattern "Pattern" "Description" [effectiveness] [--priority critical|high|medium|low]
+claude-memory pattern add "Pattern" "Description" [--effectiveness 0.8] [--priority high]
+claude-memory pattern list [--priority high]
+claude-memory pattern search "query"
 claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
