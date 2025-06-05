@@ -63,12 +63,6 @@
 **Alternatives Considered**: Address everything in one large PR, Ignore feedback until later
 
 
-### 2025-06-04: Successfully rebased pattern subcommands on v1.4.1
-**Decision**: Successfully rebased pattern subcommands on v1.4.1
-**Reasoning**: Resolved merge conflicts and combined the advanced pattern subcommands structure with the v1.4.1 hotfixes, ensuring tasks are included in search and all ID display functionality works
-**Alternatives Considered**: Restart from scratch, Create separate branch
-
-
 ## Commands & Workflows
 
 ### Claude Memory Commands
