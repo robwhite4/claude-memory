@@ -9,12 +9,21 @@
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.4.1
+- **Claude Memory**: v1.5.0
 - **Memory Created**: 2025-06-01
 
 ### Knowledge Base
 #### feedback (1 items)
 - **Original_User_Feedback**: Claude-Memory v1.4.0 usability feedback covering 5 main areas: 1) Pattern manage...
+
+#### progress (1 items)
+- **Current_Status_v1.5.0**: ✅ COMPLETED (7/9 issues): Issues #1-7 covering pattern management fixes, knowled...
+
+#### features (1 items)
+- **v1.5.0_Features**: Pattern subcommands (add/list/search/resolve), Knowledge management system with ...
+
+#### architecture (1 items)
+- **Session_Architecture**: Sessions stored in memory.json, not individual files. Sessions folder exists but...
 
 
 ### Open Patterns
@@ -40,10 +49,16 @@
 - No tasks in progress
 
 ### Recently Completed
-- [x] **Implement default directory for stats/search/backup/export** (completed: 2025-06-03)
 - [x] **Implement v1.4.1 hotfixes (Issues #1-4)** (completed: 2025-06-04)
+- [x] **Review PR #12 and merge knowledge management features** (completed: 2025-06-05)
 
 ## Recent Decisions Log
+
+### 2025-06-05: Release v1.5.0 with pattern subcommands and knowledge management
+**Decision**: Release v1.5.0 with pattern subcommands and knowledge management
+**Reasoning**: Just merged PRs #11 and #12 which implement major features that address 60% of user feedback. These are substantial new capabilities (pattern subcommands, knowledge management system, enhanced search) that warrant a minor version bump according to semantic versioning
+**Alternatives Considered**: Continue with v1.4.1, Wait for more features
+
 
 ### 2025-06-05: Finalize PRs #11 and #12 sequentially
 **Decision**: Finalize PRs #11 and #12 sequentially
@@ -55,12 +70,6 @@
 **Decision**: Create PR #12 for knowledge management and enhanced search
 **Reasoning**: These features address 60% of original user feedback and provide solid foundation for remaining UX improvements. Systematic approach allows for proper testing and review
 **Alternatives Considered**: Bundle with UX improvements, Wait for pattern subcommands PR
-
-
-### 2025-06-05: Address user feedback systematically via GitHub issues
-**Decision**: Address user feedback systematically via GitHub issues
-**Reasoning**: Breaking down the comprehensive v1.4.0 feedback into specific GitHub issues allows for better tracking, testing, and incremental delivery while maintaining quality
-**Alternatives Considered**: Address everything in one large PR, Ignore feedback until later
 
 
 ## Commands & Workflows
