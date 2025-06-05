@@ -569,7 +569,130 @@ class ClaudeMemory {
 
   updateClaudeFile() {
     const content = this.generateClaudeContent();
-    fs.writeFileSync(this.claudeFile, content);
+    this.updateClaudeFileWithMerge(content);
+  }
+
+  updateClaudeFileWithMerge(newAutoContent) {
+    // Check if file exists and parse manual sections
+    let manualSections = {};
+    let fileStats = null;
+    
+    if (fs.existsSync(this.claudeFile)) {
+      fileStats = fs.statSync(this.claudeFile);
+      const existingContent = fs.readFileSync(this.claudeFile, 'utf8');
+      manualSections = this.parseManualSections(existingContent);
+      
+      // Create backup before modifying
+      this.createClaudeBackup(existingContent);
+    }
+    
+    // Generate merged content with manual sections preserved
+    const mergedContent = this.mergeManualAndAutoContent(newAutoContent, manualSections);
+    
+    // Write the merged content
+    fs.writeFileSync(this.claudeFile, mergedContent);
+    
+    // Log merge action
+    this.recordAction('claude_file_updated', {
+      hasManualSections: Object.keys(manualSections).length > 0,
+      backupCreated: fileStats !== null,
+      preservedSections: Object.keys(manualSections)
+    });
+  }
+
+  parseManualSections(content) {
+    const sections = {};
+    const manualSectionRegex = /<!-- BEGIN MANUAL SECTION: ([^>]+) -->([\s\S]*?)<!-- END MANUAL SECTION: \1 -->/g;
+    
+    let match;
+    while ((match = manualSectionRegex.exec(content)) !== null) {
+      const sectionName = match[1].trim();
+      const sectionContent = match[2].trim();
+      sections[sectionName] = sectionContent;
+    }
+    
+    return sections;
+  }
+
+  mergeManualAndAutoContent(autoContent, manualSections) {
+    let mergedContent = autoContent;
+    
+    // Insert manual sections at appropriate locations
+    if (manualSections['Project Notes']) {
+      // Insert project notes after Knowledge Base but before Open Patterns
+      const insertPoint = mergedContent.indexOf('### Open Patterns');
+      if (insertPoint !== -1) {
+        const beforePattern = mergedContent.substring(0, insertPoint);
+        const afterPattern = mergedContent.substring(insertPoint);
+        
+        mergedContent = beforePattern + 
+          `### Project Notes\n<!-- BEGIN MANUAL SECTION: Project Notes -->\n${manualSections['Project Notes']}\n<!-- END MANUAL SECTION: Project Notes -->\n\n` +
+          afterPattern;
+      }
+    }
+    
+    if (manualSections['Custom Commands']) {
+      // Insert custom commands after Commands & Workflows
+      const insertPoint = mergedContent.indexOf('## Session Continuation');
+      if (insertPoint !== -1) {
+        const beforeContinuation = mergedContent.substring(0, insertPoint);
+        const afterContinuation = mergedContent.substring(insertPoint);
+        
+        mergedContent = beforeContinuation + 
+          `### Custom Commands\n<!-- BEGIN MANUAL SECTION: Custom Commands -->\n${manualSections['Custom Commands']}\n<!-- END MANUAL SECTION: Custom Commands -->\n\n` +
+          afterContinuation;
+      }
+    }
+    
+    // Add any other manual sections at the end
+    const handledSections = ['Project Notes', 'Custom Commands'];
+    const otherSections = Object.keys(manualSections).filter(name => !handledSections.includes(name));
+    
+    if (otherSections.length > 0) {
+      mergedContent += '\n\n## Manual Sections\n';
+      otherSections.forEach(sectionName => {
+        mergedContent += `\n### ${sectionName}\n<!-- BEGIN MANUAL SECTION: ${sectionName} -->\n${manualSections[sectionName]}\n<!-- END MANUAL SECTION: ${sectionName} -->\n`;
+      });
+    }
+    
+    return mergedContent;
+  }
+
+  createClaudeBackup(content) {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupFile = path.join(this.claudeDir, 'backups', `CLAUDE-${timestamp}.md`);
+    
+    // Ensure backup directory exists
+    const backupDir = path.dirname(backupFile);
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(backupFile, content);
+    
+    // Clean old CLAUDE.md backups (keep last 5)
+    this.cleanClaudeBackups();
+  }
+
+  cleanClaudeBackups() {
+    const backupsDir = path.join(this.claudeDir, 'backups');
+    if (!fs.existsSync(backupsDir)) return;
+    
+    const claudeBackups = fs.readdirSync(backupsDir)
+      .filter(file => file.startsWith('CLAUDE-') && file.endsWith('.md'))
+      .map(file => ({
+        name: file,
+        path: path.join(backupsDir, file),
+        mtime: fs.statSync(path.join(backupsDir, file)).mtime
+      }))
+      .sort((a, b) => b.mtime - a.mtime);
+    
+    // Keep only the 5 most recent CLAUDE.md backups
+    if (claudeBackups.length > 5) {
+      claudeBackups.slice(5).forEach(backup => {
+        fs.unlinkSync(backup.path);
+      });
+    }
   }
 
   generateClaudeContent() {
