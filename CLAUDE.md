@@ -2,15 +2,20 @@
 
 ## Active Session
 - **Current**: Afternoon Development
-- **Started**: 2025-06-04
+- **Started**: 2025-06-05
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.4.0
+- **Claude Memory**: v1.4.1
 - **Memory Created**: 2025-06-01
+
+### Knowledge Base
+#### feedback (1 items)
+- **Original_User_Feedback**: Claude-Memory v1.4.0 usability feedback covering 5 main areas: 1) Pattern manage...
+
 
 ### Open Patterns
 
@@ -40,22 +45,28 @@
 
 ## Recent Decisions Log
 
+### 2025-06-05: Finalize PRs #11 and #12 sequentially
+**Decision**: Finalize PRs #11 and #12 sequentially
+**Reasoning**: PR #11 (pattern subcommands) should be merged first as it builds on v1.4.1, then PR #12 (knowledge & search) can be rebased and merged. This avoids complex merge conflicts and maintains clear feature progression
+**Alternatives Considered**: Merge both simultaneously, Merge PR #12 first
+
+
+### 2025-06-05: Create PR #12 for knowledge management and enhanced search
+**Decision**: Create PR #12 for knowledge management and enhanced search
+**Reasoning**: These features address 60% of original user feedback and provide solid foundation for remaining UX improvements. Systematic approach allows for proper testing and review
+**Alternatives Considered**: Bundle with UX improvements, Wait for pattern subcommands PR
+
+
+### 2025-06-05: Address user feedback systematically via GitHub issues
+**Decision**: Address user feedback systematically via GitHub issues
+**Reasoning**: Breaking down the comprehensive v1.4.0 feedback into specific GitHub issues allows for better tracking, testing, and incremental delivery while maintaining quality
+**Alternatives Considered**: Address everything in one large PR, Ignore feedback until later
+
+
 ### 2025-06-04: Successfully rebased pattern subcommands on v1.4.1
 **Decision**: Successfully rebased pattern subcommands on v1.4.1
 **Reasoning**: Resolved merge conflicts and combined the advanced pattern subcommands structure with the v1.4.1 hotfixes, ensuring tasks are included in search and all ID display functionality works
 **Alternatives Considered**: Restart from scratch, Create separate branch
-
-
-### 2025-06-04: PR #10 is ready for merge
-**Decision**: PR #10 is ready for merge
-**Reasoning**: Completed comprehensive testing including security tests, functionality tests, linting fixes, and package installation verification. All tests pass and the PR addresses all 4 critical usability issues
-**Alternatives Considered**: Merge immediately, Wait for additional review, Test more edge cases
-
-
-### 2025-06-04: Implemented pattern subcommands structure
-**Decision**: Implemented pattern subcommands structure
-**Reasoning**: Successfully created flag-based pattern commands (add, list, search, resolve) with backward compatibility. Provides clearer syntax while maintaining existing functionality
-**Alternatives Considered**: Implement without backward compatibility, Wait for user feedback first
 
 
 ## Commands & Workflows
@@ -80,6 +91,11 @@ claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
 claude-memory decision "Choice" "Reasoning" "alternatives"
+
+# Knowledge management
+claude-memory knowledge add "key" "value" --category category
+claude-memory knowledge get "key" [category]
+claude-memory knowledge list [category]
 
 # Memory utilities
 claude-memory stats
