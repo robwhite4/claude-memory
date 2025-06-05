@@ -399,6 +399,7 @@ class ClaudeMemory {
     };
 
     this.saveMemory();
+    this.updateClaudeFile();
     this.recordAction('knowledge_stored', { key, category, value });
   }
 
@@ -601,6 +602,18 @@ class ClaudeMemory {
 - **Claude Memory**: v${this.metadata.version}
 - **Memory Created**: ${this.metadata.created?.split('T')[0]}
 
+### Knowledge Base
+${Object.keys(this.knowledge).length > 0
+    ? Object.entries(this.knowledge).map(([category, items]) => {
+      const itemCount = Object.keys(items).length;
+      const sampleItems = Object.entries(items).slice(0, isOptimized ? 2 : 3);
+      return `#### ${category} (${itemCount} items)
+${sampleItems.map(([key, data]) =>
+    `- **${key}**: ${data.value.length > 80 ? data.value.substring(0, 80) + '...' : data.value}`
+  ).join('\n')}${itemCount > sampleItems.length ? `\n- ... and ${itemCount - sampleItems.length} more items` : ''}`;
+    }).join('\n\n') + '\n'
+    : '- No knowledge stored yet\n'}
+
 ### Open Patterns
 ${criticalPatterns.length
     ? `#### Critical Priority
@@ -681,6 +694,11 @@ claude-memory pattern resolve <pattern-id> "solution"
 
 # Decision tracking
 claude-memory decision "Choice" "Reasoning" "alternatives"
+
+# Knowledge management
+claude-memory knowledge add "key" "value" --category category
+claude-memory knowledge get "key" [category]
+claude-memory knowledge list [category]
 
 # Memory utilities
 claude-memory stats
@@ -803,10 +821,46 @@ const commands = {
     }
   },
 
-  async search(query, projectPath) {
+  async search(...args) {
+    let query = null;
+    let projectPath = null;
+    let outputFormat = 'text';
+    let typeFilter = null;
+    let limit = null;
+
+    // Parse arguments and flags
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg === '--json') {
+        outputFormat = 'json';
+      } else if (arg === '--type' && args[i + 1]) {
+        typeFilter = args[i + 1];
+        i++;
+      } else if (arg === '--limit' && args[i + 1]) {
+        limit = parseInt(args[i + 1]);
+        i++;
+      } else if (arg?.startsWith('--')) {
+        console.error(`❌ Unknown flag: ${arg}`);
+        console.log('Usage: claude-memory search "query" [--json] [--type TYPE] [--limit N] [path]');
+        return;
+      } else if (!query && !arg?.startsWith('/') && !arg?.startsWith('.')) {
+        // First non-flag, non-path argument is query
+        query = arg;
+      } else if (!projectPath) {
+        // Path-like argument
+        projectPath = arg;
+      }
+    }
+
     if (!query) {
       console.error('❌ Search query required');
-      console.log('Usage: claude-memory search "your query"');
+      console.log('Usage: claude-memory search "query" [--json] [--type TYPE] [--limit N] [path]');
+      console.log('');
+      console.log('Examples:');
+      console.log('  claude-memory search "API"');
+      console.log('  claude-memory search "config" --type knowledge');
+      console.log('  claude-memory search "bug" --json --limit 5');
+      console.log('  claude-memory search "database" --type decisions --json');
       return;
     }
 
@@ -815,15 +869,58 @@ const commands = {
 
     try {
       const memory = new ClaudeMemory(targetPath);
-      const results = memory.searchMemory(query);
+      let results = memory.searchMemory(query);
 
-      console.log(`\n🔍 Search results for: "${query}"\n`);
+      // Apply type filter
+      if (typeFilter) {
+        const validTypes = ['decisions', 'patterns', 'tasks', 'knowledge'];
+        if (!validTypes.includes(typeFilter)) {
+          console.error(`❌ Invalid type filter: ${typeFilter}`);
+          console.log(`Valid types: ${validTypes.join(', ')}`);
+          return;
+        }
+
+        // Filter to only the specified type
+        const filteredResults = { decisions: [], patterns: [], tasks: [], knowledge: [] };
+        filteredResults[typeFilter] = results[typeFilter] || [];
+        results = filteredResults;
+      }
+
+      // Apply limit to each result type
+      if (limit && limit > 0) {
+        results.decisions = results.decisions.slice(0, limit);
+        results.patterns = results.patterns.slice(0, limit);
+        results.tasks = results.tasks.slice(0, limit);
+        results.knowledge = results.knowledge.slice(0, limit);
+      }
+
+      if (outputFormat === 'json') {
+        // JSON output
+        const jsonOutput = {
+          query,
+          typeFilter,
+          limit,
+          totalResults: results.decisions.length + results.patterns.length +
+                        results.tasks.length + results.knowledge.length,
+          results
+        };
+        console.log(JSON.stringify(jsonOutput, null, 2));
+        return;
+      }
+
+      // Text output
+      const typeText = typeFilter ? ` (type: ${typeFilter})` : '';
+      const limitText = limit ? ` (limit: ${limit})` : '';
+      console.log(`\n🔍 Search results for: "${query}"${typeText}${limitText}\n`);
 
       if (results.decisions.length > 0) {
         console.log('📋 Decisions:');
         results.decisions.forEach(d => {
           console.log(`  • ${d.decision} (${d.timestamp.split('T')[0]})`);
           console.log(`    ${d.reasoning}`);
+          if (d.alternatives?.length > 0) {
+            console.log(`    Alternatives: ${d.alternatives.join(', ')}`);
+          }
         });
         console.log();
       }
@@ -831,7 +928,14 @@ const commands = {
       if (results.patterns.length > 0) {
         console.log('🧩 Patterns:');
         results.patterns.forEach(p => {
-          console.log(`  • ${p.pattern}: ${p.description}`);
+          const priorityEmoji = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[p.priority] || '⚪';
+          console.log(`  ${priorityEmoji} ${p.pattern}: ${p.description}`);
+          if (p.effectiveness !== null && p.effectiveness !== undefined) {
+            console.log(`    Effectiveness: ${p.effectiveness}`);
+          }
+          if (p.status === 'resolved' && p.solution) {
+            console.log(`    ✅ Solution: ${p.solution}`);
+          }
         });
         console.log();
       }
@@ -839,8 +943,11 @@ const commands = {
       if (results.tasks && results.tasks.length > 0) {
         console.log('✅ Tasks:');
         results.tasks.forEach(t => {
-          const status = t.completed ? '✓' : '○';
-          console.log(`  ${status} ${t.description} (${t.priority})`);
+          const statusIcon = t.status === 'completed' ? '✅' : t.status === 'in-progress' ? '🔄' : '📝';
+          console.log(`  ${statusIcon} ${t.description} (${t.priority})`);
+          if (t.assignee) console.log(`    Assigned: ${t.assignee}`);
+          if (t.dueDate) console.log(`    Due: ${t.dueDate}`);
+          if (t.completedAt) console.log(`    Completed: ${t.completedAt.split('T')[0]}`);
         });
         console.log();
       }
@@ -849,17 +956,24 @@ const commands = {
         console.log('💡 Knowledge:');
         results.knowledge.forEach(k => {
           console.log(`  • [${k.category}] ${k.key}: ${k.value}`);
+          console.log(`    Updated: ${k.lastUpdated.split('T')[0]}`);
         });
         console.log();
       }
 
       const totalResults = results.decisions.length + results.patterns.length +
-                          (results.tasks ? results.tasks.length : 0) + results.knowledge.length;
+                          results.tasks.length + results.knowledge.length;
       if (totalResults === 0) {
         console.log('No results found.');
+      } else {
+        console.log(`📊 Found ${totalResults} result${totalResults === 1 ? '' : 's'}`);
       }
     } catch (error) {
-      console.error('❌ Error searching memory:', error.message);
+      if (outputFormat === 'json') {
+        console.error(JSON.stringify({ error: error.message }));
+      } else {
+        console.error('❌ Error searching memory:', error.message);
+      }
     }
   },
 
@@ -1639,6 +1753,167 @@ const commands = {
     }
   },
 
+  async knowledge(action, ...args) {
+    const projectPath = process.cwd();
+
+    if (action === 'add') {
+      const key = args[0];
+      const value = args[1];
+      let category = 'general';
+
+      // Parse optional category flag
+      for (let i = 2; i < args.length; i++) {
+        if (args[i] === '--category' && args[i + 1]) {
+          category = args[i + 1];
+          break;
+        }
+      }
+
+      if (!key || !value) {
+        console.error('❌ Key and value required');
+        console.log('Usage: claude-memory knowledge add <key> <value> [--category category]');
+        return;
+      }
+
+      try {
+        const sanitizedKey = sanitizeInput(key, 100);
+        const sanitizedValue = sanitizeInput(value, 1000);
+        const sanitizedCategory = sanitizeInput(category, 50);
+
+        const memory = new ClaudeMemory(projectPath);
+        memory.storeKnowledge(sanitizedKey, sanitizedValue, sanitizedCategory);
+
+        console.log(`✅ Knowledge stored: ${sanitizedKey}`);
+        console.log(`📂 Category: ${sanitizedCategory}`);
+        console.log(`📝 Value: ${sanitizedValue}`);
+      } catch (error) {
+        console.error('❌ Error storing knowledge:', error.message);
+      }
+    } else if (action === 'get') {
+      const key = args[0];
+      const category = args[1] || null;
+
+      if (!key) {
+        console.error('❌ Key required');
+        console.log('Usage: claude-memory knowledge get <key> [category]');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (category) {
+          // Get from specific category
+          const categoryData = memory.knowledge[category];
+          if (categoryData && categoryData[key]) {
+            console.log(`📂 [${category}] ${key}:`);
+            console.log(`   ${categoryData[key].value}`);
+            console.log(`   Last updated: ${categoryData[key].lastUpdated.split('T')[0]}`);
+          } else {
+            console.log(`❌ Knowledge not found: ${key} in category ${category}`);
+          }
+        } else {
+          // Search across all categories
+          let found = false;
+          Object.entries(memory.knowledge).forEach(([cat, items]) => {
+            if (items[key]) {
+              console.log(`📂 [${cat}] ${key}:`);
+              console.log(`   ${items[key].value}`);
+              console.log(`   Last updated: ${items[key].lastUpdated.split('T')[0]}`);
+              found = true;
+            }
+          });
+          if (!found) {
+            console.log(`❌ Knowledge not found: ${key}`);
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error retrieving knowledge:', error.message);
+      }
+    } else if (action === 'list') {
+      const category = args[0] || null;
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (category) {
+          // List specific category
+          const categoryData = memory.knowledge[category];
+          if (categoryData && Object.keys(categoryData).length > 0) {
+            console.log(`\n📂 Knowledge: ${category}\n`);
+            Object.entries(categoryData).forEach(([key, data]) => {
+              console.log(`• ${key}: ${data.value}`);
+              console.log(`  Updated: ${data.lastUpdated.split('T')[0]}`);
+              console.log('');
+            });
+          } else {
+            console.log(`📂 No knowledge found in category: ${category}`);
+          }
+        } else {
+          // List all categories
+          const categories = Object.keys(memory.knowledge);
+          if (categories.length === 0) {
+            console.log('📂 No knowledge stored yet');
+            return;
+          }
+
+          console.log(`\n📚 Knowledge Base (${categories.length} categories)\n`);
+          categories.forEach(cat => {
+            const items = Object.keys(memory.knowledge[cat]);
+            console.log(`📂 ${cat} (${items.length} items)`);
+            items.slice(0, 3).forEach(key => {
+              const data = memory.knowledge[cat][key];
+              console.log(`  • ${key}: ${data.value.length > 50 ? data.value.substring(0, 50) + '...' : data.value}`);
+            });
+            if (items.length > 3) {
+              console.log(`  ... and ${items.length - 3} more`);
+            }
+            console.log('');
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error listing knowledge:', error.message);
+      }
+    } else if (action === 'delete') {
+      const key = args[0];
+      const category = args[1];
+
+      if (!key || !category) {
+        console.error('❌ Key and category required');
+        console.log('Usage: claude-memory knowledge delete <key> <category>');
+        return;
+      }
+
+      try {
+        const memory = new ClaudeMemory(projectPath);
+
+        if (memory.knowledge[category] && memory.knowledge[category][key]) {
+          delete memory.knowledge[category][key];
+
+          // Remove empty category
+          if (Object.keys(memory.knowledge[category]).length === 0) {
+            delete memory.knowledge[category];
+          }
+
+          memory.saveMemory();
+          memory.updateClaudeFile();
+          console.log(`✅ Knowledge deleted: ${key} from ${category}`);
+        } else {
+          console.log(`❌ Knowledge not found: ${key} in category ${category}`);
+        }
+      } catch (error) {
+        console.error('❌ Error deleting knowledge:', error.message);
+      }
+    } else {
+      console.error('❌ Knowledge action must be: add, get, list, or delete');
+      console.log('Examples:');
+      console.log('  claude-memory knowledge add "API_URL" "https://api.example.com" --category config');
+      console.log('  claude-memory knowledge get "API_URL"');
+      console.log('  claude-memory knowledge list config');
+      console.log('  claude-memory knowledge delete "API_URL" config');
+    }
+  },
+
   help() {
     console.log(`
 🧠 Claude Memory v${packageJson.version}
@@ -1649,7 +1924,7 @@ INSTALLATION:
 COMMANDS:
   init ["Project Name"] [path]                    Initialize memory in project
   stats [path]                                   Show memory statistics (defaults to current dir)
-  search "query" [path]                          Search memory (defaults to current dir)
+  search "query" [--json] [--type TYPE] [--limit N] [path]  Search memory with filters
   decision "text" "reasoning" [alts]             Record a decision
   pattern "name" "description" [score] [priority] Learn a pattern
   pattern resolve <pattern-id> "solution"       Resolve a pattern
@@ -1664,6 +1939,10 @@ COMMANDS:
   session cleanup                               End all active sessions
   context [path]                                Get context for AI integration (JSON output)
   handoff [--format=json|markdown] [--include=all|tasks|decisions] [path]  Generate AI handoff summary
+  knowledge add <key> <value> [--category cat]  Store knowledge
+  knowledge get <key> [category]               Retrieve knowledge
+  knowledge list [category]                    List knowledge
+  knowledge delete <key> <category>            Delete knowledge
   config get [key]                             View configuration
   config set <key> <value>                     Update configuration
   help                                          Show this help
@@ -1678,11 +1957,24 @@ PATTERN MANAGEMENT:
   claude-memory pattern "Security First" "Always validate input" 0.9 high
   claude-memory pattern resolve def456 "Added input validation middleware"
 
+KNOWLEDGE MANAGEMENT:
+  claude-memory knowledge add "API_KEY" "sk-abc123..." --category config
+  claude-memory knowledge add "Database_URL" "postgresql://..." --category config
+  claude-memory knowledge get "API_KEY"
+  claude-memory knowledge list config
+  claude-memory knowledge delete "API_KEY" config
+
 SESSION MANAGEMENT:
   claude-memory session start "Feature Development" 
   claude-memory session end "Feature completed successfully"
   claude-memory session end 2024-01-01-feature-dev "Paused for review"
   claude-memory session cleanup
+
+SEARCH & FILTERING:
+  claude-memory search "authentication"                   Basic search across all types
+  claude-memory search "config" --type knowledge          Search only knowledge base
+  claude-memory search "bug" --json --limit 3             JSON output with result limit
+  claude-memory search "database" --type decisions --json Search decisions, JSON output
 
 AI HANDOFF:
   claude-memory handoff                                    Generate markdown summary
@@ -1704,6 +1996,7 @@ EXAMPLES:
   claude-memory decision "Use React" "Better ecosystem" "Vue,Angular"
   claude-memory pattern "Test locally first" "Prevents production issues" "0.9" "high"
   claude-memory task add "Setup CI/CD" --priority high
+  claude-memory knowledge add "Auth_Provider" "Firebase Auth" --category config
   claude-memory search "authentication"
 
 Transform AI conversations into persistent project intelligence with proper task management!
