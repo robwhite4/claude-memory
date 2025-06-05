@@ -1,11 +1,80 @@
-## [Unreleased]
-
-## [1.4.0] - 2025-06-04
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.6.0] - 2025-06-05
+
+### Added
+- **Enhanced Help System** (Issue #9)
+  - Redesigned main help with clean, organized layout and emoji icons
+  - Contextual help for all commands (`help <command>`)
+  - Command-specific examples, options, and workflows
+  - Smart error messages with command suggestions for typos
+  - Comprehensive usage patterns and real-world workflows
+- **CLAUDE.md Merge Strategy** (Issue #8)  
+  - Intelligent merge system with manual section preservation
+  - Section markers: `<!-- BEGIN/END MANUAL SECTION: name -->`
+  - Automatic backup creation before each update
+  - Keeps last 5 CLAUDE.md backups automatically
+  - Prevents loss of manual edits during auto-generation
+
+### Changed
+- Help command output is now more concise and navigable
+- Improved user experience with better command discovery
+- Error messages now suggest similar commands when typos occur
+
+### Fixed
+- CLAUDE.md overwrites no longer lose manual content
+- Help system properly documents all v1.5.0 features
+
+## [1.5.0] - 2025-06-05
+
+### Added
+- **Pattern Subcommands** (Issues #1-4)
+  - `pattern add` - Learn patterns with effectiveness scores
+  - `pattern list` - View patterns with priority filtering
+  - `pattern search` - Search patterns by query
+  - `pattern resolve` - Mark patterns as resolved
+- **Knowledge Management System** (Issue #5)
+  - `knowledge add/get/list/delete` commands
+  - Category-based organization
+  - Persistent storage across sessions
+- **Enhanced Search** (Issue #6)
+  - Type filtering (`--type decisions|patterns|tasks|knowledge`)
+  - Result limiting (`--limit N`)
+  - JSON output format (`--json`)
+- **Additional Improvements** (Issue #7)
+  - Better error handling across all commands
+  - Improved command validation
+  - Enhanced user feedback
+
+### Changed
+- Pattern commands now use subcommand syntax instead of positional args
+- Search results include knowledge base entries
+- Better organization of memory data structures
+
+### Fixed
+- Pattern priority parsing issues
+- Search command type validation
+- Knowledge retrieval across categories
+
+## [1.4.1] - 2025-06-04
+
+### Fixed
+- **Critical Usability Issues** (PRs #9, #10)
+  - Pattern command now properly handles priority argument
+  - Fixed argument parsing for pattern effectiveness scores
+  - Corrected task priority validation
+  - Improved error messages for invalid inputs
+- Test suite compatibility across Node.js versions
+- Enhanced input validation for all commands
+
+### Changed
+- More helpful error messages when commands fail
+- Better handling of optional arguments
 
 ## [Unreleased]
 
