@@ -569,7 +569,130 @@ class ClaudeMemory {
 
   updateClaudeFile() {
     const content = this.generateClaudeContent();
-    fs.writeFileSync(this.claudeFile, content);
+    this.updateClaudeFileWithMerge(content);
+  }
+
+  updateClaudeFileWithMerge(newAutoContent) {
+    // Check if file exists and parse manual sections
+    let manualSections = {};
+    let fileStats = null;
+    
+    if (fs.existsSync(this.claudeFile)) {
+      fileStats = fs.statSync(this.claudeFile);
+      const existingContent = fs.readFileSync(this.claudeFile, 'utf8');
+      manualSections = this.parseManualSections(existingContent);
+      
+      // Create backup before modifying
+      this.createClaudeBackup(existingContent);
+    }
+    
+    // Generate merged content with manual sections preserved
+    const mergedContent = this.mergeManualAndAutoContent(newAutoContent, manualSections);
+    
+    // Write the merged content
+    fs.writeFileSync(this.claudeFile, mergedContent);
+    
+    // Log merge action
+    this.recordAction('claude_file_updated', {
+      hasManualSections: Object.keys(manualSections).length > 0,
+      backupCreated: fileStats !== null,
+      preservedSections: Object.keys(manualSections)
+    });
+  }
+
+  parseManualSections(content) {
+    const sections = {};
+    const manualSectionRegex = /<!-- BEGIN MANUAL SECTION: ([^>]+) -->([\s\S]*?)<!-- END MANUAL SECTION: \1 -->/g;
+    
+    let match;
+    while ((match = manualSectionRegex.exec(content)) !== null) {
+      const sectionName = match[1].trim();
+      const sectionContent = match[2].trim();
+      sections[sectionName] = sectionContent;
+    }
+    
+    return sections;
+  }
+
+  mergeManualAndAutoContent(autoContent, manualSections) {
+    let mergedContent = autoContent;
+    
+    // Insert manual sections at appropriate locations
+    if (manualSections['Project Notes']) {
+      // Insert project notes after Knowledge Base but before Open Patterns
+      const insertPoint = mergedContent.indexOf('### Open Patterns');
+      if (insertPoint !== -1) {
+        const beforePattern = mergedContent.substring(0, insertPoint);
+        const afterPattern = mergedContent.substring(insertPoint);
+        
+        mergedContent = beforePattern + 
+          `### Project Notes\n<!-- BEGIN MANUAL SECTION: Project Notes -->\n${manualSections['Project Notes']}\n<!-- END MANUAL SECTION: Project Notes -->\n\n` +
+          afterPattern;
+      }
+    }
+    
+    if (manualSections['Custom Commands']) {
+      // Insert custom commands after Commands & Workflows
+      const insertPoint = mergedContent.indexOf('## Session Continuation');
+      if (insertPoint !== -1) {
+        const beforeContinuation = mergedContent.substring(0, insertPoint);
+        const afterContinuation = mergedContent.substring(insertPoint);
+        
+        mergedContent = beforeContinuation + 
+          `### Custom Commands\n<!-- BEGIN MANUAL SECTION: Custom Commands -->\n${manualSections['Custom Commands']}\n<!-- END MANUAL SECTION: Custom Commands -->\n\n` +
+          afterContinuation;
+      }
+    }
+    
+    // Add any other manual sections at the end
+    const handledSections = ['Project Notes', 'Custom Commands'];
+    const otherSections = Object.keys(manualSections).filter(name => !handledSections.includes(name));
+    
+    if (otherSections.length > 0) {
+      mergedContent += '\n\n## Manual Sections\n';
+      otherSections.forEach(sectionName => {
+        mergedContent += `\n### ${sectionName}\n<!-- BEGIN MANUAL SECTION: ${sectionName} -->\n${manualSections[sectionName]}\n<!-- END MANUAL SECTION: ${sectionName} -->\n`;
+      });
+    }
+    
+    return mergedContent;
+  }
+
+  createClaudeBackup(content) {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupFile = path.join(this.claudeDir, 'backups', `CLAUDE-${timestamp}.md`);
+    
+    // Ensure backup directory exists
+    const backupDir = path.dirname(backupFile);
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(backupFile, content);
+    
+    // Clean old CLAUDE.md backups (keep last 5)
+    this.cleanClaudeBackups();
+  }
+
+  cleanClaudeBackups() {
+    const backupsDir = path.join(this.claudeDir, 'backups');
+    if (!fs.existsSync(backupsDir)) return;
+    
+    const claudeBackups = fs.readdirSync(backupsDir)
+      .filter(file => file.startsWith('CLAUDE-') && file.endsWith('.md'))
+      .map(file => ({
+        name: file,
+        path: path.join(backupsDir, file),
+        mtime: fs.statSync(path.join(backupsDir, file)).mtime
+      }))
+      .sort((a, b) => b.mtime - a.mtime);
+    
+    // Keep only the 5 most recent CLAUDE.md backups
+    if (claudeBackups.length > 5) {
+      claudeBackups.slice(5).forEach(backup => {
+        fs.unlinkSync(backup.path);
+      });
+    }
   }
 
   generateClaudeContent() {
@@ -1914,95 +2037,296 @@ const commands = {
     }
   },
 
-  help() {
+  help(subcommand = null) {
+    if (subcommand) {
+      this.showContextualHelp(subcommand);
+      return;
+    }
+
     console.log(`
-🧠 Claude Memory v${packageJson.version}
+🧠 Claude Memory v${packageJson.version} - Transform AI conversations into persistent project intelligence
 
-INSTALLATION:
-  npm install -g claude-memory
+QUICK START:
+  📁 claude-memory init "My Project"     Initialize memory in current directory
+  ✅ claude-memory task add "My task"    Add your first task  
+  ❓ claude-memory help <command>        Get detailed help for any command
+
+CORE COMMANDS:
+  📁 init ["Project Name"] [path]        Initialize memory system in project
+  📊 stats [path]                        Show memory statistics and project overview
+  🔍 search "query" [options]            Search across all project memory
   
-COMMANDS:
-  init ["Project Name"] [path]                    Initialize memory in project
-  stats [path]                                   Show memory statistics (defaults to current dir)
-  search "query" [--json] [--type TYPE] [--limit N] [path]  Search memory with filters
-  decision "text" "reasoning" [alts]             Record a decision
-  pattern "name" "description" [score] [priority] Learn a pattern
-  pattern resolve <pattern-id> "solution"       Resolve a pattern
-  task add "description" [--priority] [--assignee] Add a task
-  task complete <task-id> ["outcome"]           Complete a task
-  task list [status]                            List tasks
-  backup [path]                                 Backup memory (defaults to current dir)
-  export [filename] [path]                      Export memory to JSON (defaults to current dir)
-  session start "name" [context]               Start session
-  session end [session-id] ["outcome"]         End session  
-  session list                                  List sessions
-  session cleanup                               End all active sessions
-  context [path]                                Get context for AI integration (JSON output)
-  handoff [--format=json|markdown] [--include=all|tasks|decisions] [path]  Generate AI handoff summary
-  knowledge add <key> <value> [--category cat]  Store knowledge
-  knowledge get <key> [category]               Retrieve knowledge
-  knowledge list [category]                    List knowledge
-  knowledge delete <key> <category>            Delete knowledge
-  config get [key]                             View configuration
-  config set <key> <value>                     Update configuration
-  help                                          Show this help
+MEMORY MANAGEMENT:
+  📋 decision "choice" "reasoning"       Record important project decisions
+  🧩 pattern <action> [options]          Manage reusable patterns and learnings
+  ✅ task <action> [options]             Manage project tasks and todos
+  📚 session <action> [options]          Track work sessions and context
+  💡 knowledge <action> [options]        Store and retrieve project knowledge
 
-TASK MANAGEMENT:
-  claude-memory task add "Implement error handling" --priority high
-  claude-memory task add "Write tests" --assignee "developer" --due "2024-01-15"
-  claude-memory task complete abc123 "Successfully implemented"
-  claude-memory task list open
+UTILITIES:
+  🔧 config <action> [options]           View and update configuration
+  📤 backup [path]                       Create memory backup
+  📄 export [filename] [path]            Export memory to JSON
+  🤖 context [path]                      Get AI integration context (JSON)
+  🔄 handoff [options] [path]            Generate AI assistant handoff summary
+  ❓ help [command]                      Show help (add command name for details)
 
-PATTERN MANAGEMENT:
-  claude-memory pattern "Security First" "Always validate input" 0.9 high
-  claude-memory pattern resolve def456 "Added input validation middleware"
+GET DETAILED HELP:
+  claude-memory help task               📝 Task management commands and workflows
+  claude-memory help pattern            🧩 Pattern management and resolution  
+  claude-memory help knowledge          💡 Knowledge storage and retrieval
+  claude-memory help session            📚 Session tracking and context management
+  claude-memory help search             🔍 Advanced search and filtering options
+  claude-memory help examples           📚 Common usage patterns and workflows
 
-KNOWLEDGE MANAGEMENT:
-  claude-memory knowledge add "API_KEY" "sk-abc123..." --category config
-  claude-memory knowledge add "Database_URL" "postgresql://..." --category config
-  claude-memory knowledge get "API_KEY"
-  claude-memory knowledge list config
-  claude-memory knowledge delete "API_KEY" config
-
-SESSION MANAGEMENT:
-  claude-memory session start "Feature Development" 
-  claude-memory session end "Feature completed successfully"
-  claude-memory session end 2024-01-01-feature-dev "Paused for review"
-  claude-memory session cleanup
-
-SEARCH & FILTERING:
-  claude-memory search "authentication"                   Basic search across all types
-  claude-memory search "config" --type knowledge          Search only knowledge base
-  claude-memory search "bug" --json --limit 3             JSON output with result limit
-  claude-memory search "database" --type decisions --json Search decisions, JSON output
-
-AI HANDOFF:
-  claude-memory handoff                                    Generate markdown summary
-  claude-memory handoff --format=json                     Generate JSON data
-  claude-memory handoff --include=tasks                   Focus on tasks only
-
-USAGE PATTERN:
-  Tell Claude: "Load project memory and continue [your task]"
-  
-  Claude will automatically:
-  • Read your project context from CLAUDE.md
-  • Apply learned patterns
-  • Record new decisions and knowledge
-  • Update living documentation
-  • Sync with task management system
-
-EXAMPLES:
-  claude-memory init "My Web App"
-  claude-memory decision "Use React" "Better ecosystem" "Vue,Angular"
-  claude-memory pattern "Test locally first" "Prevents production issues" "0.9" "high"
+QUICK EXAMPLES:
   claude-memory task add "Setup CI/CD" --priority high
-  claude-memory knowledge add "Auth_Provider" "Firebase Auth" --category config
-  claude-memory search "authentication"
+  claude-memory decision "Use React" "Better ecosystem than Vue"
+  claude-memory knowledge add "API_URL" "https://api.myapp.com" --category config
+  claude-memory search "authentication" --type decisions
 
-Transform AI conversations into persistent project intelligence with proper task management!
-
-More info: https://github.com/robwhite4/claude-memory
+💡 Tip: Use 'claude-memory help <command>' for detailed command-specific help
+📚 Documentation: https://github.com/robwhite4/claude-memory
 `);
+  },
+
+  showContextualHelp(command) {
+    const helpSections = {
+      task: {
+        title: '✅ Task Management',
+        description: 'Manage project tasks, todos, and work tracking',
+        commands: {
+          'task add "description" [options]': 'Add a new task with optional priority and assignee',
+          'task complete <task-id> ["outcome"]': 'Mark task as completed with optional outcome note',
+          'task list [status]': 'List tasks (all, open, completed, in-progress)',
+          'task update <task-id> [options]': 'Update task properties'
+        },
+        options: {
+          '--priority <level>': 'Set priority: critical, high, medium, low (default: medium)',
+          '--assignee <name>': 'Assign task to team member',
+          '--due <date>': 'Set due date (YYYY-MM-DD format)'
+        },
+        examples: [
+          'claude-memory task add "Implement authentication" --priority high',
+          'claude-memory task add "Write tests" --assignee "developer" --due "2024-01-15"',
+          'claude-memory task complete abc123 "Successfully implemented with JWT"',
+          'claude-memory task list open',
+          'claude-memory task list completed'
+        ],
+        tips: [
+          '💡 Task IDs are auto-generated short codes (e.g., abc123)',
+          '💡 Use descriptive task names for better project tracking',
+          '💡 Set priorities to help focus on important work first'
+        ]
+      },
+      
+      pattern: {
+        title: '🧩 Pattern Management',
+        description: 'Capture, manage, and resolve recurring patterns and learnings',
+        commands: {
+          'pattern add "name" "description" [effectiveness] [priority]': 'Learn a new pattern from experience',
+          'pattern list [--priority <level>]': 'List patterns, optionally filtered by priority',
+          'pattern search "query"': 'Search patterns by name or description',
+          'pattern resolve <pattern-id> "solution"': 'Mark pattern as resolved with solution'
+        },
+        options: {
+          '[effectiveness]': 'Effectiveness score 0.0-1.0 (default: 0.8)',
+          '[priority]': 'Priority level: critical, high, medium, low (default: medium)',
+          '--priority <level>': 'Filter by priority level'
+        },
+        examples: [
+          'claude-memory pattern add "Security First" "Always validate input" 0.9 high',
+          'claude-memory pattern add "Test Early" "Write tests before implementation"',
+          'claude-memory pattern list --priority high',
+          'claude-memory pattern search "security"',
+          'claude-memory pattern resolve def456 "Added input validation middleware"'
+        ],
+        tips: [
+          '💡 Use patterns to capture lessons learned and best practices',
+          '💡 High-priority patterns appear in AI handoff summaries',
+          '💡 Resolve patterns when you implement permanent solutions'
+        ]
+      },
+
+      knowledge: {
+        title: '💡 Knowledge Management',
+        description: 'Store and retrieve project-specific information and configuration',
+        commands: {
+          'knowledge add <key> <value> [--category <cat>]': 'Store a piece of knowledge',
+          'knowledge get <key> [category]': 'Retrieve knowledge by key',
+          'knowledge list [category]': 'List all knowledge or by category',
+          'knowledge delete <key> <category>': 'Delete specific knowledge entry'
+        },
+        options: {
+          '--category <name>': 'Organize knowledge by category (default: general)',
+          '[category]': 'Optional category filter for get/list commands'
+        },
+        examples: [
+          'claude-memory knowledge add "API_KEY" "sk-abc123..." --category config',
+          'claude-memory knowledge add "Database_URL" "postgresql://..." --category config',
+          'claude-memory knowledge add "Team_Lead" "Alice Johnson" --category contacts',
+          'claude-memory knowledge get "API_KEY"',
+          'claude-memory knowledge list config',
+          'claude-memory knowledge delete "OLD_API_KEY" config'
+        ],
+        tips: [
+          '💡 Use categories to organize knowledge (config, urls, contacts, etc.)',
+          '💡 Store non-sensitive configuration and reference information',
+          '💡 Search works across all knowledge using the main search command'
+        ]
+      },
+
+      session: {
+        title: '📚 Session Management',
+        description: 'Track work sessions and maintain context across activities',
+        commands: {
+          'session start "name" [context]': 'Start a new work session',
+          'session end [session-id] ["outcome"]': 'End current or specific session',
+          'session list': 'List recent sessions',
+          'session cleanup': 'End all active sessions'
+        },
+        options: {
+          '[context]': 'Optional JSON context object for session',
+          '[session-id]': 'Specific session ID (format: YYYY-MM-DD-name)',
+          '["outcome"]': 'Optional outcome description when ending session'
+        },
+        examples: [
+          'claude-memory session start "Feature Development"',
+          'claude-memory session start "Bug Fix" \'{"ticket": "BUG-123"}\'',
+          'claude-memory session end "Feature completed successfully"',
+          'claude-memory session end 2024-01-01-feature-dev "Paused for review"',
+          'claude-memory session list',
+          'claude-memory session cleanup'
+        ],
+        tips: [
+          '💡 Sessions help track work context and time allocation',
+          '💡 Session data appears in stats and handoff summaries',
+          '💡 Use descriptive session names for better organization'
+        ]
+      },
+
+      search: {
+        title: '🔍 Advanced Search',
+        description: 'Search across all project memory with filtering and output options',
+        commands: {
+          'search "query" [options] [path]': 'Search all memory types with advanced filtering'
+        },
+        options: {
+          '--type <type>': 'Filter by type: decisions, patterns, tasks, knowledge',
+          '--json': 'Output results in JSON format for integration',
+          '--limit <n>': 'Limit number of results per type (default: unlimited)',
+          '[path]': 'Search in specific project path (default: current directory)'
+        },
+        examples: [
+          'claude-memory search "authentication"',
+          'claude-memory search "config" --type knowledge',
+          'claude-memory search "bug" --json --limit 3',
+          'claude-memory search "database" --type decisions --json',
+          'claude-memory search "API" --limit 5'
+        ],
+        tips: [
+          '💡 Search works across decisions, patterns, tasks, and knowledge',
+          '💡 Use --json for integration with other tools',
+          '💡 Combine --type and --limit for focused results'
+        ]
+      },
+
+      examples: {
+        title: '📚 Common Usage Patterns',
+        description: 'Real-world workflows and usage examples',
+        workflows: {
+          '🚀 Starting a New Project': [
+            'claude-memory init "My Web App"',
+            'claude-memory task add "Setup development environment" --priority high',
+            'claude-memory knowledge add "Repository" "https://github.com/user/repo" --category links',
+            'claude-memory session start "Initial Setup"'
+          ],
+          '🔧 Daily Development Workflow': [
+            'claude-memory session start "Feature: User Auth"',
+            'claude-memory task add "Implement login form" --priority high',
+            'claude-memory decision "Use JWT tokens" "Better security and stateless"',
+            'claude-memory pattern add "Input Validation" "Always validate on both client and server"',
+            'claude-memory task complete abc123 "Login form completed with validation"'
+          ],
+          '🐛 Bug Fixing Session': [
+            'claude-memory session start "Bug Fix: Login Issue"',
+            'claude-memory search "login" --type decisions',
+            'claude-memory pattern search "auth"',
+            'claude-memory decision "Add rate limiting" "Prevents brute force attacks"',
+            'claude-memory session end "Fixed login rate limiting issue"'
+          ],
+          '🤖 AI Assistant Handoff': [
+            'claude-memory handoff --include=tasks',
+            'claude-memory search "current project" --limit 5',
+            'claude-memory stats',
+            '// Then tell AI: "Load project memory and continue development"'
+          ]
+        }
+      }
+    };
+
+    const section = helpSections[command.toLowerCase()];
+    if (!section) {
+      console.log(`❌ No detailed help available for: ${command}
+      
+Available help topics:
+  task, pattern, knowledge, session, search, examples
+  
+Usage: claude-memory help <topic>`);
+      return;
+    }
+
+    console.log(`
+${section.title}
+${section.description}
+
+`);
+
+    if (section.commands) {
+      console.log('COMMANDS:');
+      Object.entries(section.commands).forEach(([cmd, desc]) => {
+        console.log(`  claude-memory ${cmd.padEnd(45)} ${desc}`);
+      });
+      console.log();
+    }
+
+    if (section.options) {
+      console.log('OPTIONS:');
+      Object.entries(section.options).forEach(([opt, desc]) => {
+        console.log(`  ${opt.padEnd(25)} ${desc}`);
+      });
+      console.log();
+    }
+
+    if (section.examples) {
+      console.log('EXAMPLES:');
+      section.examples.forEach(example => {
+        console.log(`  ${example}`);
+      });
+      console.log();
+    }
+
+    if (section.workflows) {
+      console.log('COMMON WORKFLOWS:');
+      Object.entries(section.workflows).forEach(([workflow, commands]) => {
+        console.log(`\n${workflow}:`);
+        commands.forEach(cmd => {
+          console.log(`  ${cmd}`);
+        });
+      });
+      console.log();
+    }
+
+    if (section.tips) {
+      console.log('TIPS:');
+      section.tips.forEach(tip => {
+        console.log(`  ${tip}`);
+      });
+      console.log();
+    }
+
+    console.log(`For general help: claude-memory help
+For other topics: claude-memory help <topic>`);
   },
 
   updateGitignore(projectPath) {
@@ -2056,13 +2380,27 @@ const [,, command, ...args] = process.argv;
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {
-  commands.help();
+  commands.help(args[0]);
   process.exit(0);
 }
 
 if (!commands[command]) {
-  console.error('❌ Unknown command:', command);
-  commands.help();
+  console.error(`❌ Unknown command: '${command}'`);
+  
+  // Suggest similar commands
+  const availableCommands = Object.keys(commands);
+  const suggestions = availableCommands.filter(cmd => 
+    cmd.includes(command) || command.includes(cmd) || 
+    cmd.toLowerCase().includes(command.toLowerCase())
+  );
+  
+  if (suggestions.length > 0) {
+    console.log(`\n💡 Did you mean: ${suggestions.join(', ')}?`);
+  }
+  
+  console.log(`\n📚 Available commands: ${availableCommands.join(', ')}`);
+  console.log('💡 Use "claude-memory help" for full command list');
+  console.log('💡 Use "claude-memory help <command>" for detailed help');
   process.exit(1);
 }
 
