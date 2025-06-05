@@ -853,7 +853,7 @@ const commands = {
         console.log();
       }
 
-      const totalResults = results.decisions.length + results.patterns.length + 
+      const totalResults = results.decisions.length + results.patterns.length +
                           (results.tasks ? results.tasks.length : 0) + results.knowledge.length;
       if (totalResults === 0) {
         console.log('No results found.');
@@ -923,7 +923,8 @@ const commands = {
 
       if (!pattern || !description) {
         console.error('❌ Pattern name and description required');
-        console.log('Usage: claude-memory pattern add "Pattern name" "Description" [--effectiveness 0.8] [--priority high]');
+        console.log('Usage: claude-memory pattern add "Pattern name" "Description"');
+        console.log('       [--effectiveness 0.8] [--priority high]');
         return;
       }
 
@@ -960,7 +961,7 @@ const commands = {
       try {
         const memory = new ClaudeMemory(projectPath);
         let patterns = memory.patterns.filter(p => p.status === 'open');
-        
+
         if (priorityFilter) {
           patterns = patterns.filter(p => p.priority === priorityFilter);
         }
@@ -991,7 +992,7 @@ const commands = {
                 medium: '🟡',
                 low: '🟢'
               }[priority];
-              
+
               console.log(`[${p.id}] ${priorityEmoji} ${priority.toUpperCase()}: ${p.pattern}`);
               console.log(`         ${p.description}`);
               if (p.effectiveness !== null && p.effectiveness !== undefined) {
@@ -1026,7 +1027,7 @@ const commands = {
         }
 
         console.log(`🔍 Pattern search results for: "${query}" (${patterns.length} found)\n`);
-        
+
         patterns.forEach(p => {
           const status = p.status === 'resolved' ? '✅' : '🟢';
           const priorityEmoji = {
@@ -1035,7 +1036,7 @@ const commands = {
             medium: '🟡',
             low: '🟢'
           }[p.priority];
-          
+
           console.log(`${status} [${p.id}] ${priorityEmoji} ${p.pattern}`);
           console.log(`    ${p.description}`);
           if (p.effectiveness !== null && p.effectiveness !== undefined) {
@@ -1082,7 +1083,7 @@ const commands = {
       if (args[1]) {
         const arg1 = args[1];
         const num = parseFloat(arg1);
-        
+
         // Check if it's a valid effectiveness score (0-1)
         if (!isNaN(num) && num >= 0 && num <= 1) {
           effectiveness = num;
