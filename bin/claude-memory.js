@@ -84,7 +84,14 @@ class ClaudeMemory {
   }
 
   ensureDirectories() {
-    [this.claudeDir, path.join(this.claudeDir, 'backups')].forEach(dir => {
+    const dirs = [
+      this.claudeDir,
+      path.join(this.claudeDir, 'backups'),
+      path.join(this.claudeDir, 'context'),
+      path.join(this.claudeDir, 'summaries')
+    ];
+    
+    dirs.forEach(dir => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
@@ -570,6 +577,9 @@ class ClaudeMemory {
   updateClaudeFile() {
     const content = this.generateClaudeContent();
     this.updateClaudeFileWithMerge(content);
+    
+    // Generate context files for full information
+    this.generateContextFiles();
   }
 
   updateClaudeFileWithMerge(newAutoContent) {
@@ -704,6 +714,166 @@ class ClaudeMemory {
     }
   }
 
+  generateContextFiles() {
+    const contextDir = path.join(this.claudeDir, 'context');
+    
+    try {
+      // Generate knowledge.md
+      const knowledgeContent = this.generateKnowledgeContext();
+      fs.writeFileSync(path.join(contextDir, 'knowledge.md'), knowledgeContent);
+    
+    // Generate patterns.md
+    const patternsContent = this.generatePatternsContext();
+    fs.writeFileSync(path.join(contextDir, 'patterns.md'), patternsContent);
+    
+    // Generate decisions.md
+    const decisionsContent = this.generateDecisionsContext();
+    fs.writeFileSync(path.join(contextDir, 'decisions.md'), decisionsContent);
+    
+    // Generate tasks.md
+    const tasksContent = this.generateTasksContext();
+    fs.writeFileSync(path.join(contextDir, 'tasks.md'), tasksContent);
+    } catch (error) {
+      console.error('Error generating context files:', error);
+    }
+  }
+
+  generateKnowledgeContext() {
+    const categories = Object.keys(this.knowledge || {}).sort();
+    const totalItems = categories.reduce((sum, cat) => sum + Object.keys(this.knowledge[cat] || {}).length, 0);
+    
+    let content = `# Project Knowledge Base
+*Generated: ${new Date().toISOString()} | ${totalItems} items across ${categories.length} categories*
+
+## Navigation
+${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] || {}).length} items)`).join('\n')}
+
+`;
+
+    categories.forEach(category => {
+      const items = this.knowledge[category] || {};
+      const sortedKeys = Object.keys(items).sort();
+      
+      content += `## ${category}\n`;
+      sortedKeys.forEach(key => {
+        const item = items[key];
+        content += `### ${key}\n`;
+        content += `**Value**: ${item.value}\n`;
+        if (item.context) content += `**Context**: ${item.context}\n`;
+        content += `**Updated**: ${item.lastUpdated || 'Unknown'}\n`;
+        if (item.references) content += `**References**: ${item.references.join(', ')}\n`;
+        content += '\n';
+      });
+    });
+    
+    return content;
+  }
+
+  generatePatternsContext() {
+    const openPatterns = this.patterns.filter(p => p.status === 'open');
+    const resolvedPatterns = this.patterns.filter(p => p.status === 'resolved');
+    
+    let content = `# Project Patterns
+*Generated: ${new Date().toISOString()} | ${this.patterns.length} total patterns*
+
+## Summary
+- Open Patterns: ${openPatterns.length}
+- Resolved Patterns: ${resolvedPatterns.length}
+
+## Open Patterns
+`;
+
+    const priorityOrder = ['critical', 'high', 'medium', 'low'];
+    priorityOrder.forEach(priority => {
+      const patterns = openPatterns.filter(p => p.priority === priority);
+      if (patterns.length > 0) {
+        content += `### ${priority.charAt(0).toUpperCase() + priority.slice(1)} Priority\n`;
+        patterns.forEach(p => {
+          content += `#### ${p.pattern} (ID: ${p.id})\n`;
+          content += `- **Description**: ${p.description}\n`;
+          content += `- **Effectiveness**: ${p.effectiveness}\n`;
+          content += `- **First Seen**: ${p.firstSeen}\n`;
+          content += `- **Last Seen**: ${p.lastSeen}\n`;
+          content += `- **Frequency**: ${p.frequency}\n\n`;
+        });
+      }
+    });
+    
+    content += `## Resolved Patterns\n`;
+    resolvedPatterns.slice(-10).reverse().forEach(p => {
+      content += `### ${p.pattern} (ID: ${p.id})\n`;
+      content += `- **Solution**: ${p.solution || 'No solution recorded'}\n`;
+      content += `- **Resolved**: ${p.resolvedAt || 'Unknown'}\n\n`;
+    });
+    
+    return content;
+  }
+
+  generateDecisionsContext() {
+    let content = `# Decision Log
+*Generated: ${new Date().toISOString()} | ${this.decisions.length} total decisions*
+
+## Recent Decisions
+`;
+
+    this.decisions.slice(-50).reverse().forEach(d => {
+      content += `### ${new Date(d.timestamp).toLocaleDateString()}: ${d.decision}\n`;
+      content += `**ID**: ${d.id}\n`;
+      content += `**Reasoning**: ${d.reasoning}\n`;
+      content += `**Alternatives Considered**: ${d.alternatives.join(', ')}\n`;
+      if (d.outcome) content += `**Outcome**: ${d.outcome}\n`;
+      content += `**Session**: ${d.sessionId || 'Unknown'}\n\n`;
+    });
+    
+    return content;
+  }
+
+  generateTasksContext() {
+    const openTasks = this.getTasks('open');
+    const inProgressTasks = this.getTasks('in-progress');
+    const completedTasks = this.getTasks('completed');
+    
+    let content = `# Task Management
+*Generated: ${new Date().toISOString()} | ${this.tasks.length} total tasks*
+
+## Summary
+- Open: ${openTasks.length}
+- In Progress: ${inProgressTasks.length}
+- Completed: ${completedTasks.length}
+
+## Open Tasks
+`;
+
+    ['high', 'medium', 'low'].forEach(priority => {
+      const tasks = openTasks.filter(t => t.priority === priority);
+      if (tasks.length > 0) {
+        content += `### ${priority.charAt(0).toUpperCase() + priority.slice(1)} Priority\n`;
+        tasks.forEach(t => {
+          content += `- [ ] **${t.description}** (ID: ${t.id})\n`;
+          if (t.assignee) content += `  - Assigned: ${t.assignee}\n`;
+          content += `  - Created: ${new Date(t.createdAt).toLocaleDateString()}\n`;
+        });
+        content += '\n';
+      }
+    });
+    
+    content += `## In Progress\n`;
+    inProgressTasks.forEach(t => {
+      content += `- [~] **${t.description}** (ID: ${t.id})\n`;
+      content += `  - Priority: ${t.priority}\n`;
+      if (t.assignee) content += `  - Assigned: ${t.assignee}\n`;
+    });
+    
+    content += `\n## Recently Completed\n`;
+    completedTasks.slice(-20).reverse().forEach(t => {
+      content += `- [x] **${t.description}** (ID: ${t.id})\n`;
+      content += `  - Completed: ${new Date(t.completedAt).toLocaleDateString()}\n`;
+      if (t.outcome) content += `  - Outcome: ${t.outcome}\n`;
+    });
+    
+    return content;
+  }
+
   generateClaudeContent() {
     // Token optimization: reduce content when enabled
     const isOptimized = this.config.tokenOptimization !== false;
@@ -740,9 +910,13 @@ ${Object.keys(this.knowledge).length > 0
       const itemCount = Object.keys(items).length;
       const sampleItems = Object.entries(items).slice(0, isOptimized ? 2 : 3);
       return `#### ${category} (${itemCount} items)
-${sampleItems.map(([key, data]) =>
-    `- **${key}**: ${data.value.length > 80 ? data.value.substring(0, 80) + '...' : data.value}`
-  ).join('\n')}${itemCount > sampleItems.length ? `\n- ... and ${itemCount - sampleItems.length} more items` : ''}`;
+${sampleItems.map(([key, data]) => {
+    // Show full value unless token optimization is on
+    const displayValue = isOptimized && data.value.length > 80 
+      ? data.value.substring(0, 80) + '...' 
+      : data.value;
+    return `- **${key}**: ${displayValue}`;
+  }).join('\n')}${itemCount > sampleItems.length ? `\n- ... and ${itemCount - sampleItems.length} more items` : ''}`;
     }).join('\n\n') + '\n'
     : '- No knowledge stored yet\n'}
 
@@ -836,6 +1010,13 @@ claude-memory knowledge list [category]
 claude-memory stats
 claude-memory search "query"
 \`\`\`
+
+## Full Context Files
+For complete information without truncation:
+- 📚 **Knowledge Base**: \`.claude/context/knowledge.md\` (${Object.keys(this.knowledge).reduce((sum, cat) => sum + Object.keys(this.knowledge[cat] || {}).length, 0)} items)
+- 🧩 **All Patterns**: \`.claude/context/patterns.md\` (${this.patterns.length} patterns)
+- 🎯 **Decision Log**: \`.claude/context/decisions.md\` (${this.decisions.length} decisions)
+- ✅ **Task Details**: \`.claude/context/tasks.md\` (${this.tasks.length} tasks)
 
 ## Session Continuation
 To resume work, tell Claude:

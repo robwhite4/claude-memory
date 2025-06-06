@@ -89,7 +89,12 @@ your-project/
 └── .claude/
     ├── memory.json    # Full memory database (gitignored)
     ├── config.json    # Your preferences
-    └── backups/       # Automatic backups
+    ├── backups/       # Automatic backups
+    └── context/       # Full context files (v1.7.0+)
+        ├── knowledge.md   # Complete knowledge base
+        ├── patterns.md    # All patterns with details
+        ├── decisions.md   # Full decision history
+        └── tasks.md       # Detailed task information
 ```
 
 ## 🚀 Basic Usage (Manual Commands)
@@ -135,13 +140,37 @@ This context is automatically injected into your Claude conversations, giving pe
 
 ## 💰 Token Efficiency
 
-Claude Memory typically **reduces token usage by 40-60%** by eliminating repeated context:
+Claude Memory significantly reduces token usage by eliminating repeated context. The token optimization feature intelligently manages context size while preserving critical information.
 
-| Conversation Type | Without Memory | With Memory | Savings |
-|------------------|----------------|-------------|---------|
-| "Fix the bug in auth" | ~2,500 tokens | ~800 tokens | 68% |
-| "Continue yesterday's work" | ~3,000 tokens | ~500 tokens | 83% |
-| "What's next on the roadmap?" | ~1,500 tokens | ~300 tokens | 80% |
+**Typical savings scenarios:**
+- **Quick questions about ongoing work**: Minimal context needed, maximum savings
+- **Continuing previous sessions**: No need to re-explain project structure or decisions
+- **Team handoffs**: Shared context eliminates lengthy explanations
+
+When token optimization is enabled (default), CLAUDE.md stays concise while maintaining full context in the memory system.
+
+## 📂 Multi-File Context System (v1.7.0+)
+
+Claude Memory now preserves complete information without truncation through a multi-file context system:
+
+### How It Works
+- **CLAUDE.md**: Remains the primary context file, optimized for tokens
+- **Context Files**: Full details stored in `.claude/context/` directory
+- **No Information Loss**: Everything is preserved, just better organized
+
+### Context Files
+- **knowledge.md**: Complete knowledge base with all values untruncated
+- **patterns.md**: All patterns with full descriptions and history
+- **decisions.md**: Complete decision log with reasoning and outcomes
+- **tasks.md**: Detailed task information including assignments and dates
+
+### Benefits
+- **Full Context Access**: AI can read specific context files when needed
+- **Token Efficient**: Main CLAUDE.md stays under 3K tokens
+- **Human Readable**: Well-organized markdown files for easy browsing
+- **Git Friendly**: Context files can be tracked or ignored as needed
+
+The CLAUDE.md file includes references to these context files, allowing AI assistants to request more detailed information when necessary.
 
 ## 🛠️ Configuration
 
