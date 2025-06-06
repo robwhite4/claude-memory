@@ -56,6 +56,16 @@ const packageRoot = path.resolve(__dirname, '..');
 // Load package.json for version info
 const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
 
+// Global quiet mode flag
+let globalQuietMode = false;
+
+// Helper to create memory instance with quiet mode
+function createMemory(projectPath, projectName = null, options = {}) {
+  const memory = new ClaudeMemory(projectPath, projectName, options);
+  memory.quietMode = globalQuietMode;
+  return memory;
+}
+
 // Memory system implementation
 class ClaudeMemory {
   constructor(projectRoot, projectName = 'My Project', options = {}) {
@@ -67,6 +77,7 @@ class ClaudeMemory {
     this.claudeFile = path.join(projectRoot, 'CLAUDE.md');
     this.currentSession = null;
     this.options = options;
+    this.quietMode = false; // Can be set externally
 
     this.ensureDirectories();
     this.loadConfig();
@@ -81,6 +92,18 @@ class ClaudeMemory {
     if (this.config.autoBackup !== false) {
       this.checkAutoBackup();
     }
+  }
+
+  // Output helpers for quiet mode
+  log(message) {
+    if (!this.quietMode) {
+      console.log(message);
+    }
+  }
+
+  // Essential output (always shown)
+  output(message) {
+    console.log(message);
   }
 
   ensureDirectories() {
@@ -1049,9 +1072,9 @@ const commands = {
       projectName = path.basename(projectPath);
     }
 
-    console.log('🧠 Initializing Claude Memory...');
-    console.log(`📁 Project: ${projectName}`);
-    console.log(`📂 Path: ${projectPath}`);
+    log('🧠 Initializing Claude Memory...');
+    log(`📁 Project: ${projectName}`);
+    log(`📂 Path: ${projectPath}`);
 
     // Ensure project directory exists
     if (!fs.existsSync(projectPath)) {
@@ -1061,7 +1084,7 @@ const commands = {
     process.chdir(projectPath);
 
     // Initialize memory system
-    const memory = new ClaudeMemory(projectPath, projectName);
+    const memory = createMemory(projectPath, projectName);
     const sessionId = memory.startSession('Project Setup', {
       project: projectName,
       initialized: new Date().toISOString(),
@@ -1075,21 +1098,21 @@ const commands = {
     );
 
     // Update .gitignore
-    this.updateGitignore(projectPath);
+    commands.updateGitignore(projectPath);
 
     // Update package.json if it exists
-    this.updatePackageJson(projectPath);
+    commands.updatePackageJson(projectPath);
 
-    console.log('✅ Claude Memory initialized!');
-    console.log(`📋 Session ID: ${sessionId}`);
-    console.log('');
-    console.log('🚀 Next Steps:');
-    console.log('1. Tell Claude: "Load project memory and continue development"');
-    console.log('2. Start any conversation with memory-aware context');
-    console.log('3. Watch Claude learn and remember your project');
-    console.log('');
-    console.log('📖 See CLAUDE.md for project memory overview');
-    console.log('💡 Use "claude-memory stats" to view memory statistics');
+    memory.log('✅ Claude Memory initialized!');
+    log(`📋 Session ID: ${sessionId}`);
+    log('');
+    log('🚀 Next Steps:');
+    log('1. Tell Claude: "Load project memory and continue development"');
+    log('2. Start any conversation with memory-aware context');
+    log('3. Watch Claude learn and remember your project');
+    log('');
+    log('📖 See CLAUDE.md for project memory overview');
+    log('💡 Use "cmem stats" to view memory statistics');
   },
 
   async stats(projectPath) {
@@ -1305,15 +1328,15 @@ const commands = {
       const sanitizedReasoning = sanitizeDescription(reasoning, 1000);
       const validatedPath = validatePath(projectPath);
 
-      const memory = new ClaudeMemory(validatedPath);
+      const memory = createMemory(validatedPath);
       const alternativesArray = alternatives
         ? alternatives.split(',').map(s => sanitizeInput(s.trim(), 100)).filter(s => s.length > 0)
         : [];
 
       const id = memory.recordDecision(sanitizedDecision, sanitizedReasoning, alternativesArray);
 
-      console.log(`✅ Decision recorded: ${sanitizedDecision}`);
-      console.log(`📋 Decision ID: ${id}`);
+      memory.log(`✅ Decision recorded: ${sanitizedDecision}`);
+      memory.log(`📋 Decision ID: ${id}`);
     } catch (error) {
       console.error('❌ Error recording decision:', error.message);
     }
@@ -2265,6 +2288,10 @@ UTILITIES:
   🔄 handoff [options] [path]            Generate AI assistant handoff summary
   ❓ help [command]                      Show help (add command name for details)
 
+GLOBAL FLAGS:
+  --quiet, -q                            Suppress non-essential output
+  --version, -v                          Show version number
+
 GET DETAILED HELP:
   cmem help task                    📝 Task management commands and workflows
   cmem help pattern                 🧩 Pattern management and resolution  
@@ -2578,6 +2605,30 @@ For other topics: cmem help <topic>`);
 // Parse command line arguments
 const [,, command, ...args] = process.argv;
 
+// Check for global flags
+const cleanArgs = [];
+
+// Process global flags
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--quiet' || args[i] === '-q') {
+    globalQuietMode = true;
+  } else {
+    cleanArgs.push(args[i]);
+  }
+}
+
+// Helper function for quiet mode
+const log = (message) => {
+  if (!globalQuietMode) {
+    console.log(message);
+  }
+};
+
+// Helper function for essential output (always shown)
+const output = (message) => {
+  console.log(message);
+};
+
 // Handle version flag
 if (command === '--version' || command === '-v') {
   console.log(`claude-memory v${packageJson.version}`);
@@ -2611,7 +2662,11 @@ if (!commands[command]) {
 }
 
 try {
-  await commands[command](...args);
+  // Pass quiet mode to memory system for commands that use it
+  if (commands[command].memory) {
+    commands[command].memory.quietMode = quietMode;
+  }
+  await commands[command](...cleanArgs);
 } catch (error) {
   console.error('❌ Error:', error.message);
   process.exit(1);

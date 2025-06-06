@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-06-06
+
+### Added
+- **CLI Flags Enhancement** (Issue #19)
+  - `--version, -v` flag to display version information
+  - `--quiet, -q` flag to suppress non-essential output
+  - Made `cmem` alias more prominent in documentation and help text
+  - Added GLOBAL FLAGS section to help output
+
+### Changed
+- Updated USAGE line to show both commands: "claude-memory (or cmem) [command] [options]"
+- All help examples now use `cmem` for brevity
+- Test suite expanded to cover new CLI flags
+
 ## [1.7.0] - 2025-06-06
 
 ### Added

@@ -77,7 +77,20 @@ async function runTests() {
     assert(versionLong.includes(pkg.version), 'Version should match package.json');
   });
 
-  // Test 3: Package.json is valid
+  // Test 3: Quiet mode flag
+  await test('Quiet mode flag', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    
+    // Test decision with quiet mode
+    const { stdout: quietOutput } = await execAsync(`node "${cliPath}" decision "Test quiet" "Testing quiet mode" --quiet`);
+    assert(!quietOutput.includes('✅'), 'Quiet mode should suppress success messages');
+    
+    // Test decision without quiet mode
+    const { stdout: normalOutput } = await execAsync(`node "${cliPath}" decision "Test normal" "Testing normal mode"`);
+    assert(normalOutput.includes('✅'), 'Normal mode should show success messages');
+  });
+
+  // Test 4: Package.json is valid
   await test('Package.json is valid', () => {
     const pkgPath = path.join(packageRoot, 'package.json');
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
@@ -88,7 +101,7 @@ async function runTests() {
     assert(pkg.type === 'module', 'Package should use ES modules');
   });
 
-  // Test 3: Initialize memory system
+  // Test 5: Initialize memory system
   await test('Memory initialization', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" init "Test Project"`);
@@ -99,7 +112,7 @@ async function runTests() {
     assert(fs.existsSync('CLAUDE.md'), 'CLAUDE.md should be created');
   });
 
-  // Test 4: Memory file structure
+  // Test 6: Memory file structure
   await test('Memory file structure', () => {
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
 
@@ -111,7 +124,7 @@ async function runTests() {
     assert(memoryData.projectName === 'Test Project', 'Should store project name');
   });
 
-  // Test 5: Stats command
+  // Test 7: Stats command
   await test('Stats command', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" stats`);
@@ -121,7 +134,7 @@ async function runTests() {
     assert(stdout.includes('Decisions:'), 'Should show decision count');
   });
 
-  // Test 6: Decision recording
+  // Test 8: Decision recording
   await test('Decision recording', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" decision "Use React" "Better ecosystem" "Vue,Angular"`);
@@ -135,7 +148,7 @@ async function runTests() {
     assert(reactDecision, 'Should store decision text');
   });
 
-  // Test 7: Pattern learning
+  // Test 9: Pattern learning
   await test('Pattern learning', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" pattern "Test first" "Prevents bugs" "0.9"`);
@@ -148,7 +161,7 @@ async function runTests() {
     assert(lastPattern.pattern === 'Test first', 'Should store pattern name');
   });
 
-  // Test 8: Search functionality
+  // Test 10: Search functionality
   await test('Search functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" search "React"`);
@@ -157,7 +170,7 @@ async function runTests() {
     assert(stdout.includes('Use React'), 'Should find recorded decision');
   });
 
-  // Test 9: CLAUDE.md generation
+  // Test 11: CLAUDE.md generation
   await test('CLAUDE.md generation', async() => {
     // Disable token optimization to ensure all patterns show
     if (fs.existsSync('.claude/config.json')) {
@@ -178,7 +191,7 @@ async function runTests() {
     assert(claudeContent.includes('Test first'), 'Should include learned patterns');
   });
 
-  // Test 10: Backup functionality
+  // Test 12: Backup functionality
   await test('Backup functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" backup`);
@@ -190,7 +203,7 @@ async function runTests() {
     assert(backupDirs.length > 0, 'Should create backup directory');
   });
 
-  // Test 11: Context files generation
+  // Test 13: Context files generation
   await test('Context files generation', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
 
@@ -214,7 +227,7 @@ async function runTests() {
     assert(knowledgeContent.includes('## testing'), 'Knowledge file should have category section');
   });
 
-  // Test 12: Context files update on changes
+  // Test 14: Context files update on changes
   await test('Context files update on changes', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
 
