@@ -2238,10 +2238,12 @@ const commands = {
     console.log(`
 🧠 Claude Memory v${packageJson.version} - Transform AI conversations into persistent project intelligence
 
+USAGE: claude-memory (or cmem) [command] [options]
+
 QUICK START:
-  📁 claude-memory init "My Project"     Initialize memory in current directory
-  ✅ claude-memory task add "My task"    Add your first task  
-  ❓ claude-memory help <command>        Get detailed help for any command
+  📁 cmem init "My Project"        Initialize memory in current directory
+  ✅ cmem task add "My task"       Add your first task  
+  ❓ cmem help <command>           Get detailed help for any command
 
 CORE COMMANDS:
   📁 init ["Project Name"] [path]        Initialize memory system in project
@@ -2264,12 +2266,12 @@ UTILITIES:
   ❓ help [command]                      Show help (add command name for details)
 
 GET DETAILED HELP:
-  claude-memory help task               📝 Task management commands and workflows
-  claude-memory help pattern            🧩 Pattern management and resolution  
-  claude-memory help knowledge          💡 Knowledge storage and retrieval
-  claude-memory help session            📚 Session tracking and context management
-  claude-memory help search             🔍 Advanced search and filtering options
-  claude-memory help examples           📚 Common usage patterns and workflows
+  cmem help task                    📝 Task management commands and workflows
+  cmem help pattern                 🧩 Pattern management and resolution  
+  cmem help knowledge               💡 Knowledge storage and retrieval
+  cmem help session                 📚 Session tracking and context management
+  cmem help search                  🔍 Advanced search and filtering options
+  cmem help examples                📚 Common usage patterns and workflows
 
 SUBCOMMANDS:
   pattern add "name" "desc" [score] [priority]    Learn patterns
@@ -2278,12 +2280,12 @@ SUBCOMMANDS:
   session cleanup                                 End all sessions
 
 QUICK EXAMPLES:
-  claude-memory task add "Setup CI/CD" --priority high
-  claude-memory decision "Use React" "Better ecosystem than Vue"
-  claude-memory knowledge add "API_URL" "https://api.myapp.com" --category config
-  claude-memory search "authentication" --type decisions
+  cmem task add "Setup CI/CD" --priority high
+  cmem decision "Use React" "Better ecosystem than Vue"
+  cmem knowledge add "API_URL" "https://api.myapp.com" --category config
+  cmem search "authentication" --type decisions
 
-💡 Tip: Use 'claude-memory help <command>' for detailed command-specific help
+💡 Tip: Use 'cmem help <command>' for detailed command-specific help
 📚 Documentation: https://github.com/robwhite4/claude-memory
 `);
   },
@@ -2305,11 +2307,11 @@ QUICK EXAMPLES:
           '--due <date>': 'Set due date (YYYY-MM-DD format)'
         },
         examples: [
-          'claude-memory task add "Implement authentication" --priority high',
-          'claude-memory task add "Write tests" --assignee "developer" --due "2024-01-15"',
-          'claude-memory task complete abc123 "Successfully implemented with JWT"',
-          'claude-memory task list open',
-          'claude-memory task list completed'
+          'cmem task add "Implement authentication" --priority high',
+          'cmem task add "Write tests" --assignee "developer" --due "2024-01-15"',
+          'cmem task complete abc123 "Successfully implemented with JWT"',
+          'cmem task list open',
+          'cmem task list completed'
         ],
         tips: [
           '💡 Task IDs are auto-generated short codes (e.g., abc123)',
@@ -2333,11 +2335,11 @@ QUICK EXAMPLES:
           '--priority <level>': 'Filter by priority level'
         },
         examples: [
-          'claude-memory pattern add "Security First" "Always validate input" 0.9 high',
-          'claude-memory pattern add "Test Early" "Write tests before implementation"',
-          'claude-memory pattern list --priority high',
-          'claude-memory pattern search "security"',
-          'claude-memory pattern resolve def456 "Added input validation middleware"'
+          'cmem pattern add "Security First" "Always validate input" 0.9 high',
+          'cmem pattern add "Test Early" "Write tests before implementation"',
+          'cmem pattern list --priority high',
+          'cmem pattern search "security"',
+          'cmem pattern resolve def456 "Added input validation middleware"'
         ],
         tips: [
           '💡 Use patterns to capture lessons learned and best practices',
@@ -2360,12 +2362,12 @@ QUICK EXAMPLES:
           '[category]': 'Optional category filter for get/list commands'
         },
         examples: [
-          'claude-memory knowledge add "API_KEY" "sk-abc123..." --category config',
-          'claude-memory knowledge add "Database_URL" "postgresql://..." --category config',
-          'claude-memory knowledge add "Team_Lead" "Alice Johnson" --category contacts',
-          'claude-memory knowledge get "API_KEY"',
-          'claude-memory knowledge list config',
-          'claude-memory knowledge delete "OLD_API_KEY" config'
+          'cmem knowledge add "API_KEY" "sk-abc123..." --category config',
+          'cmem knowledge add "Database_URL" "postgresql://..." --category config',
+          'cmem knowledge add "Team_Lead" "Alice Johnson" --category contacts',
+          'cmem knowledge get "API_KEY"',
+          'cmem knowledge list config',
+          'cmem knowledge delete "OLD_API_KEY" config'
         ],
         tips: [
           '💡 Use categories to organize knowledge (config, urls, contacts, etc.)',
@@ -2389,12 +2391,12 @@ QUICK EXAMPLES:
           '["outcome"]': 'Optional outcome description when ending session'
         },
         examples: [
-          'claude-memory session start "Feature Development"',
-          'claude-memory session start "Bug Fix" \'{"ticket": "BUG-123"}\'',
-          'claude-memory session end "Feature completed successfully"',
-          'claude-memory session end 2024-01-01-feature-dev "Paused for review"',
-          'claude-memory session list',
-          'claude-memory session cleanup'
+          'cmem session start "Feature Development"',
+          'cmem session start "Bug Fix" \'{"ticket": "BUG-123"}\'',
+          'cmem session end "Feature completed successfully"',
+          'cmem session end 2024-01-01-feature-dev "Paused for review"',
+          'cmem session list',
+          'cmem session cleanup'
         ],
         tips: [
           '💡 Sessions help track work context and time allocation',
@@ -2416,11 +2418,11 @@ QUICK EXAMPLES:
           '[path]': 'Search in specific project path (default: current directory)'
         },
         examples: [
-          'claude-memory search "authentication"',
-          'claude-memory search "config" --type knowledge',
-          'claude-memory search "bug" --json --limit 3',
-          'claude-memory search "database" --type decisions --json',
-          'claude-memory search "API" --limit 5'
+          'cmem search "authentication"',
+          'cmem search "config" --type knowledge',
+          'cmem search "bug" --json --limit 3',
+          'cmem search "database" --type decisions --json',
+          'cmem search "API" --limit 5'
         ],
         tips: [
           '💡 Search works across decisions, patterns, tasks, and knowledge',
@@ -2434,29 +2436,29 @@ QUICK EXAMPLES:
         description: 'Real-world workflows and usage examples',
         workflows: {
           '🚀 Starting a New Project': [
-            'claude-memory init "My Web App"',
-            'claude-memory task add "Setup development environment" --priority high',
-            'claude-memory knowledge add "Repository" "https://github.com/user/repo" --category links',
-            'claude-memory session start "Initial Setup"'
+            'cmem init "My Web App"',
+            'cmem task add "Setup development environment" --priority high',
+            'cmem knowledge add "Repository" "https://github.com/user/repo" --category links',
+            'cmem session start "Initial Setup"'
           ],
           '🔧 Daily Development Workflow': [
-            'claude-memory session start "Feature: User Auth"',
-            'claude-memory task add "Implement login form" --priority high',
-            'claude-memory decision "Use JWT tokens" "Better security and stateless"',
-            'claude-memory pattern add "Input Validation" "Always validate on both client and server"',
-            'claude-memory task complete abc123 "Login form completed with validation"'
+            'cmem session start "Feature: User Auth"',
+            'cmem task add "Implement login form" --priority high',
+            'cmem decision "Use JWT tokens" "Better security and stateless"',
+            'cmem pattern add "Input Validation" "Always validate on both client and server"',
+            'cmem task complete abc123 "Login form completed with validation"'
           ],
           '🐛 Bug Fixing Session': [
-            'claude-memory session start "Bug Fix: Login Issue"',
-            'claude-memory search "login" --type decisions',
-            'claude-memory pattern search "auth"',
-            'claude-memory decision "Add rate limiting" "Prevents brute force attacks"',
-            'claude-memory session end "Fixed login rate limiting issue"'
+            'cmem session start "Bug Fix: Login Issue"',
+            'cmem search "login" --type decisions',
+            'cmem pattern search "auth"',
+            'cmem decision "Add rate limiting" "Prevents brute force attacks"',
+            'cmem session end "Fixed login rate limiting issue"'
           ],
           '🤖 AI Assistant Handoff': [
-            'claude-memory handoff --include=tasks',
-            'claude-memory search "current project" --limit 5',
-            'claude-memory stats',
+            'cmem handoff --include=tasks',
+            'cmem search "current project" --limit 5',
+            'cmem stats',
             '// Then tell AI: "Load project memory and continue development"'
           ]
         }
@@ -2470,7 +2472,7 @@ QUICK EXAMPLES:
 Available help topics:
   task, pattern, knowledge, session, search, examples
   
-Usage: claude-memory help <topic>`);
+Usage: cmem help <topic>`);
       return;
     }
 
@@ -2523,8 +2525,8 @@ ${section.description}
       console.log();
     }
 
-    console.log(`For general help: claude-memory help
-For other topics: claude-memory help <topic>`);
+    console.log(`For general help: cmem help
+For other topics: cmem help <topic>`);
   },
 
   updateGitignore(projectPath) {
@@ -2575,6 +2577,12 @@ For other topics: claude-memory help <topic>`);
 
 // Parse command line arguments
 const [,, command, ...args] = process.argv;
+
+// Handle version flag
+if (command === '--version' || command === '-v') {
+  console.log(`claude-memory v${packageJson.version}`);
+  process.exit(0);
+}
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {

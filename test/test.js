@@ -60,7 +60,24 @@ async function runTests() {
     }
   });
 
-  // Test 2: Package.json is valid
+  // Test 2: Version flag
+  await test('Version flag', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+
+    // Test --version
+    const { stdout: versionLong } = await execAsync(`node "${cliPath}" --version`);
+    assert(versionLong.includes('claude-memory v'), 'Should show version with --version');
+
+    // Test -v
+    const { stdout: versionShort } = await execAsync(`node "${cliPath}" -v`);
+    assert(versionShort.includes('claude-memory v'), 'Should show version with -v');
+
+    // Verify version matches package.json
+    const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
+    assert(versionLong.includes(pkg.version), 'Version should match package.json');
+  });
+
+  // Test 3: Package.json is valid
   await test('Package.json is valid', () => {
     const pkgPath = path.join(packageRoot, 'package.json');
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
@@ -171,6 +188,51 @@ async function runTests() {
 
     const backupDirs = fs.readdirSync('.claude/backups');
     assert(backupDirs.length > 0, 'Should create backup directory');
+  });
+
+  // Test 11: Context files generation
+  await test('Context files generation', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+
+    // Add some knowledge to trigger context file generation
+    await execAsync(`node "${cliPath}" knowledge add "test_key" "test_value" --category testing`);
+
+    // Check context directory exists
+    assert(fs.existsSync('.claude/context'), 'Should create context directory');
+
+    // Check all context files exist
+    const contextFiles = ['knowledge.md', 'patterns.md', 'decisions.md', 'tasks.md'];
+    for (const file of contextFiles) {
+      const filePath = path.join('.claude/context', file);
+      assert(fs.existsSync(filePath), `Should create ${file}`);
+    }
+
+    // Verify knowledge.md contains our test entry
+    const knowledgeContent = fs.readFileSync('.claude/context/knowledge.md', 'utf8');
+    assert(knowledgeContent.includes('test_key'), 'Knowledge file should contain test key');
+    assert(knowledgeContent.includes('test_value'), 'Knowledge file should contain test value');
+    assert(knowledgeContent.includes('## testing'), 'Knowledge file should have category section');
+  });
+
+  // Test 12: Context files update on changes
+  await test('Context files update on changes', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+
+    // Add a task
+    await execAsync(`node "${cliPath}" task add "Test context update" --priority high`);
+
+    // Check tasks.md was updated
+    const tasksContent = fs.readFileSync('.claude/context/tasks.md', 'utf8');
+    assert(tasksContent.includes('Test context update'), 'Tasks file should contain new task');
+    assert(tasksContent.includes('High Priority'), 'Tasks file should show priority section');
+
+    // Add a pattern
+    await execAsync(`node "${cliPath}" pattern add "Test pattern" "For testing context files" 0.9 high`);
+
+    // Check patterns.md was updated
+    const patternsContent = fs.readFileSync('.claude/context/patterns.md', 'utf8');
+    assert(patternsContent.includes('Test pattern'), 'Patterns file should contain new pattern');
+    assert(patternsContent.includes('For testing context files'), 'Patterns file should contain description');
   });
 
   console.log(`\n📊 Test Results: ${passCount}/${testCount} passed`);
