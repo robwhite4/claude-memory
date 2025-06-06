@@ -90,7 +90,7 @@ class ClaudeMemory {
       path.join(this.claudeDir, 'context'),
       path.join(this.claudeDir, 'summaries')
     ];
-    
+
     dirs.forEach(dir => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -577,7 +577,7 @@ class ClaudeMemory {
   updateClaudeFile() {
     const content = this.generateClaudeContent();
     this.updateClaudeFileWithMerge(content);
-    
+
     // Generate context files for full information
     this.generateContextFiles();
   }
@@ -716,23 +716,23 @@ class ClaudeMemory {
 
   generateContextFiles() {
     const contextDir = path.join(this.claudeDir, 'context');
-    
+
     try {
       // Generate knowledge.md
       const knowledgeContent = this.generateKnowledgeContext();
       fs.writeFileSync(path.join(contextDir, 'knowledge.md'), knowledgeContent);
-    
-    // Generate patterns.md
-    const patternsContent = this.generatePatternsContext();
-    fs.writeFileSync(path.join(contextDir, 'patterns.md'), patternsContent);
-    
-    // Generate decisions.md
-    const decisionsContent = this.generateDecisionsContext();
-    fs.writeFileSync(path.join(contextDir, 'decisions.md'), decisionsContent);
-    
-    // Generate tasks.md
-    const tasksContent = this.generateTasksContext();
-    fs.writeFileSync(path.join(contextDir, 'tasks.md'), tasksContent);
+
+      // Generate patterns.md
+      const patternsContent = this.generatePatternsContext();
+      fs.writeFileSync(path.join(contextDir, 'patterns.md'), patternsContent);
+
+      // Generate decisions.md
+      const decisionsContent = this.generateDecisionsContext();
+      fs.writeFileSync(path.join(contextDir, 'decisions.md'), decisionsContent);
+
+      // Generate tasks.md
+      const tasksContent = this.generateTasksContext();
+      fs.writeFileSync(path.join(contextDir, 'tasks.md'), tasksContent);
     } catch (error) {
       console.error('Error generating context files:', error);
     }
@@ -741,7 +741,7 @@ class ClaudeMemory {
   generateKnowledgeContext() {
     const categories = Object.keys(this.knowledge || {}).sort();
     const totalItems = categories.reduce((sum, cat) => sum + Object.keys(this.knowledge[cat] || {}).length, 0);
-    
+
     let content = `# Project Knowledge Base
 *Generated: ${new Date().toISOString()} | ${totalItems} items across ${categories.length} categories*
 
@@ -753,7 +753,7 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
     categories.forEach(category => {
       const items = this.knowledge[category] || {};
       const sortedKeys = Object.keys(items).sort();
-      
+
       content += `## ${category}\n`;
       sortedKeys.forEach(key => {
         const item = items[key];
@@ -765,14 +765,14 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
         content += '\n';
       });
     });
-    
+
     return content;
   }
 
   generatePatternsContext() {
     const openPatterns = this.patterns.filter(p => p.status === 'open');
     const resolvedPatterns = this.patterns.filter(p => p.status === 'resolved');
-    
+
     let content = `# Project Patterns
 *Generated: ${new Date().toISOString()} | ${this.patterns.length} total patterns*
 
@@ -798,14 +798,14 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
         });
       }
     });
-    
-    content += `## Resolved Patterns\n`;
+
+    content += '## Resolved Patterns\n';
     resolvedPatterns.slice(-10).reverse().forEach(p => {
       content += `### ${p.pattern} (ID: ${p.id})\n`;
       content += `- **Solution**: ${p.solution || 'No solution recorded'}\n`;
       content += `- **Resolved**: ${p.resolvedAt || 'Unknown'}\n\n`;
     });
-    
+
     return content;
   }
 
@@ -824,7 +824,7 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
       if (d.outcome) content += `**Outcome**: ${d.outcome}\n`;
       content += `**Session**: ${d.sessionId || 'Unknown'}\n\n`;
     });
-    
+
     return content;
   }
 
@@ -832,7 +832,7 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
     const openTasks = this.getTasks('open');
     const inProgressTasks = this.getTasks('in-progress');
     const completedTasks = this.getTasks('completed');
-    
+
     let content = `# Task Management
 *Generated: ${new Date().toISOString()} | ${this.tasks.length} total tasks*
 
@@ -856,21 +856,21 @@ ${categories.map(cat => `- [${cat}](#${cat}) (${Object.keys(this.knowledge[cat] 
         content += '\n';
       }
     });
-    
-    content += `## In Progress\n`;
+
+    content += '## In Progress\n';
     inProgressTasks.forEach(t => {
       content += `- [~] **${t.description}** (ID: ${t.id})\n`;
       content += `  - Priority: ${t.priority}\n`;
       if (t.assignee) content += `  - Assigned: ${t.assignee}\n`;
     });
-    
-    content += `\n## Recently Completed\n`;
+
+    content += '\n## Recently Completed\n';
     completedTasks.slice(-20).reverse().forEach(t => {
       content += `- [x] **${t.description}** (ID: ${t.id})\n`;
       content += `  - Completed: ${new Date(t.completedAt).toLocaleDateString()}\n`;
       if (t.outcome) content += `  - Outcome: ${t.outcome}\n`;
     });
-    
+
     return content;
   }
 
@@ -912,8 +912,8 @@ ${Object.keys(this.knowledge).length > 0
       return `#### ${category} (${itemCount} items)
 ${sampleItems.map(([key, data]) => {
     // Show full value unless token optimization is on
-    const displayValue = isOptimized && data.value.length > 80 
-      ? data.value.substring(0, 80) + '...' 
+    const displayValue = isOptimized && data.value.length > 80
+      ? data.value.substring(0, 80) + '...'
       : data.value;
     return `- **${key}**: ${displayValue}`;
   }).join('\n')}${itemCount > sampleItems.length ? `\n- ... and ${itemCount - sampleItems.length} more items` : ''}`;
@@ -1013,7 +1013,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: \`.claude/context/knowledge.md\` (${Object.keys(this.knowledge).reduce((sum, cat) => sum + Object.keys(this.knowledge[cat] || {}).length, 0)} items)
+- 📚 **Knowledge Base**: \`.claude/context/knowledge.md\` (${
+  Object.keys(this.knowledge).reduce((sum, cat) => sum + Object.keys(this.knowledge[cat] || {}).length, 0)
+} items)
 - 🧩 **All Patterns**: \`.claude/context/patterns.md\` (${this.patterns.length} patterns)
 - 🎯 **Decision Log**: \`.claude/context/decisions.md\` (${this.decisions.length} decisions)
 - ✅ **Task Details**: \`.claude/context/tasks.md\` (${this.tasks.length} tasks)
