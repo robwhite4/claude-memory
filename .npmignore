@@ -1,0 +1,47 @@
+# NPM Publish Ignore
+# This file controls what gets published to npm
+
+# Development and test files
+test/
+test-project/
+test-enhanced/
+test-manual/
+coverage/
+.eslintrc*
+.github/
+
+# Project-specific memory (users will generate their own)
+.claude/
+CLAUDE.md
+
+# Documentation files not needed in package
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+DEVELOPMENT.md
+SECURITY.md
+RELEASE*.md
+CHANGELOG.md
+
+# Build artifacts and temp files
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+*.export.json
+claude-memory-export-*.json
+
+# IDE files
+.idea/
+.vscode/
+
+# Git files
+.git/
+.gitignore
+
+# Keep only essentials:
+# - bin/ (CLI executable)
+# - README.md (user documentation)
+# - postinstall.js (setup guidance)
+# - package.json (metadata)
+# - LICENSE (legal requirement)

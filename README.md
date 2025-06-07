@@ -86,9 +86,9 @@ Default settings work perfectly for most projects:
 ```
 your-project/
 ├── CLAUDE.md          # AI-readable project context (commit this!)
-└── .claude/
-    ├── memory.json    # Full memory database (gitignored)
-    ├── config.json    # Your preferences
+└── .claude/           # Auto-generated memory system
+    ├── memory.json    # Full memory database
+    ├── config.json    # Your preferences  
     ├── backups/       # Automatic backups
     └── context/       # Full context files (v1.7.0+)
         ├── knowledge.md   # Complete knowledge base
@@ -96,6 +96,11 @@ your-project/
         ├── decisions.md   # Full decision history
         └── tasks.md       # Detailed task information
 ```
+
+**Version Control:**
+- ✅ **Commit:** `CLAUDE.md` - This is your project's AI context
+- ❌ **Don't commit:** `.claude/` directory - Contains generated files and personal preferences
+- 💡 **Optional:** You can commit `.claude/context/` if you want to share full project knowledge with your team
 
 ## 🚀 Basic Usage (Manual Commands)
 

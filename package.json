@@ -2,7 +2,7 @@
   "name": "claude-memory",
   "version": "1.8.0",
   "description": "Transform AI conversations into persistent project intelligence - Universal memory system for Claude",
-  "main": "src/memory.js",
+  "main": "bin/claude-memory.js",
   "type": "module",
   "bin": {
     "claude-memory": "./bin/claude-memory.js",
