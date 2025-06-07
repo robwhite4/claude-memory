@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-07T00:48:18.090Z | 38 total patterns*
+*Generated: 2025-06-07T02:18:16.707Z | 41 total patterns*
 
 ## Summary
-- Open Patterns: 29
+- Open Patterns: 32
 - Resolved Patterns: 9
 
 ## Open Patterns
@@ -203,6 +203,27 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-06T23:23:40.147Z
 - **Last Seen**: 2025-06-06T23:23:40.147Z
+- **Frequency**: 1
+
+#### Version-first workflow (ID: ac5701ad)
+- **Description**: Always bump version at START of feature development, not after. Prevents test failures and ensures consistency.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-07T02:12:25.780Z
+- **Last Seen**: 2025-06-07T02:12:25.780Z
+- **Frequency**: 1
+
+#### GitHub workflow automation caveat (ID: 04977c8e)
+- **Description**: GitHub Actions create-release fails if release already exists. When manually creating releases, expect workflow failures. Consider using gh release edit instead.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-07T02:12:41.499Z
+- **Last Seen**: 2025-06-07T02:12:41.499Z
+- **Frequency**: 1
+
+#### Pre-push memory update workflow (ID: ae7b12db)
+- **Description**: Always update local memory (decisions, knowledge, patterns) BEFORE pushing to GitHub. This ensures CLAUDE.md and context files reflect the latest work in the commit.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-07T02:17:57.755Z
+- **Last Seen**: 2025-06-07T02:17:57.755Z
 - **Frequency**: 1
 
 ## Resolved Patterns

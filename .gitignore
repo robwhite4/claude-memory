@@ -39,11 +39,11 @@ coverage/
 .claude/sessions/
 .claude/backups/
 .claude/memory.json
+.claude/config.json
 .claude/settings.local.json
 
-# Auto-generated context files (regenerated on each run)
-# Uncomment if you want to track these in your project:
-# !.claude/context/
+# Include context files for multi-machine development
+!.claude/context/
 
 # But include the core system
 !CLAUDE.md

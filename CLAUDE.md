@@ -1,7 +1,7 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Evening Development
+- **Current**: Night Development
 - **Started**: 2025-06-07
 - **Project**: Claude Memory NPM Package
 
@@ -9,7 +9,7 @@
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.7.0
+- **Claude Memory**: v1.8.1
 - **Memory Created**: 2025-06-01
 
 ### Knowledge Base
@@ -28,10 +28,10 @@
 #### architecture (1 items)
 - **Session_Architecture**: Sessions stored in memory.json, not individual files. Sessions folder exists but...
 
-#### status (7 items)
+#### status (8 items)
 - **Parity_Status_v1.5.0**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documen...
 - **v1.6.0_Released**: Successfully released v1.6.0 with 100% user feedback addressed. PRs #13 (Issue #...
-- ... and 5 more items
+- ... and 6 more items
 
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BE...
@@ -44,13 +44,14 @@
 #### implementation (1 items)
 - **Issue_8_Implementation**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGI...
 
-#### workflow (6 items)
+#### workflow (7 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug,...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robw...
-- ... and 4 more items
+- ... and 5 more items
 
-#### releases (1 items)
+#### releases (2 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by ...
+- **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learning...
 
 
 ### Open Patterns
@@ -81,6 +82,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-07: Session wrap-up approach
+**Decision**: Session wrap-up approach
+**Reasoning**: Complete v1.8.1 patch release for housekeeping fixes to ensure clean npm packages and correct repository structure
+**Alternatives Considered**: Skip patch release, Continue with v1.9.0, Document for later
+
+
 ### 2025-06-07: Implement CLI flags for better UX
 **Decision**: Implement CLI flags for better UX
 **Reasoning**: Issue #19 requires standard CLI flags for version info, output control, and verbosity. These are essential CLI features that users expect. Implemented 5 flags: --version, --quiet, --output, --no-color, --verbose with full test coverage
@@ -91,12 +98,6 @@
 **Decision**: v1.8.0 development started
 **Reasoning**: Version bumped to 1.8.0, --version flag implemented with tests. Following new version-first workflow. Issue #19 CLI flags enhancement underway.
 **Alternatives Considered**: Skip version bump, Different flag first
-
-
-### 2025-06-06: Ready for v1.8.0 development
-**Decision**: Ready for v1.8.0 development
-**Reasoning**: v1.7.0 is stable with all tests passing. Context file tests added. Test patterns cleaned up. Issue #19 created with proper labels for CLI flags enhancement.
-**Alternatives Considered**: More v1.7.x patches, Different feature
 
 
 ## Commands & Workflows
@@ -134,9 +135,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (30 items)
-- 🧩 **All Patterns**: `.claude/context/patterns.md` (38 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (48 decisions)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (33 items)
+- 🧩 **All Patterns**: `.claude/context/patterns.md` (41 patterns)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (49 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (14 tasks)
 
 ## Session Continuation

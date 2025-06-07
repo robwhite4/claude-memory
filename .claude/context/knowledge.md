@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T00:48:18.088Z | 30 items across 10 categories*
+*Generated: 2025-06-07T02:18:16.705Z | 33 items across 10 categories*
 
 ## Navigation
 - [architecture](#architecture) (1 items)
@@ -8,10 +8,10 @@
 - [feedback](#feedback) (1 items)
 - [implementation](#implementation) (1 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (1 items)
-- [status](#status) (7 items)
+- [releases](#releases) (2 items)
+- [status](#status) (8 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (6 items)
+- [workflow](#workflow) (7 items)
 
 ## architecture
 ### Session_Architecture
@@ -60,7 +60,15 @@
 **Value**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after merge. NPM publish successful, GitHub release created.
 **Updated**: 2025-06-07T00:48:18.059Z
 
+### v1.8.0_v1.8.1_releases
+**Value**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learnings: 1) Version-first workflow critical, 2) Squash merges may lose version bumps, 3) Need .npmignore for clean packages, 4) Context files optional for teams, 5) Package.json main field must point to actual file.
+**Updated**: 2025-06-07T01:43:19.300Z
+
 ## status
+### Current_Version
+**Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
+**Updated**: 2025-06-07T02:13:05.143Z
+
 ### Parity_Status_v1.5.0
 **Value**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and available. Local: repository at v1.5.0, global claude-memory v1.5.0 installed, all systems synchronized. Ready for Issues #8-9 development.
 **Updated**: 2025-06-05T00:46:46.757Z
@@ -119,6 +127,10 @@
 **Updated**: 2025-06-06T21:54:45.757Z
 
 ## workflow
+### Recommended_Git_Workflow
+**Value**: 1) Make code changes, 2) Test locally, 3) Update memory (cmem decision/knowledge/pattern), 4) Commit all files including CLAUDE.md and context/, 5) Push to GitHub. This ensures memory travels with code across machines.
+**Updated**: 2025-06-07T02:18:16.686Z
+
 ### Version_First_Workflow
 **Value**: New development workflow: Bump version in package.json FIRST before implementing features. This ensures --version flag and all version references are correct from the start. Successfully tested with v1.8.0 development.
 **Updated**: 2025-06-07T00:28:41.067Z
