@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2] - 2025-06-07
+
+### Added
+- Comprehensive multi-machine development documentation
+- Team development guidelines and best practices
+- Memory management section in CONTRIBUTING.md
+- Gitignore templates for different team setups (examples/gitignore-templates.md)
+- Merge conflict resolution strategies for context files
+
+### Changed
+- Updated README with dedicated "Multi-Machine & Team Development" section
+- Enhanced CONTRIBUTING.md with project memory guidelines
+
+### Documentation
+- Clarified when to commit `.claude/context/` files vs keep them local
+- Added workflows for solo developers on multiple machines
+- Documented team approaches (memory keeper, shared memory, hybrid)
+- Created retroactive Issue #21 for documentation purposes
+
 ## [1.8.1] - 2025-06-07
 
 ### Fixed

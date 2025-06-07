@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-07T02:25:02.234Z | 41 total patterns*
+*Generated: 2025-06-07T02:29:16.932Z | 42 total patterns*
 
 ## Summary
-- Open Patterns: 32
+- Open Patterns: 33
 - Resolved Patterns: 9
 
 ## Open Patterns
@@ -224,6 +224,13 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-07T02:17:57.755Z
 - **Last Seen**: 2025-06-07T02:17:57.755Z
+- **Frequency**: 1
+
+#### Practice what we preach (ID: d0e92101)
+- **Description**: Always follow established GitHub workflows, even for documentation changes. Create issues, use feature branches, and PRs - no exceptions!
+- **Effectiveness**: null
+- **First Seen**: 2025-06-07T02:26:47.100Z
+- **Last Seen**: 2025-06-07T02:26:47.100Z
 - **Frequency**: 1
 
 ## Resolved Patterns
