@@ -44,10 +44,10 @@
 #### implementation (1 items)
 - **Issue_8_Implementation**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGI...
 
-#### workflow (10 items)
+#### workflow (11 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug,...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robw...
-- ... and 8 more items
+- ... and 9 more items
 
 #### releases (3 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by ...
@@ -83,6 +83,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-07: Plan before code
+**Decision**: Plan before code
+**Reasoning**: All development work should start with proper GitHub planning: milestones for releases, issues for features/bugs, and project boards for tracking. This ensures transparency, enables collaboration, and maintains professional standards.
+**Alternatives Considered**: Ad-hoc development, Internal planning only, Start coding immediately
+
+
 ### 2025-06-07: Branch cleanup strategy
 **Decision**: Branch cleanup strategy
 **Reasoning**: Enable GitHub auto-delete for merged branches and clean up existing stale branches. This prevents repository clutter and makes it easier to see active work. Auto-delete is safer than manual cleanup.
@@ -93,12 +99,6 @@
 **Decision**: Release v1.8.2 for documentation
 **Reasoning**: Documentation changes need to reach NPM users. Multi-machine and team guidance is important enough to warrant a patch release. Following hotfix pattern for already-merged changes.
 **Alternatives Considered**: Skip release, Wait for next feature, Bundle with v1.9.0
-
-
-### 2025-06-07: Document multi-machine and team workflows
-**Decision**: Document multi-machine and team workflows
-**Reasoning**: Users need guidance on how to use Claude Memory across multiple machines and in team environments. Added comprehensive documentation and gitignore templates.
-**Alternatives Considered**: Leave undocumented, Create separate tool, Add to FAQ only
 
 
 ## Commands & Workflows
@@ -136,9 +136,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (38 items)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (39 items)
 - 🧩 **All Patterns**: `.claude/context/patterns.md` (43 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (52 decisions)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (53 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (14 tasks)
 
 ## Session Continuation

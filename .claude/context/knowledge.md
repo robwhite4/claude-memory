@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T23:05:05.624Z | 38 items across 10 categories*
+*Generated: 2025-06-07T23:33:50.921Z | 39 items across 10 categories*
 
 ## Navigation
 - [architecture](#architecture) (1 items)
@@ -11,7 +11,7 @@
 - [releases](#releases) (3 items)
 - [status](#status) (9 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (10 items)
+- [workflow](#workflow) (11 items)
 
 ## architecture
 ### Session_Architecture
@@ -138,6 +138,10 @@
 ### Documentation_Release_Pattern
 **Value**: Documentation improvements warrant patch releases to ensure NPM users get updated docs. Even without code changes, docs are part of the package and should be versioned.
 **Updated**: 2025-06-07T02:28:56.064Z
+
+### GitHub_Planning_Established
+**Value**: Set up comprehensive GitHub planning: 1) v1.9.0 milestone for Priority 2 CLI flags (Issues #22-25), 2) v2.0.0 milestone for future major features, 3) Claude Memory Development project board for tracking, 4) All development now starts with GitHub planning before code.
+**Updated**: 2025-06-07T23:33:50.902Z
 
 ### Multi_Dev_Strategy
 **Value**: For teams: 1) Designate a 'memory keeper' who updates project memory, 2) Use PR descriptions for individual decisions, 3) Regular memory review meetings, 4) Consider team-specific vs personal memory separation, 5) Establish naming conventions for knowledge keys
