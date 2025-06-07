@@ -22,7 +22,7 @@ Claude Memory runs automatically in the background, maintaining perfect context 
 npm install -g claude-memory
 
 # Initialize and forget
-claude-memory init
+cmem init
 
 # That's it! Claude now has persistent memory
 ```
@@ -288,5 +288,5 @@ MIT © Rob White
 **Stop explaining your project over and over. Install Claude Memory and let AI truly understand your codebase.**
 
 ```bash
-npm install -g claude-memory && claude-memory init
+npm install -g claude-memory && cmem init
 ```

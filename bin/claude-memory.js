@@ -56,6 +56,22 @@ const packageRoot = path.resolve(__dirname, '..');
 // Load package.json for version info
 const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
 
+// Global quiet mode flag
+let globalQuietMode = false;
+// Global output format
+let globalOutputFormat = 'text';
+// Global verbose mode flag
+let globalVerboseMode = false;
+
+// Helper to create memory instance with global flags
+function createMemory(projectPath, projectName = null, options = {}) {
+  const memory = new ClaudeMemory(projectPath, projectName, options);
+  memory.quietMode = globalQuietMode;
+  memory.outputFormat = globalOutputFormat;
+  memory.verboseMode = globalVerboseMode;
+  return memory;
+}
+
 // Memory system implementation
 class ClaudeMemory {
   constructor(projectRoot, projectName = 'My Project', options = {}) {
@@ -67,6 +83,9 @@ class ClaudeMemory {
     this.claudeFile = path.join(projectRoot, 'CLAUDE.md');
     this.currentSession = null;
     this.options = options;
+    this.quietMode = false; // Can be set externally
+    this.outputFormat = 'text'; // Can be set externally
+    this.verboseMode = false; // Can be set externally
 
     this.ensureDirectories();
     this.loadConfig();
@@ -80,6 +99,25 @@ class ClaudeMemory {
     // Auto-backup check
     if (this.config.autoBackup !== false) {
       this.checkAutoBackup();
+    }
+  }
+
+  // Output helpers for quiet mode
+  log(message) {
+    if (!this.quietMode) {
+      console.log(message);
+    }
+  }
+
+  // Essential output (always shown)
+  output(message) {
+    console.log(message);
+  }
+
+  // Verbose output (only shown in verbose mode)
+  verbose(message) {
+    if (this.verboseMode) {
+      console.log(`[VERBOSE] ${message}`);
     }
   }
 
@@ -1049,19 +1087,22 @@ const commands = {
       projectName = path.basename(projectPath);
     }
 
-    console.log('🧠 Initializing Claude Memory...');
-    console.log(`📁 Project: ${projectName}`);
-    console.log(`📂 Path: ${projectPath}`);
+    log('🧠 Initializing Claude Memory...');
+    log(`📁 Project: ${projectName}`);
+    log(`📂 Path: ${projectPath}`);
 
     // Ensure project directory exists
     if (!fs.existsSync(projectPath)) {
+      verbose(`Creating project directory: ${projectPath}`);
       fs.mkdirSync(projectPath, { recursive: true });
     }
 
     process.chdir(projectPath);
+    verbose(`Changed to project directory: ${projectPath}`);
 
     // Initialize memory system
-    const memory = new ClaudeMemory(projectPath, projectName);
+    verbose('Creating memory system instance...');
+    const memory = createMemory(projectPath, projectName);
     const sessionId = memory.startSession('Project Setup', {
       project: projectName,
       initialized: new Date().toISOString(),
@@ -1075,21 +1116,21 @@ const commands = {
     );
 
     // Update .gitignore
-    this.updateGitignore(projectPath);
+    commands.updateGitignore(projectPath);
 
     // Update package.json if it exists
-    this.updatePackageJson(projectPath);
+    commands.updatePackageJson(projectPath);
 
-    console.log('✅ Claude Memory initialized!');
-    console.log(`📋 Session ID: ${sessionId}`);
-    console.log('');
-    console.log('🚀 Next Steps:');
-    console.log('1. Tell Claude: "Load project memory and continue development"');
-    console.log('2. Start any conversation with memory-aware context');
-    console.log('3. Watch Claude learn and remember your project');
-    console.log('');
-    console.log('📖 See CLAUDE.md for project memory overview');
-    console.log('💡 Use "claude-memory stats" to view memory statistics');
+    memory.log('✅ Claude Memory initialized!');
+    log(`📋 Session ID: ${sessionId}`);
+    log('');
+    log('🚀 Next Steps:');
+    log('1. Tell Claude: "Load project memory and continue development"');
+    log('2. Start any conversation with memory-aware context');
+    log('3. Watch Claude learn and remember your project');
+    log('');
+    log('📖 See CLAUDE.md for project memory overview');
+    log('💡 Use "cmem stats" to view memory statistics');
   },
 
   async stats(projectPath) {
@@ -1097,31 +1138,60 @@ const commands = {
     const targetPath = projectPath || process.cwd();
 
     try {
-      const memory = new ClaudeMemory(targetPath);
+      const memory = createMemory(targetPath);
       const stats = memory.getMemoryStats();
-
-      console.log('\n📊 Claude Memory Statistics\n');
-      console.log(`Sessions: ${stats.sessions}`);
-      console.log(`Decisions: ${stats.decisions}`);
-      console.log(`Patterns: ${stats.patterns}`);
-      console.log(`Tasks: ${stats.tasks}`);
-      console.log(`Actions: ${stats.actions}`);
-      console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
-
       const recentSessions = memory.getSessionHistory(3);
-      if (recentSessions.length > 0) {
-        console.log('\n🕒 Recent Sessions:');
-        recentSessions.forEach(s => {
-          console.log(`  • ${s.name} (${s.startTime.split('T')[0]})`);
-        });
-      }
-
       const recentDecisions = memory.getRecentDecisions(3);
-      if (recentDecisions.length > 0) {
-        console.log('\n🤔 Recent Decisions:');
-        recentDecisions.forEach(d => {
-          console.log(`  • ${d.decision}`);
-        });
+
+      // Structure data for different output formats
+      const statsData = {
+        statistics: {
+          sessions: stats.sessions,
+          decisions: stats.decisions,
+          patterns: stats.patterns,
+          tasks: stats.tasks,
+          actions: stats.actions,
+          knowledgeItems: stats.totalKnowledgeItems,
+          knowledgeCategories: stats.knowledgeCategories
+        },
+        recentSessions: recentSessions.map(s => ({
+          name: s.name,
+          date: s.startTime.split('T')[0]
+        })),
+        recentDecisions: recentDecisions.map(d => ({
+          decision: d.decision,
+          timestamp: d.timestamp
+        }))
+      };
+
+      // Output based on format
+      if (globalOutputFormat === 'json') {
+        output(formatOutput(statsData));
+      } else if (globalOutputFormat === 'yaml') {
+        output(formatOutput(statsData));
+      } else {
+        // Text format (default)
+        console.log('\n📊 Claude Memory Statistics\n');
+        console.log(`Sessions: ${stats.sessions}`);
+        console.log(`Decisions: ${stats.decisions}`);
+        console.log(`Patterns: ${stats.patterns}`);
+        console.log(`Tasks: ${stats.tasks}`);
+        console.log(`Actions: ${stats.actions}`);
+        console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
+
+        if (recentSessions.length > 0) {
+          console.log('\n🕒 Recent Sessions:');
+          recentSessions.forEach(s => {
+            console.log(`  • ${s.name} (${s.startTime.split('T')[0]})`);
+          });
+        }
+
+        if (recentDecisions.length > 0) {
+          console.log('\n🤔 Recent Decisions:');
+          recentDecisions.forEach(d => {
+            console.log(`  • ${d.decision}`);
+          });
+        }
       }
     } catch (error) {
       if (error.message.includes('not initialized')) {
@@ -1139,7 +1209,7 @@ const commands = {
   async search(...args) {
     let query = null;
     let projectPath = null;
-    let outputFormat = 'text';
+    let outputFormat = globalOutputFormat; // Use global default
     let typeFilter = null;
     let limit = null;
 
@@ -1147,7 +1217,7 @@ const commands = {
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (arg === '--json') {
-        outputFormat = 'json';
+        outputFormat = 'json'; // Override global setting
       } else if (arg === '--type' && args[i + 1]) {
         typeFilter = args[i + 1];
         i++;
@@ -1305,15 +1375,15 @@ const commands = {
       const sanitizedReasoning = sanitizeDescription(reasoning, 1000);
       const validatedPath = validatePath(projectPath);
 
-      const memory = new ClaudeMemory(validatedPath);
+      const memory = createMemory(validatedPath);
       const alternativesArray = alternatives
         ? alternatives.split(',').map(s => sanitizeInput(s.trim(), 100)).filter(s => s.length > 0)
         : [];
 
       const id = memory.recordDecision(sanitizedDecision, sanitizedReasoning, alternativesArray);
 
-      console.log(`✅ Decision recorded: ${sanitizedDecision}`);
-      console.log(`📋 Decision ID: ${id}`);
+      memory.log(`✅ Decision recorded: ${sanitizedDecision}`);
+      memory.log(`📋 Decision ID: ${id}`);
     } catch (error) {
       console.error('❌ Error recording decision:', error.message);
     }
@@ -2238,10 +2308,12 @@ const commands = {
     console.log(`
 🧠 Claude Memory v${packageJson.version} - Transform AI conversations into persistent project intelligence
 
+USAGE: claude-memory (or cmem) [command] [options]
+
 QUICK START:
-  📁 claude-memory init "My Project"     Initialize memory in current directory
-  ✅ claude-memory task add "My task"    Add your first task  
-  ❓ claude-memory help <command>        Get detailed help for any command
+  📁 cmem init "My Project"        Initialize memory in current directory
+  ✅ cmem task add "My task"       Add your first task  
+  ❓ cmem help <command>           Get detailed help for any command
 
 CORE COMMANDS:
   📁 init ["Project Name"] [path]        Initialize memory system in project
@@ -2263,13 +2335,20 @@ UTILITIES:
   🔄 handoff [options] [path]            Generate AI assistant handoff summary
   ❓ help [command]                      Show help (add command name for details)
 
+GLOBAL FLAGS:
+  --quiet, -q                            Suppress non-essential output
+  --output, -o <format>                  Output format: json, text, yaml (default: text)
+  --no-color                             Disable colored output (for CI/CD)
+  --verbose                              Show detailed execution information
+  --version, -v                          Show version number
+
 GET DETAILED HELP:
-  claude-memory help task               📝 Task management commands and workflows
-  claude-memory help pattern            🧩 Pattern management and resolution  
-  claude-memory help knowledge          💡 Knowledge storage and retrieval
-  claude-memory help session            📚 Session tracking and context management
-  claude-memory help search             🔍 Advanced search and filtering options
-  claude-memory help examples           📚 Common usage patterns and workflows
+  cmem help task                    📝 Task management commands and workflows
+  cmem help pattern                 🧩 Pattern management and resolution  
+  cmem help knowledge               💡 Knowledge storage and retrieval
+  cmem help session                 📚 Session tracking and context management
+  cmem help search                  🔍 Advanced search and filtering options
+  cmem help examples                📚 Common usage patterns and workflows
 
 SUBCOMMANDS:
   pattern add "name" "desc" [score] [priority]    Learn patterns
@@ -2278,12 +2357,12 @@ SUBCOMMANDS:
   session cleanup                                 End all sessions
 
 QUICK EXAMPLES:
-  claude-memory task add "Setup CI/CD" --priority high
-  claude-memory decision "Use React" "Better ecosystem than Vue"
-  claude-memory knowledge add "API_URL" "https://api.myapp.com" --category config
-  claude-memory search "authentication" --type decisions
+  cmem task add "Setup CI/CD" --priority high
+  cmem decision "Use React" "Better ecosystem than Vue"
+  cmem knowledge add "API_URL" "https://api.myapp.com" --category config
+  cmem search "authentication" --type decisions
 
-💡 Tip: Use 'claude-memory help <command>' for detailed command-specific help
+💡 Tip: Use 'cmem help <command>' for detailed command-specific help
 📚 Documentation: https://github.com/robwhite4/claude-memory
 `);
   },
@@ -2305,11 +2384,11 @@ QUICK EXAMPLES:
           '--due <date>': 'Set due date (YYYY-MM-DD format)'
         },
         examples: [
-          'claude-memory task add "Implement authentication" --priority high',
-          'claude-memory task add "Write tests" --assignee "developer" --due "2024-01-15"',
-          'claude-memory task complete abc123 "Successfully implemented with JWT"',
-          'claude-memory task list open',
-          'claude-memory task list completed'
+          'cmem task add "Implement authentication" --priority high',
+          'cmem task add "Write tests" --assignee "developer" --due "2024-01-15"',
+          'cmem task complete abc123 "Successfully implemented with JWT"',
+          'cmem task list open',
+          'cmem task list completed'
         ],
         tips: [
           '💡 Task IDs are auto-generated short codes (e.g., abc123)',
@@ -2333,11 +2412,11 @@ QUICK EXAMPLES:
           '--priority <level>': 'Filter by priority level'
         },
         examples: [
-          'claude-memory pattern add "Security First" "Always validate input" 0.9 high',
-          'claude-memory pattern add "Test Early" "Write tests before implementation"',
-          'claude-memory pattern list --priority high',
-          'claude-memory pattern search "security"',
-          'claude-memory pattern resolve def456 "Added input validation middleware"'
+          'cmem pattern add "Security First" "Always validate input" 0.9 high',
+          'cmem pattern add "Test Early" "Write tests before implementation"',
+          'cmem pattern list --priority high',
+          'cmem pattern search "security"',
+          'cmem pattern resolve def456 "Added input validation middleware"'
         ],
         tips: [
           '💡 Use patterns to capture lessons learned and best practices',
@@ -2360,12 +2439,12 @@ QUICK EXAMPLES:
           '[category]': 'Optional category filter for get/list commands'
         },
         examples: [
-          'claude-memory knowledge add "API_KEY" "sk-abc123..." --category config',
-          'claude-memory knowledge add "Database_URL" "postgresql://..." --category config',
-          'claude-memory knowledge add "Team_Lead" "Alice Johnson" --category contacts',
-          'claude-memory knowledge get "API_KEY"',
-          'claude-memory knowledge list config',
-          'claude-memory knowledge delete "OLD_API_KEY" config'
+          'cmem knowledge add "API_KEY" "sk-abc123..." --category config',
+          'cmem knowledge add "Database_URL" "postgresql://..." --category config',
+          'cmem knowledge add "Team_Lead" "Alice Johnson" --category contacts',
+          'cmem knowledge get "API_KEY"',
+          'cmem knowledge list config',
+          'cmem knowledge delete "OLD_API_KEY" config'
         ],
         tips: [
           '💡 Use categories to organize knowledge (config, urls, contacts, etc.)',
@@ -2389,12 +2468,12 @@ QUICK EXAMPLES:
           '["outcome"]': 'Optional outcome description when ending session'
         },
         examples: [
-          'claude-memory session start "Feature Development"',
-          'claude-memory session start "Bug Fix" \'{"ticket": "BUG-123"}\'',
-          'claude-memory session end "Feature completed successfully"',
-          'claude-memory session end 2024-01-01-feature-dev "Paused for review"',
-          'claude-memory session list',
-          'claude-memory session cleanup'
+          'cmem session start "Feature Development"',
+          'cmem session start "Bug Fix" \'{"ticket": "BUG-123"}\'',
+          'cmem session end "Feature completed successfully"',
+          'cmem session end 2024-01-01-feature-dev "Paused for review"',
+          'cmem session list',
+          'cmem session cleanup'
         ],
         tips: [
           '💡 Sessions help track work context and time allocation',
@@ -2416,11 +2495,11 @@ QUICK EXAMPLES:
           '[path]': 'Search in specific project path (default: current directory)'
         },
         examples: [
-          'claude-memory search "authentication"',
-          'claude-memory search "config" --type knowledge',
-          'claude-memory search "bug" --json --limit 3',
-          'claude-memory search "database" --type decisions --json',
-          'claude-memory search "API" --limit 5'
+          'cmem search "authentication"',
+          'cmem search "config" --type knowledge',
+          'cmem search "bug" --json --limit 3',
+          'cmem search "database" --type decisions --json',
+          'cmem search "API" --limit 5'
         ],
         tips: [
           '💡 Search works across decisions, patterns, tasks, and knowledge',
@@ -2434,29 +2513,29 @@ QUICK EXAMPLES:
         description: 'Real-world workflows and usage examples',
         workflows: {
           '🚀 Starting a New Project': [
-            'claude-memory init "My Web App"',
-            'claude-memory task add "Setup development environment" --priority high',
-            'claude-memory knowledge add "Repository" "https://github.com/user/repo" --category links',
-            'claude-memory session start "Initial Setup"'
+            'cmem init "My Web App"',
+            'cmem task add "Setup development environment" --priority high',
+            'cmem knowledge add "Repository" "https://github.com/user/repo" --category links',
+            'cmem session start "Initial Setup"'
           ],
           '🔧 Daily Development Workflow': [
-            'claude-memory session start "Feature: User Auth"',
-            'claude-memory task add "Implement login form" --priority high',
-            'claude-memory decision "Use JWT tokens" "Better security and stateless"',
-            'claude-memory pattern add "Input Validation" "Always validate on both client and server"',
-            'claude-memory task complete abc123 "Login form completed with validation"'
+            'cmem session start "Feature: User Auth"',
+            'cmem task add "Implement login form" --priority high',
+            'cmem decision "Use JWT tokens" "Better security and stateless"',
+            'cmem pattern add "Input Validation" "Always validate on both client and server"',
+            'cmem task complete abc123 "Login form completed with validation"'
           ],
           '🐛 Bug Fixing Session': [
-            'claude-memory session start "Bug Fix: Login Issue"',
-            'claude-memory search "login" --type decisions',
-            'claude-memory pattern search "auth"',
-            'claude-memory decision "Add rate limiting" "Prevents brute force attacks"',
-            'claude-memory session end "Fixed login rate limiting issue"'
+            'cmem session start "Bug Fix: Login Issue"',
+            'cmem search "login" --type decisions',
+            'cmem pattern search "auth"',
+            'cmem decision "Add rate limiting" "Prevents brute force attacks"',
+            'cmem session end "Fixed login rate limiting issue"'
           ],
           '🤖 AI Assistant Handoff': [
-            'claude-memory handoff --include=tasks',
-            'claude-memory search "current project" --limit 5',
-            'claude-memory stats',
+            'cmem handoff --include=tasks',
+            'cmem search "current project" --limit 5',
+            'cmem stats',
             '// Then tell AI: "Load project memory and continue development"'
           ]
         }
@@ -2470,7 +2549,7 @@ QUICK EXAMPLES:
 Available help topics:
   task, pattern, knowledge, session, search, examples
   
-Usage: claude-memory help <topic>`);
+Usage: cmem help <topic>`);
       return;
     }
 
@@ -2523,8 +2602,8 @@ ${section.description}
       console.log();
     }
 
-    console.log(`For general help: claude-memory help
-For other topics: claude-memory help <topic>`);
+    console.log(`For general help: cmem help
+For other topics: cmem help <topic>`);
   },
 
   updateGitignore(projectPath) {
@@ -2574,11 +2653,146 @@ For other topics: claude-memory help <topic>`);
 };
 
 // Parse command line arguments
-const [,, command, ...args] = process.argv;
+const allArgs = process.argv.slice(2);
+
+// Check for global flags first
+const cleanArgs = [];
+let command = null;
+let outputFormat = 'text'; // default format
+let noColor = false;
+
+// Check for early exit flags first
+if (allArgs.includes('--version') || allArgs.includes('-v')) {
+  console.log(`claude-memory v${packageJson.version}`);
+  process.exit(0);
+}
+
+// Process all arguments for global flags
+for (let i = 0; i < allArgs.length; i++) {
+  const arg = allArgs[i];
+
+  if (arg === '--quiet' || arg === '-q') {
+    globalQuietMode = true;
+  } else if (arg === '--output' || arg === '-o') {
+    // Next argument should be the format
+    if (i + 1 < allArgs.length && !allArgs[i + 1].startsWith('-')) {
+      outputFormat = allArgs[i + 1].toLowerCase();
+      i++; // Skip the format value
+      if (!['json', 'text', 'yaml'].includes(outputFormat)) {
+        console.error(`❌ Invalid output format: ${outputFormat}. Valid options: json, text, yaml`);
+        process.exit(1);
+      }
+      globalOutputFormat = outputFormat;
+    } else {
+      console.error('❌ --output flag requires a format: json, text, or yaml');
+      process.exit(1);
+    }
+  } else if (arg === '--no-color') {
+    noColor = true;
+  } else if (arg === '--verbose') {
+    globalVerboseMode = true;
+  } else if (!command && !arg.startsWith('-')) {
+    // First non-flag argument is the command
+    command = arg;
+  } else {
+    // Remaining arguments for the command
+    cleanArgs.push(arg);
+  }
+}
+
+// Color stripping utility
+const stripColors = (str) => {
+  // Remove ANSI color codes and emojis
+  return str
+    // eslint-disable-next-line no-control-regex
+    .replace(/\u001b\[[0-9;]*m/g, '') // ANSI codes
+    .replace(
+      /[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu,
+      ''
+    ); // Common emoji ranges
+};
+
+// Helper function for quiet mode
+const log = (message) => {
+  if (!globalQuietMode) {
+    console.log(noColor ? stripColors(message) : message);
+  }
+};
+
+// Helper function for essential output (always shown)
+const output = (message) => {
+  console.log(noColor ? stripColors(message) : message);
+};
+
+// Helper function for verbose output
+const verbose = (message) => {
+  if (globalVerboseMode) {
+    console.log(noColor ? stripColors(`[VERBOSE] ${message}`) : `[VERBOSE] ${message}`);
+  }
+};
+
+// Override console methods if no-color is enabled
+if (noColor) {
+  const originalLog = console.log;
+  const originalError = console.error;
+
+  console.log = (...args) => {
+    originalLog(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
+  };
+
+  console.error = (...args) => {
+    originalError(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
+  };
+}
+
+// Helper function for formatted output
+const formatOutput = (data, format = globalOutputFormat) => {
+  switch (format) {
+  case 'json':
+    return JSON.stringify(data, null, 2);
+  case 'yaml':
+    // Simple YAML formatter for basic data structures
+    return formatAsYaml(data);
+  case 'text':
+  default:
+    // Return as-is for text format (caller should handle text formatting)
+    return data;
+  }
+};
+
+// Simple YAML formatter
+const formatAsYaml = (obj, indent = 0) => {
+  const spaces = ' '.repeat(indent);
+  let yaml = '';
+
+  if (Array.isArray(obj)) {
+    obj.forEach(item => {
+      if (typeof item === 'object' && item !== null) {
+        yaml += `${spaces}-\n${formatAsYaml(item, indent + 2)}`;
+      } else {
+        yaml += `${spaces}- ${item}\n`;
+      }
+    });
+  } else if (typeof obj === 'object' && obj !== null) {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        yaml += `${spaces}${key}:\n${formatAsYaml(value, indent + 2)}`;
+      } else {
+        yaml += `${spaces}${key}: ${value}\n`;
+      }
+    });
+  } else {
+    yaml += `${spaces}${obj}\n`;
+  }
+
+  return yaml;
+};
+
+// Version flag is handled above in early exit checks
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {
-  commands.help(args[0]);
+  commands.help(cleanArgs[0]);
   process.exit(0);
 }
 
@@ -2603,7 +2817,11 @@ if (!commands[command]) {
 }
 
 try {
-  await commands[command](...args);
+  // Pass quiet mode to memory system for commands that use it
+  if (commands[command].memory) {
+    commands[command].memory.quietMode = globalQuietMode;
+  }
+  await commands[command](...cleanArgs);
 } catch (error) {
   console.error('❌ Error:', error.message);
   process.exit(1);
