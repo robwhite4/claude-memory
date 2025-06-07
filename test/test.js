@@ -137,18 +137,18 @@ async function runTests() {
   // Test 6: Verbose flag
   await test('Verbose flag', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
-    
+
     // Create a temporary directory for this test
     const verboseTestDir = path.join(testDir, 'verbose-test');
     fs.mkdirSync(verboseTestDir, { recursive: true });
-    
+
     // Test init with verbose mode
     const { stdout: verboseOutput } = await execAsync(
       `node "${cliPath}" init "Verbose Test" "${verboseTestDir}" --verbose`
     );
     assert(verboseOutput.includes('[VERBOSE]'), 'Verbose mode should show verbose messages');
     assert(verboseOutput.includes('Creating memory system instance'), 'Should show verbose init messages');
-    
+
     // Clean up
     fs.rmSync(verboseTestDir, { recursive: true, force: true });
   });
