@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T02:29:16.929Z | 35 items across 10 categories*
+*Generated: 2025-06-07T23:05:05.624Z | 38 items across 10 categories*
 
 ## Navigation
 - [architecture](#architecture) (1 items)
@@ -8,10 +8,10 @@
 - [feedback](#feedback) (1 items)
 - [implementation](#implementation) (1 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (2 items)
-- [status](#status) (8 items)
+- [releases](#releases) (3 items)
+- [status](#status) (9 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (9 items)
+- [workflow](#workflow) (10 items)
 
 ## architecture
 ### Session_Architecture
@@ -64,7 +64,15 @@
 **Value**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learnings: 1) Version-first workflow critical, 2) Squash merges may lose version bumps, 3) Need .npmignore for clean packages, 4) Context files optional for teams, 5) Package.json main field must point to actual file.
 **Updated**: 2025-06-07T01:43:19.300Z
 
+### v1.8.2_release
+**Value**: Documentation release for multi-machine and team workflows. Hotfix pattern used for already-merged changes. Created retroactive Issue #21, proper release with CHANGELOG and release notes.
+**Updated**: 2025-06-07T02:46:18.980Z
+
 ## status
+### Branch_Cleanup_Complete
+**Value**: Cleaned up 4 obsolete branches that contained work already merged through other PRs: feature/issue-19-cli-flags (PR #20), feature/v1.7.0-multi-file-context (PR #18), feature/pattern-subcommands, and fix/v1.4.1-hotfixes (PR #10). Repository now only has main branch. Auto-delete enabled for future merges.
+**Updated**: 2025-06-07T23:05:05.605Z
+
 ### Current_Version
 **Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
 **Updated**: 2025-06-07T02:13:05.143Z
@@ -138,6 +146,10 @@
 ### Recommended_Git_Workflow
 **Value**: 1) Make code changes, 2) Test locally, 3) Update memory (cmem decision/knowledge/pattern), 4) Commit all files including CLAUDE.md and context/, 5) Push to GitHub. This ensures memory travels with code across machines.
 **Updated**: 2025-06-07T02:18:16.686Z
+
+### Updated_GitHub_Workflow
+**Value**: Complete GitHub workflow with branch cleanup: 1) Create issue, 2) Create feature branch, 3) Make changes, 4) Test locally, 5) Update memory, 6) Push branch, 7) Create PR, 8) Wait for CI, 9) Merge PR (branch auto-deleted), 10) Tag/release if needed. Auto-delete is now enabled for the repository.
+**Updated**: 2025-06-07T22:52:14.171Z
 
 ### Version_First_Workflow
 **Value**: New development workflow: Bump version in package.json FIRST before implementing features. This ensures --version flag and all version references are correct from the start. Successfully tested with v1.8.0 development.

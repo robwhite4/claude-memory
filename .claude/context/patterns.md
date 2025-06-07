@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-07T02:29:16.932Z | 42 total patterns*
+*Generated: 2025-06-07T23:05:05.626Z | 43 total patterns*
 
 ## Summary
-- Open Patterns: 33
+- Open Patterns: 34
 - Resolved Patterns: 9
 
 ## Open Patterns
@@ -231,6 +231,13 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-07T02:26:47.100Z
 - **Last Seen**: 2025-06-07T02:26:47.100Z
+- **Frequency**: 1
+
+#### Clean up merged branches (ID: 7201d3d6)
+- **Description**: After PR merge, delete the feature branch to keep repository clean. Either enable auto-delete in GitHub settings or manually delete with 'git push origin --delete branch-name'. Prevents accumulation of stale branches.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-07T22:44:26.594Z
+- **Last Seen**: 2025-06-07T22:44:26.594Z
 - **Frequency**: 1
 
 ## Resolved Patterns

@@ -1,7 +1,7 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Night Development
+- **Current**: Evening Development
 - **Started**: 2025-06-07
 - **Project**: Claude Memory NPM Package
 
@@ -28,10 +28,10 @@
 #### architecture (1 items)
 - **Session_Architecture**: Sessions stored in memory.json, not individual files. Sessions folder exists but...
 
-#### status (8 items)
+#### status (9 items)
 - **Parity_Status_v1.5.0**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documen...
 - **v1.6.0_Released**: Successfully released v1.6.0 with 100% user feedback addressed. PRs #13 (Issue #...
-- ... and 6 more items
+- ... and 7 more items
 
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BE...
@@ -44,14 +44,15 @@
 #### implementation (1 items)
 - **Issue_8_Implementation**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGI...
 
-#### workflow (9 items)
+#### workflow (10 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug,...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robw...
-- ... and 7 more items
+- ... and 8 more items
 
-#### releases (2 items)
+#### releases (3 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by ...
 - **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learning...
+- ... and 1 more items
 
 
 ### Open Patterns
@@ -82,6 +83,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-07: Branch cleanup strategy
+**Decision**: Branch cleanup strategy
+**Reasoning**: Enable GitHub auto-delete for merged branches and clean up existing stale branches. This prevents repository clutter and makes it easier to see active work. Auto-delete is safer than manual cleanup.
+**Alternatives Considered**: Manual cleanup only, Leave branches as history, Create cleanup script
+
+
 ### 2025-06-07: Release v1.8.2 for documentation
 **Decision**: Release v1.8.2 for documentation
 **Reasoning**: Documentation changes need to reach NPM users. Multi-machine and team guidance is important enough to warrant a patch release. Following hotfix pattern for already-merged changes.
@@ -92,12 +99,6 @@
 **Decision**: Document multi-machine and team workflows
 **Reasoning**: Users need guidance on how to use Claude Memory across multiple machines and in team environments. Added comprehensive documentation and gitignore templates.
 **Alternatives Considered**: Leave undocumented, Create separate tool, Add to FAQ only
-
-
-### 2025-06-07: Session wrap-up approach
-**Decision**: Session wrap-up approach
-**Reasoning**: Complete v1.8.1 patch release for housekeeping fixes to ensure clean npm packages and correct repository structure
-**Alternatives Considered**: Skip patch release, Continue with v1.9.0, Document for later
 
 
 ## Commands & Workflows
@@ -135,9 +136,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (35 items)
-- 🧩 **All Patterns**: `.claude/context/patterns.md` (42 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (51 decisions)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (38 items)
+- 🧩 **All Patterns**: `.claude/context/patterns.md` (43 patterns)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (52 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (14 tasks)
 
 ## Session Continuation
