@@ -1,5 +1,5 @@
 # Decision Log
-*Generated: 2025-06-07T02:18:16.708Z | 49 total decisions*
+*Generated: 2025-06-07T02:25:02.236Z | 50 total decisions*
 
 ## Recent Decisions
 ### 6/1/2025: Install Claude Memory
@@ -295,4 +295,10 @@
 **Reasoning**: Complete v1.8.1 patch release for housekeeping fixes to ensure clean npm packages and correct repository structure
 **Alternatives Considered**: Skip patch release, Continue with v1.9.0, Document for later
 **Session**: 2025-06-07-evening-development
+
+### 6/6/2025: Document multi-machine and team workflows
+**ID**: 9dd67c76
+**Reasoning**: Users need guidance on how to use Claude Memory across multiple machines and in team environments. Added comprehensive documentation and gitignore templates.
+**Alternatives Considered**: Leave undocumented, Create separate tool, Add to FAQ only
+**Session**: 2025-06-07-night-development
 

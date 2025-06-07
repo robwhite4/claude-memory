@@ -78,6 +78,45 @@ We use [Semantic Versioning](http://semver.org/):
 - MINOR version for backwards-compatible functionality additions
 - PATCH version for backwards-compatible bug fixes
 
+## Project Memory Guidelines
+
+This project uses Claude Memory for development context. When contributing:
+
+### For Individual Contributors
+
+1. **Don't update project memory** unless specifically asked
+2. **Document decisions in PR descriptions** instead of using `cmem decision`
+3. **Report patterns in issues** rather than adding them directly
+
+### For Maintainers
+
+1. **Update memory after merging PRs**:
+   ```bash
+   cmem decision "Implemented feature X" "Reasoning from PR #123" "alternatives"
+   cmem pattern "New pattern discovered" "Description" 0.9
+   ```
+
+2. **Keep memory clean**:
+   - Remove test patterns before committing
+   - Use clear, descriptive knowledge keys
+   - Categorize knowledge appropriately
+
+3. **Handle memory in releases**:
+   - Update version knowledge after each release
+   - Document major decisions and patterns
+   - Clean up resolved patterns
+
+### Memory Conflict Resolution
+
+If you encounter merge conflicts in `.claude/context/`:
+```bash
+# Accept incoming changes
+git checkout --theirs .claude/context/
+
+# Re-add your memory updates
+cmem knowledge add "your_addition" "value" --category appropriate
+```
+
 ## Questions?
 
 Feel free to open an issue with your question or reach out to the maintainers.

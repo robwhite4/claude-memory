@@ -102,6 +102,66 @@ your-project/
 - ❌ **Don't commit:** `.claude/` directory - Contains generated files and personal preferences
 - 💡 **Optional:** You can commit `.claude/context/` if you want to share full project knowledge with your team
 
+## 🔄 Multi-Machine & Team Development
+
+### Working Across Multiple Machines
+
+If you work on multiple computers, commit the context files to sync your memory:
+
+```bash
+# In your .gitignore, change this:
+.claude/
+
+# To this (keeping config and raw data local):
+.claude/sessions/
+.claude/backups/
+.claude/memory.json
+.claude/config.json
+!.claude/context/
+```
+
+📁 **[See more .gitignore templates](examples/gitignore-templates.md)** for different team setups.
+
+**Workflow:**
+1. `git pull` - Get latest memory from other machine
+2. Work and update memory with `cmem` commands  
+3. `git add . && git commit` - Include memory updates
+4. `git push` - Share memory with other machines
+
+### Team Development
+
+Claude Memory can work for teams with some considerations:
+
+**Best for:**
+- Shared project knowledge and decisions
+- Onboarding new developers
+- AI-assisted development handoffs
+
+**Potential Issues:**
+- Merge conflicts in context files (auto-generated)
+- Personal patterns mixed with team patterns
+
+**Recommended Team Approach:**
+
+1. **Designate a Memory Keeper** - One person updates project memory
+2. **Use PR Descriptions** - Document decisions in PRs instead
+3. **Team Conventions**:
+   ```bash
+   # Prefix patterns for clarity
+   cmem pattern add "[TEAM] Code review required" "..." 
+   cmem pattern add "[ALICE] Personal debugging" "..."
+   
+   # Use categories
+   cmem knowledge add "API_v2_Design" "..." --category architecture
+   ```
+
+4. **Handle Merge Conflicts**:
+   ```bash
+   # Accept incoming changes and regenerate
+   git checkout --theirs .claude/context/
+   cmem knowledge add "merge_note" "Merged from main"
+   ```
+
 ## 🚀 Basic Usage (Manual Commands)
 
 While Claude Memory works automatically, you can also use manual commands:

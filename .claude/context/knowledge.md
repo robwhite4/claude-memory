@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T02:18:16.705Z | 33 items across 10 categories*
+*Generated: 2025-06-07T02:25:02.233Z | 34 items across 10 categories*
 
 ## Navigation
 - [architecture](#architecture) (1 items)
@@ -11,7 +11,7 @@
 - [releases](#releases) (2 items)
 - [status](#status) (8 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (7 items)
+- [workflow](#workflow) (8 items)
 
 ## architecture
 ### Session_Architecture
@@ -127,6 +127,10 @@
 **Updated**: 2025-06-06T21:54:45.757Z
 
 ## workflow
+### Multi_Dev_Strategy
+**Value**: For teams: 1) Designate a 'memory keeper' who updates project memory, 2) Use PR descriptions for individual decisions, 3) Regular memory review meetings, 4) Consider team-specific vs personal memory separation, 5) Establish naming conventions for knowledge keys
+**Updated**: 2025-06-07T02:20:21.266Z
+
 ### Recommended_Git_Workflow
 **Value**: 1) Make code changes, 2) Test locally, 3) Update memory (cmem decision/knowledge/pattern), 4) Commit all files including CLAUDE.md and context/, 5) Push to GitHub. This ensures memory travels with code across machines.
 **Updated**: 2025-06-07T02:18:16.686Z

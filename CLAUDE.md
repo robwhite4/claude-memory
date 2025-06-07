@@ -44,10 +44,10 @@
 #### implementation (1 items)
 - **Issue_8_Implementation**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGI...
 
-#### workflow (7 items)
+#### workflow (8 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug,...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robw...
-- ... and 5 more items
+- ... and 6 more items
 
 #### releases (2 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by ...
@@ -82,6 +82,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-07: Document multi-machine and team workflows
+**Decision**: Document multi-machine and team workflows
+**Reasoning**: Users need guidance on how to use Claude Memory across multiple machines and in team environments. Added comprehensive documentation and gitignore templates.
+**Alternatives Considered**: Leave undocumented, Create separate tool, Add to FAQ only
+
+
 ### 2025-06-07: Session wrap-up approach
 **Decision**: Session wrap-up approach
 **Reasoning**: Complete v1.8.1 patch release for housekeeping fixes to ensure clean npm packages and correct repository structure
@@ -92,12 +98,6 @@
 **Decision**: Implement CLI flags for better UX
 **Reasoning**: Issue #19 requires standard CLI flags for version info, output control, and verbosity. These are essential CLI features that users expect. Implemented 5 flags: --version, --quiet, --output, --no-color, --verbose with full test coverage
 **Alternatives Considered**: Skip CLI flags, Partial implementation, Different flag names
-
-
-### 2025-06-06: v1.8.0 development started
-**Decision**: v1.8.0 development started
-**Reasoning**: Version bumped to 1.8.0, --version flag implemented with tests. Following new version-first workflow. Issue #19 CLI flags enhancement underway.
-**Alternatives Considered**: Skip version bump, Different flag first
 
 
 ## Commands & Workflows
@@ -135,9 +135,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (33 items)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (34 items)
 - 🧩 **All Patterns**: `.claude/context/patterns.md` (41 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (49 decisions)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (50 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (14 tasks)
 
 ## Session Continuation
