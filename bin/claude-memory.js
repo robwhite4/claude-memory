@@ -60,12 +60,15 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.j
 let globalQuietMode = false;
 // Global output format
 let globalOutputFormat = 'text';
+// Global verbose mode flag
+let globalVerboseMode = false;
 
-// Helper to create memory instance with quiet mode and output format
+// Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;
+  memory.verboseMode = globalVerboseMode;
   return memory;
 }
 
@@ -82,6 +85,7 @@ class ClaudeMemory {
     this.options = options;
     this.quietMode = false; // Can be set externally
     this.outputFormat = 'text'; // Can be set externally
+    this.verboseMode = false; // Can be set externally
 
     this.ensureDirectories();
     this.loadConfig();
@@ -108,6 +112,13 @@ class ClaudeMemory {
   // Essential output (always shown)
   output(message) {
     console.log(message);
+  }
+
+  // Verbose output (only shown in verbose mode)
+  verbose(message) {
+    if (this.verboseMode) {
+      console.log(`[VERBOSE] ${message}`);
+    }
   }
 
   ensureDirectories() {
@@ -1082,12 +1093,15 @@ const commands = {
 
     // Ensure project directory exists
     if (!fs.existsSync(projectPath)) {
+      verbose(`Creating project directory: ${projectPath}`);
       fs.mkdirSync(projectPath, { recursive: true });
     }
 
     process.chdir(projectPath);
+    verbose(`Changed to project directory: ${projectPath}`);
 
     // Initialize memory system
+    verbose('Creating memory system instance...');
     const memory = createMemory(projectPath, projectName);
     const sessionId = memory.startSession('Project Setup', {
       project: projectName,
@@ -2325,6 +2339,7 @@ GLOBAL FLAGS:
   --quiet, -q                            Suppress non-essential output
   --output, -o <format>                  Output format: json, text, yaml (default: text)
   --no-color                             Disable colored output (for CI/CD)
+  --verbose                              Show detailed execution information
   --version, -v                          Show version number
 
 GET DETAILED HELP:
@@ -2655,7 +2670,7 @@ if (allArgs.includes('--version') || allArgs.includes('-v')) {
 // Process all arguments for global flags
 for (let i = 0; i < allArgs.length; i++) {
   const arg = allArgs[i];
-  
+
   if (arg === '--quiet' || arg === '-q') {
     globalQuietMode = true;
   } else if (arg === '--output' || arg === '-o') {
@@ -2674,6 +2689,8 @@ for (let i = 0; i < allArgs.length; i++) {
     }
   } else if (arg === '--no-color') {
     noColor = true;
+  } else if (arg === '--verbose') {
+    globalVerboseMode = true;
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;
@@ -2687,8 +2704,12 @@ for (let i = 0; i < allArgs.length; i++) {
 const stripColors = (str) => {
   // Remove ANSI color codes and emojis
   return str
+    // eslint-disable-next-line no-control-regex
     .replace(/\u001b\[[0-9;]*m/g, '') // ANSI codes
-    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, ''); // Common emoji ranges
+    .replace(
+      /[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu,
+      ''
+    ); // Common emoji ranges
 };
 
 // Helper function for quiet mode
@@ -2703,15 +2724,22 @@ const output = (message) => {
   console.log(noColor ? stripColors(message) : message);
 };
 
+// Helper function for verbose output
+const verbose = (message) => {
+  if (globalVerboseMode) {
+    console.log(noColor ? stripColors(`[VERBOSE] ${message}`) : `[VERBOSE] ${message}`);
+  }
+};
+
 // Override console methods if no-color is enabled
 if (noColor) {
   const originalLog = console.log;
   const originalError = console.error;
-  
+
   console.log = (...args) => {
     originalLog(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
   };
-  
+
   console.error = (...args) => {
     originalError(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
   };
