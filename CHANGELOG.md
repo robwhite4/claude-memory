@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `--version, -v` flag to display version information
   - `--quiet, -q` flag to suppress non-essential output
   - `--output, -o <format>` flag to control output format (json, text, yaml)
+  - `--no-color` flag to disable colored output and emojis (for CI/CD)
   - Made `cmem` alias more prominent in documentation and help text
   - Added GLOBAL FLAGS section to help output
 

@@ -2324,6 +2324,7 @@ UTILITIES:
 GLOBAL FLAGS:
   --quiet, -q                            Suppress non-essential output
   --output, -o <format>                  Output format: json, text, yaml (default: text)
+  --no-color                             Disable colored output (for CI/CD)
   --version, -v                          Show version number
 
 GET DETAILED HELP:
@@ -2637,20 +2638,30 @@ For other topics: cmem help <topic>`);
 };
 
 // Parse command line arguments
-const [,, command, ...args] = process.argv;
+const allArgs = process.argv.slice(2);
 
-// Check for global flags
+// Check for global flags first
 const cleanArgs = [];
+let command = null;
 let outputFormat = 'text'; // default format
+let noColor = false;
 
-// Process global flags
-for (let i = 0; i < args.length; i++) {
-  if (args[i] === '--quiet' || args[i] === '-q') {
+// Check for early exit flags first
+if (allArgs.includes('--version') || allArgs.includes('-v')) {
+  console.log(`claude-memory v${packageJson.version}`);
+  process.exit(0);
+}
+
+// Process all arguments for global flags
+for (let i = 0; i < allArgs.length; i++) {
+  const arg = allArgs[i];
+  
+  if (arg === '--quiet' || arg === '-q') {
     globalQuietMode = true;
-  } else if (args[i] === '--output' || args[i] === '-o') {
+  } else if (arg === '--output' || arg === '-o') {
     // Next argument should be the format
-    if (i + 1 < args.length && !args[i + 1].startsWith('-')) {
-      outputFormat = args[i + 1].toLowerCase();
+    if (i + 1 < allArgs.length && !allArgs[i + 1].startsWith('-')) {
+      outputFormat = allArgs[i + 1].toLowerCase();
       i++; // Skip the format value
       if (!['json', 'text', 'yaml'].includes(outputFormat)) {
         console.error(`❌ Invalid output format: ${outputFormat}. Valid options: json, text, yaml`);
@@ -2661,35 +2672,63 @@ for (let i = 0; i < args.length; i++) {
       console.error('❌ --output flag requires a format: json, text, or yaml');
       process.exit(1);
     }
+  } else if (arg === '--no-color') {
+    noColor = true;
+  } else if (!command && !arg.startsWith('-')) {
+    // First non-flag argument is the command
+    command = arg;
   } else {
-    cleanArgs.push(args[i]);
+    // Remaining arguments for the command
+    cleanArgs.push(arg);
   }
 }
+
+// Color stripping utility
+const stripColors = (str) => {
+  // Remove ANSI color codes and emojis
+  return str
+    .replace(/\u001b\[[0-9;]*m/g, '') // ANSI codes
+    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, ''); // Common emoji ranges
+};
 
 // Helper function for quiet mode
 const log = (message) => {
   if (!globalQuietMode) {
-    console.log(message);
+    console.log(noColor ? stripColors(message) : message);
   }
 };
 
 // Helper function for essential output (always shown)
 const output = (message) => {
-  console.log(message);
+  console.log(noColor ? stripColors(message) : message);
 };
+
+// Override console methods if no-color is enabled
+if (noColor) {
+  const originalLog = console.log;
+  const originalError = console.error;
+  
+  console.log = (...args) => {
+    originalLog(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
+  };
+  
+  console.error = (...args) => {
+    originalError(...args.map(arg => typeof arg === 'string' ? stripColors(arg) : arg));
+  };
+}
 
 // Helper function for formatted output
 const formatOutput = (data, format = globalOutputFormat) => {
   switch (format) {
-    case 'json':
-      return JSON.stringify(data, null, 2);
-    case 'yaml':
-      // Simple YAML formatter for basic data structures
-      return formatAsYaml(data);
-    case 'text':
-    default:
-      // Return as-is for text format (caller should handle text formatting)
-      return data;
+  case 'json':
+    return JSON.stringify(data, null, 2);
+  case 'yaml':
+    // Simple YAML formatter for basic data structures
+    return formatAsYaml(data);
+  case 'text':
+  default:
+    // Return as-is for text format (caller should handle text formatting)
+    return data;
   }
 };
 
@@ -2697,7 +2736,7 @@ const formatOutput = (data, format = globalOutputFormat) => {
 const formatAsYaml = (obj, indent = 0) => {
   const spaces = ' '.repeat(indent);
   let yaml = '';
-  
+
   if (Array.isArray(obj)) {
     obj.forEach(item => {
       if (typeof item === 'object' && item !== null) {
@@ -2717,19 +2756,15 @@ const formatAsYaml = (obj, indent = 0) => {
   } else {
     yaml += `${spaces}${obj}\n`;
   }
-  
+
   return yaml;
 };
 
-// Handle version flag
-if (command === '--version' || command === '-v') {
-  console.log(`claude-memory v${packageJson.version}`);
-  process.exit(0);
-}
+// Version flag is handled above in early exit checks
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {
-  commands.help(args[0]);
+  commands.help(cleanArgs[0]);
   process.exit(0);
 }
 
@@ -2756,7 +2791,7 @@ if (!commands[command]) {
 try {
   // Pass quiet mode to memory system for commands that use it
   if (commands[command].memory) {
-    commands[command].memory.quietMode = quietMode;
+    commands[command].memory.quietMode = globalQuietMode;
   }
   await commands[command](...cleanArgs);
 } catch (error) {
