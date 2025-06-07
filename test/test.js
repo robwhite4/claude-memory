@@ -90,7 +90,35 @@ async function runTests() {
     assert(normalOutput.includes('✅'), 'Normal mode should show success messages');
   });
 
-  // Test 4: Package.json is valid
+  // Test 4: Output format flag
+  await test('Output format flag', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    
+    // Test JSON output
+    const { stdout: jsonOutput } = await execAsync(`node "${cliPath}" stats --output json`);
+    try {
+      const parsed = JSON.parse(jsonOutput);
+      assert(parsed.statistics, 'JSON output should have statistics object');
+      assert(typeof parsed.statistics.sessions === 'number', 'Should have numeric session count');
+    } catch (e) {
+      throw new Error('Output should be valid JSON');
+    }
+    
+    // Test YAML output
+    const { stdout: yamlOutput } = await execAsync(`node "${cliPath}" stats --output yaml`);
+    assert(yamlOutput.includes('statistics:'), 'YAML output should have statistics section');
+    assert(yamlOutput.includes('sessions:'), 'YAML output should have sessions field');
+    
+    // Test invalid format
+    try {
+      await execAsync(`node "${cliPath}" stats --output xml`);
+      assert(false, 'Should fail with invalid format');
+    } catch (error) {
+      assert(error.stderr.includes('Invalid output format'), 'Should show error for invalid format');
+    }
+  });
+
+  // Test 5: Package.json is valid
   await test('Package.json is valid', () => {
     const pkgPath = path.join(packageRoot, 'package.json');
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
@@ -101,7 +129,7 @@ async function runTests() {
     assert(pkg.type === 'module', 'Package should use ES modules');
   });
 
-  // Test 5: Initialize memory system
+  // Test 6: Initialize memory system
   await test('Memory initialization', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" init "Test Project"`);
@@ -112,7 +140,7 @@ async function runTests() {
     assert(fs.existsSync('CLAUDE.md'), 'CLAUDE.md should be created');
   });
 
-  // Test 6: Memory file structure
+  // Test 7: Memory file structure
   await test('Memory file structure', () => {
     const memoryData = JSON.parse(fs.readFileSync('.claude/memory.json', 'utf8'));
 
@@ -124,7 +152,7 @@ async function runTests() {
     assert(memoryData.projectName === 'Test Project', 'Should store project name');
   });
 
-  // Test 7: Stats command
+  // Test 8: Stats command
   await test('Stats command', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" stats`);
@@ -134,7 +162,7 @@ async function runTests() {
     assert(stdout.includes('Decisions:'), 'Should show decision count');
   });
 
-  // Test 8: Decision recording
+  // Test 9: Decision recording
   await test('Decision recording', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" decision "Use React" "Better ecosystem" "Vue,Angular"`);
@@ -148,7 +176,7 @@ async function runTests() {
     assert(reactDecision, 'Should store decision text');
   });
 
-  // Test 9: Pattern learning
+  // Test 10: Pattern learning
   await test('Pattern learning', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" pattern "Test first" "Prevents bugs" "0.9"`);
@@ -161,7 +189,7 @@ async function runTests() {
     assert(lastPattern.pattern === 'Test first', 'Should store pattern name');
   });
 
-  // Test 10: Search functionality
+  // Test 11: Search functionality
   await test('Search functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" search "React"`);
@@ -170,7 +198,7 @@ async function runTests() {
     assert(stdout.includes('Use React'), 'Should find recorded decision');
   });
 
-  // Test 11: CLAUDE.md generation
+  // Test 12: CLAUDE.md generation
   await test('CLAUDE.md generation', async() => {
     // Disable token optimization to ensure all patterns show
     if (fs.existsSync('.claude/config.json')) {
@@ -191,7 +219,7 @@ async function runTests() {
     assert(claudeContent.includes('Test first'), 'Should include learned patterns');
   });
 
-  // Test 12: Backup functionality
+  // Test 13: Backup functionality
   await test('Backup functionality', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" backup`);
@@ -203,7 +231,7 @@ async function runTests() {
     assert(backupDirs.length > 0, 'Should create backup directory');
   });
 
-  // Test 13: Context files generation
+  // Test 14: Context files generation
   await test('Context files generation', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
 
@@ -227,7 +255,7 @@ async function runTests() {
     assert(knowledgeContent.includes('## testing'), 'Knowledge file should have category section');
   });
 
-  // Test 14: Context files update on changes
+  // Test 15: Context files update on changes
   await test('Context files update on changes', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
 

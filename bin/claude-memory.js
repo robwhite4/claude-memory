@@ -58,11 +58,14 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.j
 
 // Global quiet mode flag
 let globalQuietMode = false;
+// Global output format
+let globalOutputFormat = 'text';
 
-// Helper to create memory instance with quiet mode
+// Helper to create memory instance with quiet mode and output format
 function createMemory(projectPath, projectName = null, options = {}) {
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
+  memory.outputFormat = globalOutputFormat;
   return memory;
 }
 
@@ -78,6 +81,7 @@ class ClaudeMemory {
     this.currentSession = null;
     this.options = options;
     this.quietMode = false; // Can be set externally
+    this.outputFormat = 'text'; // Can be set externally
 
     this.ensureDirectories();
     this.loadConfig();
@@ -1120,31 +1124,60 @@ const commands = {
     const targetPath = projectPath || process.cwd();
 
     try {
-      const memory = new ClaudeMemory(targetPath);
+      const memory = createMemory(targetPath);
       const stats = memory.getMemoryStats();
-
-      console.log('\n📊 Claude Memory Statistics\n');
-      console.log(`Sessions: ${stats.sessions}`);
-      console.log(`Decisions: ${stats.decisions}`);
-      console.log(`Patterns: ${stats.patterns}`);
-      console.log(`Tasks: ${stats.tasks}`);
-      console.log(`Actions: ${stats.actions}`);
-      console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
-
       const recentSessions = memory.getSessionHistory(3);
-      if (recentSessions.length > 0) {
-        console.log('\n🕒 Recent Sessions:');
-        recentSessions.forEach(s => {
-          console.log(`  • ${s.name} (${s.startTime.split('T')[0]})`);
-        });
-      }
-
       const recentDecisions = memory.getRecentDecisions(3);
-      if (recentDecisions.length > 0) {
-        console.log('\n🤔 Recent Decisions:');
-        recentDecisions.forEach(d => {
-          console.log(`  • ${d.decision}`);
-        });
+
+      // Structure data for different output formats
+      const statsData = {
+        statistics: {
+          sessions: stats.sessions,
+          decisions: stats.decisions,
+          patterns: stats.patterns,
+          tasks: stats.tasks,
+          actions: stats.actions,
+          knowledgeItems: stats.totalKnowledgeItems,
+          knowledgeCategories: stats.knowledgeCategories
+        },
+        recentSessions: recentSessions.map(s => ({
+          name: s.name,
+          date: s.startTime.split('T')[0]
+        })),
+        recentDecisions: recentDecisions.map(d => ({
+          decision: d.decision,
+          timestamp: d.timestamp
+        }))
+      };
+
+      // Output based on format
+      if (globalOutputFormat === 'json') {
+        output(formatOutput(statsData));
+      } else if (globalOutputFormat === 'yaml') {
+        output(formatOutput(statsData));
+      } else {
+        // Text format (default)
+        console.log('\n📊 Claude Memory Statistics\n');
+        console.log(`Sessions: ${stats.sessions}`);
+        console.log(`Decisions: ${stats.decisions}`);
+        console.log(`Patterns: ${stats.patterns}`);
+        console.log(`Tasks: ${stats.tasks}`);
+        console.log(`Actions: ${stats.actions}`);
+        console.log(`Knowledge Items: ${stats.totalKnowledgeItems} (${stats.knowledgeCategories} categories)`);
+
+        if (recentSessions.length > 0) {
+          console.log('\n🕒 Recent Sessions:');
+          recentSessions.forEach(s => {
+            console.log(`  • ${s.name} (${s.startTime.split('T')[0]})`);
+          });
+        }
+
+        if (recentDecisions.length > 0) {
+          console.log('\n🤔 Recent Decisions:');
+          recentDecisions.forEach(d => {
+            console.log(`  • ${d.decision}`);
+          });
+        }
       }
     } catch (error) {
       if (error.message.includes('not initialized')) {
@@ -1162,7 +1195,7 @@ const commands = {
   async search(...args) {
     let query = null;
     let projectPath = null;
-    let outputFormat = 'text';
+    let outputFormat = globalOutputFormat; // Use global default
     let typeFilter = null;
     let limit = null;
 
@@ -1170,7 +1203,7 @@ const commands = {
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (arg === '--json') {
-        outputFormat = 'json';
+        outputFormat = 'json'; // Override global setting
       } else if (arg === '--type' && args[i + 1]) {
         typeFilter = args[i + 1];
         i++;
@@ -2290,6 +2323,7 @@ UTILITIES:
 
 GLOBAL FLAGS:
   --quiet, -q                            Suppress non-essential output
+  --output, -o <format>                  Output format: json, text, yaml (default: text)
   --version, -v                          Show version number
 
 GET DETAILED HELP:
@@ -2607,11 +2641,26 @@ const [,, command, ...args] = process.argv;
 
 // Check for global flags
 const cleanArgs = [];
+let outputFormat = 'text'; // default format
 
 // Process global flags
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--quiet' || args[i] === '-q') {
     globalQuietMode = true;
+  } else if (args[i] === '--output' || args[i] === '-o') {
+    // Next argument should be the format
+    if (i + 1 < args.length && !args[i + 1].startsWith('-')) {
+      outputFormat = args[i + 1].toLowerCase();
+      i++; // Skip the format value
+      if (!['json', 'text', 'yaml'].includes(outputFormat)) {
+        console.error(`❌ Invalid output format: ${outputFormat}. Valid options: json, text, yaml`);
+        process.exit(1);
+      }
+      globalOutputFormat = outputFormat;
+    } else {
+      console.error('❌ --output flag requires a format: json, text, or yaml');
+      process.exit(1);
+    }
   } else {
     cleanArgs.push(args[i]);
   }
@@ -2627,6 +2676,49 @@ const log = (message) => {
 // Helper function for essential output (always shown)
 const output = (message) => {
   console.log(message);
+};
+
+// Helper function for formatted output
+const formatOutput = (data, format = globalOutputFormat) => {
+  switch (format) {
+    case 'json':
+      return JSON.stringify(data, null, 2);
+    case 'yaml':
+      // Simple YAML formatter for basic data structures
+      return formatAsYaml(data);
+    case 'text':
+    default:
+      // Return as-is for text format (caller should handle text formatting)
+      return data;
+  }
+};
+
+// Simple YAML formatter
+const formatAsYaml = (obj, indent = 0) => {
+  const spaces = ' '.repeat(indent);
+  let yaml = '';
+  
+  if (Array.isArray(obj)) {
+    obj.forEach(item => {
+      if (typeof item === 'object' && item !== null) {
+        yaml += `${spaces}-\n${formatAsYaml(item, indent + 2)}`;
+      } else {
+        yaml += `${spaces}- ${item}\n`;
+      }
+    });
+  } else if (typeof obj === 'object' && obj !== null) {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        yaml += `${spaces}${key}:\n${formatAsYaml(value, indent + 2)}`;
+      } else {
+        yaml += `${spaces}${key}: ${value}\n`;
+      }
+    });
+  } else {
+    yaml += `${spaces}${obj}\n`;
+  }
+  
+  return yaml;
 };
 
 // Handle version flag
