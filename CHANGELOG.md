@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1] - 2025-06-07
+
+### Fixed
+- Corrected `package.json` main field pointing to non-existent `src/memory.js`
+- Added missing `.npmignore` file for cleaner npm packages
+- Added missing `RELEASE_NOTES_1.6.0.md` to version control
+- Included v1.7.0 context files in repository for development continuity
+
+### Changed
+- Updated `.gitignore` with better Claude Memory patterns
+- Clarified version control guidance in README
+- Removed stale export file from repository
+
 ## [1.8.0] - 2025-06-06
 
 ### Added
