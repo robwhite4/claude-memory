@@ -83,6 +83,12 @@
 
 ## Recent Decisions Log
 
+### 2025-06-07: Create GitHub Wiki
+**Decision**: Create GitHub Wiki
+**Reasoning**: Create comprehensive GitHub Wiki to document project architecture, development workflows, planning roadmap, and detailed guides. This provides better organization than cramming everything into README and gives space for in-depth documentation that helps contributors and advanced users.
+**Alternatives Considered**: Keep docs in repo only, Use GitHub Discussions, Expand README instead
+
+
 ### 2025-06-07: Plan before code
 **Decision**: Plan before code
 **Reasoning**: All development work should start with proper GitHub planning: milestones for releases, issues for features/bugs, and project boards for tracking. This ensures transparency, enables collaboration, and maintains professional standards.
@@ -93,12 +99,6 @@
 **Decision**: Branch cleanup strategy
 **Reasoning**: Enable GitHub auto-delete for merged branches and clean up existing stale branches. This prevents repository clutter and makes it easier to see active work. Auto-delete is safer than manual cleanup.
 **Alternatives Considered**: Manual cleanup only, Leave branches as history, Create cleanup script
-
-
-### 2025-06-07: Release v1.8.2 for documentation
-**Decision**: Release v1.8.2 for documentation
-**Reasoning**: Documentation changes need to reach NPM users. Multi-machine and team guidance is important enough to warrant a patch release. Following hotfix pattern for already-merged changes.
-**Alternatives Considered**: Skip release, Wait for next feature, Bundle with v1.9.0
 
 
 ## Commands & Workflows
@@ -138,7 +138,7 @@ claude-memory search "query"
 For complete information without truncation:
 - 📚 **Knowledge Base**: `.claude/context/knowledge.md` (39 items)
 - 🧩 **All Patterns**: `.claude/context/patterns.md` (43 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (53 decisions)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (54 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (14 tasks)
 
 ## Session Continuation
