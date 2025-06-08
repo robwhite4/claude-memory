@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-07T23:37:40.384Z | 43 total patterns*
+*Generated: 2025-06-08T22:46:33.960Z | 44 total patterns*
 
 ## Summary
-- Open Patterns: 34
+- Open Patterns: 35
 - Resolved Patterns: 9
 
 ## Open Patterns
@@ -238,6 +238,13 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-07T22:44:26.594Z
 - **Last Seen**: 2025-06-07T22:44:26.594Z
+- **Frequency**: 1
+
+#### Develop branch workflow (ID: 91f2f4a7)
+- **Description**: Use develop branch to collect all release changes before merging to main. Create feature branches from develop, PR to develop, then final PR from develop to main for release.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-08T22:14:48.595Z
+- **Last Seen**: 2025-06-08T22:14:48.595Z
 - **Frequency**: 1
 
 ## Resolved Patterns

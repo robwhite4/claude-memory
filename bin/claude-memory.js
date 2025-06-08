@@ -62,9 +62,19 @@ let globalQuietMode = false;
 let globalOutputFormat = 'text';
 // Global verbose mode flag
 let globalVerboseMode = false;
+// Global config path override
+let globalConfigPath = null;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
+  // Check for config path from environment variable or global configPath
+  const envConfigPath = process.env.CLAUDE_MEMORY_CONFIG;
+  const finalConfigPath = globalConfigPath || envConfigPath;
+  
+  if (finalConfigPath) {
+    options.configPath = finalConfigPath;
+  }
+  
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;
@@ -79,7 +89,14 @@ class ClaudeMemory {
     this.projectName = projectName;
     this.claudeDir = path.join(projectRoot, '.claude');
     this.memoryFile = path.join(this.claudeDir, 'memory.json');
-    this.configFile = path.join(this.claudeDir, 'config.json');
+    
+    // Allow custom config path from options
+    if (options.configPath) {
+      this.configFile = path.resolve(options.configPath);
+    } else {
+      this.configFile = path.join(this.claudeDir, 'config.json');
+    }
+    
     this.claudeFile = path.join(projectRoot, 'CLAUDE.md');
     this.currentSession = null;
     this.options = options;
@@ -166,12 +183,24 @@ class ClaudeMemory {
       if (fs.existsSync(this.configFile)) {
         const userConfig = JSON.parse(fs.readFileSync(this.configFile, 'utf8'));
         this.config = { ...defaultConfig, ...userConfig };
+        
+        // Show verbose message if using custom config path
+        if (this.options.configPath) {
+          this.verbose(`Using custom config file: ${this.configFile}`);
+          this.verbose(`Loaded config: ${JSON.stringify(this.config, null, 2)}`);
+        }
       } else {
         this.config = defaultConfig;
-        fs.writeFileSync(this.configFile, JSON.stringify(defaultConfig, null, 2));
+        // Only create default config in .claude directory
+        if (!this.options.configPath) {
+          fs.writeFileSync(this.configFile, JSON.stringify(defaultConfig, null, 2));
+        }
       }
     } catch (error) {
       this.config = defaultConfig;
+      if (this.options.configPath) {
+        this.verbose(`Failed to load custom config: ${error.message}`);
+      }
     }
   }
 
@@ -2340,7 +2369,11 @@ GLOBAL FLAGS:
   --output, -o <format>                  Output format: json, text, yaml (default: text)
   --no-color                             Disable colored output (for CI/CD)
   --verbose                              Show detailed execution information
+  --config, -c <path>                    Use custom config file path
   --version, -v                          Show version number
+
+ENVIRONMENT VARIABLES:
+  CLAUDE_MEMORY_CONFIG                   Path to custom config file
 
 GET DETAILED HELP:
   cmem help task                    📝 Task management commands and workflows
@@ -2660,6 +2693,7 @@ const cleanArgs = [];
 let command = null;
 let outputFormat = 'text'; // default format
 let noColor = false;
+let configPath = null; // custom config path
 
 // Check for early exit flags first
 if (allArgs.includes('--version') || allArgs.includes('-v')) {
@@ -2691,6 +2725,16 @@ for (let i = 0; i < allArgs.length; i++) {
     noColor = true;
   } else if (arg === '--verbose') {
     globalVerboseMode = true;
+  } else if (arg === '--config' || arg === '-c') {
+    // Next argument should be the config path
+    if (i + 1 < allArgs.length && !allArgs[i + 1].startsWith('-')) {
+      configPath = allArgs[i + 1];
+      globalConfigPath = configPath;
+      i++; // Skip the config path value
+    } else {
+      console.error('❌ --config flag requires a path to config file');
+      process.exit(1);
+    }
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;
