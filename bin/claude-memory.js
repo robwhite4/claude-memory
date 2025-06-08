@@ -62,13 +62,18 @@ let globalQuietMode = false;
 let globalOutputFormat = 'text';
 // Global verbose mode flag
 let globalVerboseMode = false;
+// Global dry run mode flag
+let globalDryRunMode = false;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
+  // Pass dry run mode through options so it's available in constructor
+  options.dryRunMode = globalDryRunMode;
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;
   memory.verboseMode = globalVerboseMode;
+  memory.dryRunMode = globalDryRunMode;
   return memory;
 }
 
@@ -86,6 +91,7 @@ class ClaudeMemory {
     this.quietMode = false; // Can be set externally
     this.outputFormat = 'text'; // Can be set externally
     this.verboseMode = false; // Can be set externally
+    this.dryRunMode = options.dryRunMode || false; // Set from options
 
     this.ensureDirectories();
     this.loadConfig();
@@ -131,11 +137,23 @@ class ClaudeMemory {
 
     dirs.forEach(dir => {
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        if (this.dryRunMode) {
+          if (this.verboseMode) {
+            console.log('[DRY RUN] Would create directory:', dir);
+          }
+        } else {
+          fs.mkdirSync(dir, { recursive: true });
+        }
       }
     });
 
     if (!fs.existsSync(this.memoryFile)) {
+      if (this.dryRunMode) {
+        if (this.verboseMode) {
+          console.log('[DRY RUN] Would create initial memory.json file');
+        }
+        return;
+      }
       const initialMemory = {
         sessions: [],
         decisions: [],
@@ -168,7 +186,11 @@ class ClaudeMemory {
         this.config = { ...defaultConfig, ...userConfig };
       } else {
         this.config = defaultConfig;
-        fs.writeFileSync(this.configFile, JSON.stringify(defaultConfig, null, 2));
+        if (!this.dryRunMode) {
+          fs.writeFileSync(this.configFile, JSON.stringify(defaultConfig, null, 2));
+        } else if (this.verboseMode) {
+          console.log('[DRY RUN] Would create config.json with default settings');
+        }
       }
     } catch (error) {
       this.config = defaultConfig;
@@ -176,6 +198,24 @@ class ClaudeMemory {
   }
 
   loadMemory() {
+    if (this.dryRunMode && !fs.existsSync(this.memoryFile)) {
+      // In dry run mode, initialize empty memory without creating file
+      this.sessions = [];
+      this.decisions = [];
+      this.patterns = [];
+      this.actions = [];
+      this.knowledge = {};
+      this.tasks = [];
+      this.metadata = {
+        created: new Date().toISOString(),
+        version: packageJson.version,
+        projectName: this.projectName,
+        lastBackup: null,
+        actionsSinceBackup: 0
+      };
+      return;
+    }
+
     try {
       const data = JSON.parse(fs.readFileSync(this.memoryFile, 'utf8'));
       this.sessions = data.sessions || [];
@@ -220,6 +260,13 @@ class ClaudeMemory {
   }
 
   saveMemory() {
+    if (this.dryRunMode) {
+      if (this.verboseMode) {
+        console.log('[DRY RUN] Would save memory to:', this.memoryFile);
+      }
+      return;
+    }
+
     const data = {
       sessions: this.sessions,
       decisions: this.decisions,
@@ -296,7 +343,13 @@ class ClaudeMemory {
         const stats = fs.statSync(backupPath);
 
         if (now - stats.mtime.getTime() > maxAge) {
-          fs.rmSync(backupPath, { recursive: true, force: true });
+          if (this.dryRunMode) {
+            if (this.verboseMode) {
+              console.log(`[DRY RUN] Would delete old backup: ${backup}`);
+            }
+          } else {
+            fs.rmSync(backupPath, { recursive: true, force: true });
+          }
         }
       });
     }
@@ -577,6 +630,13 @@ class ClaudeMemory {
   }
 
   backup() {
+    if (this.dryRunMode) {
+      if (this.verboseMode) {
+        console.log('[DRY RUN] Would create backup in .claude/backups/');
+      }
+      return;
+    }
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupDir = path.join(this.claudeDir, 'backups', timestamp);
 
@@ -613,6 +673,14 @@ class ClaudeMemory {
   }
 
   updateClaudeFile() {
+    if (this.dryRunMode) {
+      if (this.verboseMode) {
+        console.log('[DRY RUN] Would update CLAUDE.md file');
+        console.log('[DRY RUN] Would generate context files in .claude/context/');
+      }
+      return;
+    }
+
     const content = this.generateClaudeContent();
     this.updateClaudeFileWithMerge(content);
 
@@ -753,6 +821,13 @@ class ClaudeMemory {
   }
 
   generateContextFiles() {
+    if (this.dryRunMode) {
+      if (this.verboseMode) {
+        console.log('[DRY RUN] Would generate context files: knowledge.md, patterns.md, decisions.md, tasks.md');
+      }
+      return;
+    }
+
     const contextDir = path.join(this.claudeDir, 'context');
 
     try {
@@ -1087,18 +1162,29 @@ const commands = {
       projectName = path.basename(projectPath);
     }
 
+    if (globalDryRunMode) {
+      log('🏃 DRY RUN MODE - No changes will be made');
+    }
     log('🧠 Initializing Claude Memory...');
     log(`📁 Project: ${projectName}`);
     log(`📂 Path: ${projectPath}`);
 
     // Ensure project directory exists
     if (!fs.existsSync(projectPath)) {
-      verbose(`Creating project directory: ${projectPath}`);
-      fs.mkdirSync(projectPath, { recursive: true });
+      if (globalDryRunMode) {
+        verbose(`[DRY RUN] Would create project directory: ${projectPath}`);
+      } else {
+        verbose(`Creating project directory: ${projectPath}`);
+        fs.mkdirSync(projectPath, { recursive: true });
+      }
     }
 
-    process.chdir(projectPath);
-    verbose(`Changed to project directory: ${projectPath}`);
+    if (!globalDryRunMode) {
+      process.chdir(projectPath);
+      verbose(`Changed to project directory: ${projectPath}`);
+    } else {
+      verbose(`[DRY RUN] Would change to project directory: ${projectPath}`);
+    }
 
     // Initialize memory system
     verbose('Creating memory system instance...');
@@ -2128,8 +2214,12 @@ const commands = {
         else if (!isNaN(value)) value = parseFloat(value);
 
         config[key] = value;
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-        console.log(`✅ Config updated: ${key} = ${value}`);
+        if (globalDryRunMode) {
+          console.log(`[DRY RUN] Would update config: ${key} = ${value}`);
+        } else {
+          fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+          console.log(`✅ Config updated: ${key} = ${value}`);
+        }
       } catch (error) {
         console.error('❌ Error setting config:', error.message);
       }
@@ -2340,6 +2430,7 @@ GLOBAL FLAGS:
   --output, -o <format>                  Output format: json, text, yaml (default: text)
   --no-color                             Disable colored output (for CI/CD)
   --verbose                              Show detailed execution information
+  --dry-run                              Preview changes without executing them
   --version, -v                          Show version number
 
 GET DETAILED HELP:
@@ -2625,7 +2716,11 @@ For other topics: cmem help <topic>`);
 !CLAUDE.md
 `;
       gitignoreContent += claudeIgnore;
-      fs.writeFileSync(gitignorePath, gitignoreContent);
+      if (globalDryRunMode) {
+        verbose('[DRY RUN] Would update .gitignore with Claude Memory patterns');
+      } else {
+        fs.writeFileSync(gitignorePath, gitignoreContent);
+      }
     }
   },
 
@@ -2642,8 +2737,12 @@ For other topics: cmem help <topic>`);
           pkg.scripts['memory:stats'] = 'claude-memory stats';
           pkg.scripts['memory:search'] = 'claude-memory search';
 
-          fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-          console.log('✅ Added memory scripts to package.json');
+          if (globalDryRunMode) {
+            console.log('[DRY RUN] Would add memory scripts to package.json');
+          } else {
+            fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
+            console.log('✅ Added memory scripts to package.json');
+          }
         }
       } catch (error) {
         // Ignore JSON parse errors
@@ -2691,6 +2790,8 @@ for (let i = 0; i < allArgs.length; i++) {
     noColor = true;
   } else if (arg === '--verbose') {
     globalVerboseMode = true;
+  } else if (arg === '--dry-run') {
+    globalDryRunMode = true;
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;

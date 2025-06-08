@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-06-08
+
+### Added
+- **--dry-run flag** (Issue #22)
+  - Preview changes without executing them
+  - Works globally across all commands
+  - Shows clear "DRY RUN MODE" indicator
+  - Prevents all file system changes and memory updates
+  - Verbose mode shows detailed "Would" messages
+  - Comprehensive test coverage for dry run behavior
+
+### Changed
+- **Code Refactoring** (Issue #32)
+  - Modularized monolithic `bin/claude-memory.js` into smaller components
+  - Extracted `ClaudeMemory` class to `lib/ClaudeMemory.js` (1,016 lines)
+  - Created `lib/utils/` directory with focused modules:
+    - `validators.js` - Input validation functions
+    - `sanitizers.js` - Security sanitization functions
+    - `formatters.js` - Output formatting functions
+  - Reduced main file from 2,828 to 1,770 lines (37% reduction)
+  - No breaking changes - all functionality preserved
+
+### Documentation
+- Updated README with code structure section
+- Added comprehensive test file for --dry-run functionality
+
 ## [1.8.2] - 2025-06-07
 
 ### Added
