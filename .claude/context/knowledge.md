@@ -1,11 +1,11 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T23:37:40.383Z | 39 items across 10 categories*
+*Generated: 2025-06-08T21:40:58.704Z | 42 items across 10 categories*
 
 ## Navigation
-- [architecture](#architecture) (1 items)
+- [architecture](#architecture) (3 items)
 - [design](#design) (1 items)
 - [features](#features) (2 items)
-- [feedback](#feedback) (1 items)
+- [feedback](#feedback) (2 items)
 - [implementation](#implementation) (1 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (3 items)
@@ -17,6 +17,14 @@
 ### Session_Architecture
 **Value**: Sessions stored in memory.json, not individual files. Sessions folder exists but unused in current design. Session management uses in-memory storage with auto-session rotation every 4 hours. Auto-backup creates snapshots including sessions.
 **Updated**: 2025-06-05T00:41:29.579Z
+
+### code_structure_v1.9
+**Value**: Refactored main file into modular structure: bin/claude-memory.js (1,770 lines), lib/ClaudeMemory.js (1,016 lines), lib/utils/ (134 lines total). No breaking changes, all tests passing.
+**Updated**: 2025-06-08T21:40:58.681Z
+
+### unified_design_v1.10.0
+**Value**: Created unified design proposal addressing user feedback. Phase 1 (v1.10.0) focuses on export/import commands and bulk operations as foundation. Phase 2 (v1.11.0) adds knowledge editing and task dependencies. Phase 3 (v1.12.0) implements GitHub integration. All features build on shared JSON schemas to avoid duplication.
+**Updated**: 2025-06-08T02:23:59.156Z
 
 ## design
 ### CLAUDE_Merge_Strategy
@@ -36,6 +44,10 @@
 ### Original_User_Feedback
 **Value**: Claude-Memory v1.4.0 usability feedback covering 5 main areas: 1) Pattern management confusion with syntax issues, missing list command, no pattern IDs shown 2) Missing knowledge management system for storing implementation details 3) File sync issues with CLAUDE.md auto-updates overwriting manual edits 4) Limited search with no type filtering, sorting, or result formatting 5) Command discovery problems with long help text and limited examples. User requested subcommands, better pattern syntax, knowledge management, CLAUDE.md merge strategy, and enhanced search with type filtering and JSON output.
 **Updated**: 2025-06-05T00:09:03.995Z
+
+### v1.8.2_user_feedback
+**Value**: Comprehensive feedback on v1.8.2 received 2025-06-07. WHAT WORKED WELL: 1) Documentation updates were helpful and clear, 2) Branch cleanup improved repo organization, 3) Multi-machine sync guidance was practical, 4) Team collaboration section addressed real needs. AREAS FOR IMPROVEMENT: 1) Installation - npm install warnings about funding and vulnerabilities need addressing, 2) First-time setup - unclear error messages when no .claude directory exists, 3) Performance - noticeable lag with large memory.json files (1MB), 4) Error handling - cryptic errors for permission issues and file conflicts. SUGGESTED IMPROVEMENTS: 1) Setup wizard - interactive first-time setup to create directories and initial config, 2) Performance optimization - implement pagination or chunking for large memory files, 3) Better error messages - user-friendly explanations with suggested fixes, 4) Health check command - verify installation and diagnose common issues. OVERALL RATING: 7/10 - Good foundation with soli
+**Updated**: 2025-06-08T00:53:30.993Z
 
 ## implementation
 ### Issue_8_Implementation

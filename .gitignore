@@ -58,3 +58,5 @@ coverage/
 *.export.json
 *-export-*.json
 claude-memory-export-*.json
+claude-memory.wiki/
+wiki-repo/
