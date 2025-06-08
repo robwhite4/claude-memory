@@ -37,9 +37,16 @@ let globalQuietMode = false;
 let globalOutputFormat = 'text';
 // Global verbose mode flag
 let globalVerboseMode = false;
+// Global dry run mode flag
+let globalDryRunMode = false;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
+  // Pass dry run mode through options
+  if (globalDryRunMode) {
+    options.dryRun = true;
+  }
+  
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;
@@ -1314,6 +1321,7 @@ GLOBAL FLAGS:
   --output, -o <format>                  Output format: json, text, yaml (default: text)
   --no-color                             Disable colored output (for CI/CD)
   --verbose                              Show detailed execution information
+  --dry-run                              Preview changes without executing them
   --version, -v                          Show version number
 
 GET DETAILED HELP:
@@ -1665,6 +1673,8 @@ for (let i = 0; i < allArgs.length; i++) {
     noColor = true;
   } else if (arg === '--verbose') {
     globalVerboseMode = true;
+  } else if (arg === '--dry-run') {
+    globalDryRunMode = true;
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;
@@ -1672,6 +1682,11 @@ for (let i = 0; i < allArgs.length; i++) {
     // Remaining arguments for the command
     cleanArgs.push(arg);
   }
+}
+
+// Show dry run mode indicator
+if (globalDryRunMode && !globalQuietMode) {
+  console.log('🔍 DRY RUN MODE - No changes will be made');
 }
 
 // Color stripping utility

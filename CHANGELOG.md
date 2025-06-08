@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-06-08
+
+### Added
+- Global `--dry-run` flag to preview changes without executing them (Issue #22)
+- Dry run checks in all file write operations
+- Verbose mode shows detailed "Would" messages in dry run mode
+- Comprehensive test coverage for dry run functionality
+
+### Changed
+- Refactored code into modular structure (PR #33)
+- Main file split into bin/claude-memory.js and lib/ modules
+- Improved maintainability while preserving all functionality
+
 ## [1.8.2] - 2025-06-07
 
 ### Added
