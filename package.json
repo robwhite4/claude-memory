@@ -55,11 +55,14 @@
   "homepage": "https://github.com/robwhite4/claude-memory#readme",
   "files": [
     "bin/",
+    "lib/",
     "README.md",
     "postinstall.js"
   ],
   "preferGlobal": true,
-  "dependencies": {},
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
     "c8": "^8.0.1",
     "eslint": "^8.57.0",

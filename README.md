@@ -251,6 +251,25 @@ cmem config set tokenOptimization false
 cmem config set silentMode true
 ```
 
+## 🏗️ Code Structure
+
+The codebase is organized into modular components for maintainability:
+
+```
+claude-memory/
+├── bin/
+│   └── claude-memory.js     # CLI entry point (1,770 lines)
+├── lib/
+│   ├── ClaudeMemory.js      # Core memory management (1,016 lines)
+│   └── utils/
+│       ├── validators.js     # Input validation functions
+│       ├── sanitizers.js     # Security sanitization
+│       └── formatters.js     # Output formatting
+└── package.json              # NPM configuration
+```
+
+This modular structure makes the codebase easier to maintain and extend while preserving all functionality.
+
 ## 📊 Advanced Features
 
 ### Pattern Resolution
