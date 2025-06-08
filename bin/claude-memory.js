@@ -39,12 +39,22 @@ let globalOutputFormat = 'text';
 let globalVerboseMode = false;
 // Global dry run mode flag
 let globalDryRunMode = false;
+// Global config path override
+let globalConfigPath = null;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
   // Pass dry run mode through options
   if (globalDryRunMode) {
     options.dryRun = true;
+  }
+  
+  // Check for config path from environment variable or global configPath
+  const envConfigPath = process.env.CLAUDE_MEMORY_CONFIG;
+  const finalConfigPath = globalConfigPath || envConfigPath;
+  
+  if (finalConfigPath) {
+    options.configPath = finalConfigPath;
   }
   
   const memory = new ClaudeMemory(projectPath, projectName, options);
@@ -1322,7 +1332,11 @@ GLOBAL FLAGS:
   --no-color                             Disable colored output (for CI/CD)
   --verbose                              Show detailed execution information
   --dry-run                              Preview changes without executing them
+  --config, -c <path>                    Use custom config file path
   --version, -v                          Show version number
+
+ENVIRONMENT VARIABLES:
+  CLAUDE_MEMORY_CONFIG                   Path to custom config file
 
 GET DETAILED HELP:
   cmem help task                    📝 Task management commands and workflows
@@ -1675,6 +1689,15 @@ for (let i = 0; i < allArgs.length; i++) {
     globalVerboseMode = true;
   } else if (arg === '--dry-run') {
     globalDryRunMode = true;
+  } else if (arg === '--config' || arg === '-c') {
+    // Next argument should be the config path
+    if (i + 1 < allArgs.length && !allArgs[i + 1].startsWith('-')) {
+      globalConfigPath = allArgs[i + 1];
+      i++; // Skip the config path value
+    } else {
+      console.error('❌ --config flag requires a path to config file');
+      process.exit(1);
+    }
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;

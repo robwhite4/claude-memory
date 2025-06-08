@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dry run checks in all file write operations
 - Verbose mode shows detailed "Would" messages in dry run mode
 - Comprehensive test coverage for dry run functionality
+- Global `--config` flag to specify custom config file path (Issue #23)
+- `CLAUDE_MEMORY_CONFIG` environment variable support
+- CLI flag takes precedence over environment variable
 
 ### Changed
 - Refactored code into modular structure (PR #33)
