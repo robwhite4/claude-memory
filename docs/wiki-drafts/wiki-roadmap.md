@@ -2,20 +2,20 @@
 
 This roadmap outlines the planned development for Claude Memory, organized by version milestones.
 
-## 🎯 Current Focus: v1.9.0
-**Target Date**: June 14, 2025  
-**Theme**: Priority 2 CLI Flags
+## 🎯 Current Focus: v1.10.0
+**Target Date**: June 21, 2025  
+**Theme**: Export/Import & Bulk Operations
 
 ### Planned Features
-- [ ] [#22](https://github.com/robwhite4/claude-memory/issues/22) - `--dry-run` flag
-- [ ] [#23](https://github.com/robwhite4/claude-memory/issues/23) - `--config` flag  
-- [ ] [#24](https://github.com/robwhite4/claude-memory/issues/24) - `--force` flag
-- [ ] [#25](https://github.com/robwhite4/claude-memory/issues/25) - `--debug` flag
+- [ ] [#27](https://github.com/robwhite4/claude-memory/issues/27) - Bulk task operations
+- [ ] [#29](https://github.com/robwhite4/claude-memory/issues/29) - Enhanced knowledge management
+- [ ] Export/import improvements
+- [ ] JSON schema standardization
 
 ### Goals
-- Complete CLI flag standardization
-- Improve scripting capabilities
-- Enhanced debugging support
+- Enable bulk workflow automation
+- Improve data portability
+- Foundation for v2.0 features
 
 ## 🚀 Future: v2.0.0
 **Target**: Q3 2025  
@@ -67,7 +67,14 @@ This roadmap outlines the planned development for Claude Memory, organized by ve
 
 ## 📊 Version History & Completed Features
 
-### v1.8.x Series (Current Stable)
+### v1.9.0 (Latest)
+- ✅ Global `--dry-run` flag (#22)
+- ✅ Global `--config` flag (#23)
+- ✅ Global `--force` flag (#24)
+- ✅ Global `--debug` flag (#25)
+- ✅ Code refactoring (#32)
+
+### v1.8.x Series
 - ✅ v1.8.2 - Multi-machine & team documentation
 - ✅ v1.8.1 - Repository housekeeping
 - ✅ v1.8.0 - Priority 1 CLI flags

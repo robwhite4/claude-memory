@@ -38,8 +38,8 @@ Claude Memory is a universal memory system that transforms AI conversations into
 
 ## 📊 Current Status
 
-- **Latest Version**: v1.8.2
-- **Next Release**: v1.9.0 (Priority 2 CLI Flags)
+- **Latest Version**: v1.9.0 (CLI Enhancements & Code Refactoring)
+- **Next Release**: v1.10.0 (Export/Import & Bulk Operations)
 - **Major Version Planning**: v2.0.0
 
 ## 🎯 Key Features
