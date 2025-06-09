@@ -41,12 +41,19 @@ let globalVerboseMode = false;
 let globalDryRunMode = false;
 // Global config path override
 let globalConfigPath = null;
+// Global force mode flag
+let globalForceMode = false;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
   // Pass dry run mode through options
   if (globalDryRunMode) {
     options.dryRun = true;
+  }
+
+  // Pass force mode through options
+  if (globalForceMode) {
+    options.force = true;
   }
 
   // Check for config path from environment variable or global configPath
@@ -1333,6 +1340,7 @@ GLOBAL FLAGS:
   --verbose                              Show detailed execution information
   --dry-run                              Preview changes without executing them
   --config, -c <path>                    Use custom config file path
+  --force, -f                            Skip confirmation prompts
   --version, -v                          Show version number
 
 ENVIRONMENT VARIABLES:
@@ -1698,6 +1706,8 @@ for (let i = 0; i < allArgs.length; i++) {
       console.error('❌ --config flag requires a path to config file');
       process.exit(1);
     }
+  } else if (arg === '--force' || arg === '-f') {
+    globalForceMode = true;
   } else if (!command && !arg.startsWith('-')) {
     // First non-flag argument is the command
     command = arg;
