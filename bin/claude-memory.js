@@ -48,15 +48,15 @@ function createMemory(projectPath, projectName = null, options = {}) {
   if (globalDryRunMode) {
     options.dryRun = true;
   }
-  
+
   // Check for config path from environment variable or global configPath
   const envConfigPath = process.env.CLAUDE_MEMORY_CONFIG;
   const finalConfigPath = globalConfigPath || envConfigPath;
-  
+
   if (finalConfigPath) {
     options.configPath = finalConfigPath;
   }
-  
+
   const memory = new ClaudeMemory(projectPath, projectName, options);
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;

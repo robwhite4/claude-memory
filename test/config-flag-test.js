@@ -14,7 +14,7 @@ const claudeMemoryPath = path.join(projectRoot, 'bin', 'claude-memory.js');
 
 // Test configuration
 const testConfig = {
-  projectName: "Test Project with Custom Config",
+  projectName: 'Test Project with Custom Config',
   autoSession: false,
   autoBackup: false,
   backupInterval: 50,
@@ -30,10 +30,12 @@ async function runTest() {
   const testConfigPath = path.join(projectRoot, 'test-config.json');
   fs.writeFileSync(testConfigPath, JSON.stringify(testConfig, null, 2));
 
+  let altConfigPath; // Declare here for access in catch block
+
   try {
     // Test 1: CLI flag
     console.log('1️⃣ Testing CLI --config flag');
-    const { stdout: stdout1 } = await execAsync(
+    await execAsync(
       `node "${claudeMemoryPath}" --config "${testConfigPath}" --quiet stats`,
       { cwd: projectRoot }
     );
@@ -41,9 +43,9 @@ async function runTest() {
 
     // Test 2: Environment variable
     console.log('2️⃣ Testing CLAUDE_MEMORY_CONFIG environment variable');
-    const { stdout: stdout2 } = await execAsync(
+    await execAsync(
       `node "${claudeMemoryPath}" --quiet stats`,
-      { 
+      {
         cwd: projectRoot,
         env: { ...process.env, CLAUDE_MEMORY_CONFIG: testConfigPath }
       }
@@ -68,7 +70,7 @@ async function runTest() {
 
     // Test 4: Non-existent config file
     console.log('4️⃣ Testing non-existent config file');
-    const { stdout: stdout4 } = await execAsync(
+    await execAsync(
       `node "${claudeMemoryPath}" --config "non-existent.json" --quiet stats`,
       { cwd: projectRoot }
     );
@@ -76,13 +78,13 @@ async function runTest() {
 
     // Test 5: CLI flag overrides environment variable
     console.log('5️⃣ Testing CLI flag overrides environment variable');
-    const altConfigPath = path.join(projectRoot, 'alt-config.json');
-    const altConfig = { ...testConfig, projectName: "Alternative Config" };
+    altConfigPath = path.join(projectRoot, 'alt-config.json');
+    const altConfig = { ...testConfig, projectName: 'Alternative Config' };
     fs.writeFileSync(altConfigPath, JSON.stringify(altConfig, null, 2));
-    
-    const { stdout: stdout5 } = await execAsync(
+
+    await execAsync(
       `node "${claudeMemoryPath}" --config "${testConfigPath}" --quiet stats`,
-      { 
+      {
         cwd: projectRoot,
         env: { ...process.env, CLAUDE_MEMORY_CONFIG: altConfigPath }
       }
@@ -94,7 +96,6 @@ async function runTest() {
     fs.unlinkSync(altConfigPath);
 
     console.log('🎉 All --config flag tests passed!');
-
   } catch (error) {
     console.error('❌ Test failed:', error);
     // Cleanup on error
