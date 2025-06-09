@@ -43,6 +43,8 @@ let globalDryRunMode = false;
 let globalConfigPath = null;
 // Global force mode flag
 let globalForceMode = false;
+// Global debug mode flag
+let globalDebugMode = false;
 
 // Helper to create memory instance with global flags
 function createMemory(projectPath, projectName = null, options = {}) {
@@ -68,6 +70,7 @@ function createMemory(projectPath, projectName = null, options = {}) {
   memory.quietMode = globalQuietMode;
   memory.outputFormat = globalOutputFormat;
   memory.verboseMode = globalVerboseMode;
+  memory.debugMode = globalDebugMode;
   return memory;
 }
 
@@ -75,14 +78,18 @@ function createMemory(projectPath, projectName = null, options = {}) {
 
 const commands = {
   async init(projectName, projectPath = process.cwd()) {
+    debug('Init command called', { projectName, projectPath });
+
     // Handle various argument patterns
     if (projectName && (projectName.startsWith('/') || projectName.startsWith('.') || projectName.includes('/'))) {
       projectPath = projectName;
       projectName = path.basename(projectPath);
+      debug('Detected path-like project name, extracted name from path', { projectName, projectPath });
     }
 
     if (!projectName) {
       projectName = path.basename(projectPath);
+      debug('No project name provided, using directory name', { projectName });
     }
 
     log('🧠 Initializing Claude Memory...');
@@ -1341,6 +1348,7 @@ GLOBAL FLAGS:
   --dry-run                              Preview changes without executing them
   --config, -c <path>                    Use custom config file path
   --force, -f                            Skip confirmation prompts
+  --debug                                Show debug information for troubleshooting
   --version, -v                          Show version number
 
 ENVIRONMENT VARIABLES:
@@ -1697,6 +1705,8 @@ for (let i = 0; i < allArgs.length; i++) {
     globalVerboseMode = true;
   } else if (arg === '--dry-run') {
     globalDryRunMode = true;
+  } else if (arg === '--debug') {
+    globalDebugMode = true;
   } else if (arg === '--config' || arg === '-c') {
     // Next argument should be the config path
     if (i + 1 < allArgs.length && !allArgs[i + 1].startsWith('-')) {
@@ -1720,6 +1730,11 @@ for (let i = 0; i < allArgs.length; i++) {
 // Show dry run mode indicator
 if (globalDryRunMode && !globalQuietMode) {
   console.log('🔍 DRY RUN MODE - No changes will be made');
+}
+
+// Show debug mode indicator
+if (globalDebugMode && !globalQuietMode) {
+  console.log('🐛 DEBUG MODE - Detailed execution information will be shown');
 }
 
 // Color stripping utility
@@ -1753,6 +1768,18 @@ const verbose = (message) => {
   }
 };
 
+// Helper function for debug output
+const debug = (message, data = null) => {
+  if (globalDebugMode) {
+    const timestamp = new Date().toISOString();
+    const debugMsg = `[DEBUG ${timestamp}] ${message}`;
+    console.log(noColor ? stripColors(debugMsg) : debugMsg);
+    if (data !== null) {
+      console.log(noColor ? stripColors(JSON.stringify(data, null, 2)) : JSON.stringify(data, null, 2));
+    }
+  }
+};
+
 // Override console methods if no-color is enabled
 if (noColor) {
   const originalLog = console.log;
@@ -1768,6 +1795,22 @@ if (noColor) {
 }
 
 // Version flag is handled above in early exit checks
+
+// Debug command parsing
+debug('Command parsing complete', {
+  command,
+  args: cleanArgs,
+  flags: {
+    quiet: globalQuietMode,
+    output: globalOutputFormat,
+    verbose: globalVerboseMode,
+    dryRun: globalDryRunMode,
+    force: globalForceMode,
+    debug: globalDebugMode,
+    config: globalConfigPath,
+    noColor
+  }
+});
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {
@@ -1800,8 +1843,13 @@ try {
   if (commands[command].memory) {
     commands[command].memory.quietMode = globalQuietMode;
   }
+  debug(`Executing command: ${command}`, { args: cleanArgs });
   await commands[command](...cleanArgs);
 } catch (error) {
   console.error('❌ Error:', error.message);
+  if (globalDebugMode) {
+    console.error('\n[DEBUG] Full error details:');
+    console.error(error.stack);
+  }
   process.exit(1);
 }
