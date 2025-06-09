@@ -5,21 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.9.0] - 2025-06-08
+## [1.9.0] - 2025-06-09
 
 ### Added
 - Global `--dry-run` flag to preview changes without executing them (Issue #22)
-- Dry run checks in all file write operations
-- Verbose mode shows detailed "Would" messages in dry run mode
-- Comprehensive test coverage for dry run functionality
 - Global `--config` flag to specify custom config file path (Issue #23)
+- Global `--force` flag to skip confirmation prompts (Issue #24)
+- Global `--debug` flag for troubleshooting with detailed execution info (Issue #25)
 - `CLAUDE_MEMORY_CONFIG` environment variable support
-- CLI flag takes precedence over environment variable
+- Comprehensive test coverage for all new CLI flags
+- Debug output with timestamps and command parsing details
+- Force mode infrastructure for future confirmation prompts
 
 ### Changed
-- Refactored code into modular structure (PR #33)
-- Main file split into bin/claude-memory.js and lib/ modules
-- Improved maintainability while preserving all functionality
+- Refactored code into modular structure for better maintainability (Issue #32)
+- Main file reduced from 2,828 to 1,770 lines
+- Core logic moved to lib/ClaudeMemory.js and utility modules
+- Improved error handling with debug mode stack traces
+- Enhanced dry run mode with verbose "Would" messages
+
+### Fixed
+- ESLint errors in test files
+- Conflicts between CLI flags and environment variables
 
 ## [1.8.2] - 2025-06-07
 

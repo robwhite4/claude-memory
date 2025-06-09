@@ -270,6 +270,40 @@ claude-memory/
 
 This modular structure makes the codebase easier to maintain and extend while preserving all functionality.
 
+## 🚩 Global CLI Flags
+
+Control Claude Memory behavior with these global flags:
+
+```bash
+# Preview changes without executing
+cmem task add "New feature" --dry-run
+
+# Use custom configuration file
+cmem init "Project" --config ~/my-config.json
+export CLAUDE_MEMORY_CONFIG=~/my-config.json  # Or via environment
+
+# Skip confirmation prompts
+cmem session cleanup --force
+
+# Debug execution issues
+cmem stats --debug
+
+# Control output format
+cmem search "bug" --output json
+cmem stats --quiet  # Suppress non-essential output
+cmem help --no-color  # Disable colors for CI/CD
+```
+
+Available flags:
+- `--dry-run` - Preview changes without making them
+- `--config <path>` - Use custom config file
+- `--force` - Skip confirmation prompts
+- `--debug` - Show detailed execution info
+- `--quiet` - Suppress non-essential output
+- `--output <format>` - Output format (json/yaml/text)
+- `--no-color` - Disable colored output
+- `--verbose` - Show detailed information
+
 ## 📊 Advanced Features
 
 ### Pattern Resolution
