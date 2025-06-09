@@ -1,9 +1,9 @@
 # Project Patterns
-*Generated: 2025-06-07T23:37:40.384Z | 43 total patterns*
+*Generated: 2025-06-09T02:28:12.425Z | 46 total patterns*
 
 ## Summary
-- Open Patterns: 34
-- Resolved Patterns: 9
+- Open Patterns: 36
+- Resolved Patterns: 10
 
 ## Open Patterns
 ### Critical Priority
@@ -83,6 +83,13 @@
 - **Effectiveness**: 0.95
 - **First Seen**: 2025-06-07T00:28:12.902Z
 - **Last Seen**: 2025-06-07T00:28:12.902Z
+- **Frequency**: 1
+
+#### Rebase after major refactoring (ID: ebc94953)
+- **Description**: When refactoring creates structural changes, rebase feature branches instead of merging with conflicts. Steps: 1) Fetch latest develop, 2) Rebase feature branch, 3) Reimplement features cleanly on new structure, 4) Force push updated branch. This maintains cleaner commit history.
+- **Effectiveness**: 0.9
+- **First Seen**: 2025-06-09T00:31:27.776Z
+- **Last Seen**: 2025-06-09T00:31:27.776Z
 - **Frequency**: 1
 
 ### Medium Priority
@@ -240,7 +247,18 @@
 - **Last Seen**: 2025-06-07T22:44:26.594Z
 - **Frequency**: 1
 
+#### Develop branch workflow (ID: 91f2f4a7)
+- **Description**: Use develop branch to collect all release changes before merging to main. Create feature branches from develop, PR to develop, then final PR from develop to main for release.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-08T22:14:48.595Z
+- **Last Seen**: 2025-06-08T22:14:48.595Z
+- **Frequency**: 1
+
 ## Resolved Patterns
+### v1.9.0 feature completion tracking (ID: d4182676)
+- **Solution**: v1.9.0 development completed successfully. All CLI flags implemented, tested, and documented. PR #40 created and ready for merge.
+- **Resolved**: 2025-06-09T02:28:12.397Z
+
 ### Merged functionality test (ID: a64af0aa)
 - **Solution**: Test pattern completed - functionality verified
 - **Resolved**: 2025-06-06T23:05:51.088Z

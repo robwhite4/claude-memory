@@ -1,6 +1,6 @@
 {
   "name": "claude-memory",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "Transform AI conversations into persistent project intelligence - Universal memory system for Claude",
   "main": "bin/claude-memory.js",
   "type": "module",
@@ -55,11 +55,14 @@
   "homepage": "https://github.com/robwhite4/claude-memory#readme",
   "files": [
     "bin/",
+    "lib/",
     "README.md",
     "postinstall.js"
   ],
   "preferGlobal": true,
-  "dependencies": {},
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
     "c8": "^8.0.1",
     "eslint": "^8.57.0",

@@ -1,15 +1,15 @@
 # Project Knowledge Base
-*Generated: 2025-06-07T23:37:40.383Z | 39 items across 10 categories*
+*Generated: 2025-06-09T02:28:12.421Z | 51 items across 10 categories*
 
 ## Navigation
-- [architecture](#architecture) (1 items)
+- [architecture](#architecture) (4 items)
 - [design](#design) (1 items)
 - [features](#features) (2 items)
-- [feedback](#feedback) (1 items)
-- [implementation](#implementation) (1 items)
+- [feedback](#feedback) (2 items)
+- [implementation](#implementation) (4 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (3 items)
-- [status](#status) (9 items)
+- [status](#status) (14 items)
 - [testing](#testing) (7 items)
 - [workflow](#workflow) (11 items)
 
@@ -17,6 +17,18 @@
 ### Session_Architecture
 **Value**: Sessions stored in memory.json, not individual files. Sessions folder exists but unused in current design. Session management uses in-memory storage with auto-session rotation every 4 hours. Auto-backup creates snapshots including sessions.
 **Updated**: 2025-06-05T00:41:29.579Z
+
+### code_refactoring_PR33
+**Value**: Successfully refactored claude-memory.js from 2,828 lines into modular structure. Created lib/ directory with ClaudeMemory class and utilities. Reduced main file by 37% while maintaining backward compatibility. PR #33 merged to develop branch.
+**Updated**: 2025-06-09T00:30:40.259Z
+
+### code_structure_v1.9
+**Value**: Refactored main file into modular structure: bin/claude-memory.js (1,770 lines), lib/ClaudeMemory.js (1,016 lines), lib/utils/ (134 lines total). No breaking changes, all tests passing.
+**Updated**: 2025-06-08T21:40:58.681Z
+
+### unified_design_v1.10.0
+**Value**: Created unified design proposal addressing user feedback. Phase 1 (v1.10.0) focuses on export/import commands and bulk operations as foundation. Phase 2 (v1.11.0) adds knowledge editing and task dependencies. Phase 3 (v1.12.0) implements GitHub integration. All features build on shared JSON schemas to avoid duplication.
+**Updated**: 2025-06-08T02:23:59.156Z
 
 ## design
 ### CLAUDE_Merge_Strategy
@@ -37,10 +49,26 @@
 **Value**: Claude-Memory v1.4.0 usability feedback covering 5 main areas: 1) Pattern management confusion with syntax issues, missing list command, no pattern IDs shown 2) Missing knowledge management system for storing implementation details 3) File sync issues with CLAUDE.md auto-updates overwriting manual edits 4) Limited search with no type filtering, sorting, or result formatting 5) Command discovery problems with long help text and limited examples. User requested subcommands, better pattern syntax, knowledge management, CLAUDE.md merge strategy, and enhanced search with type filtering and JSON output.
 **Updated**: 2025-06-05T00:09:03.995Z
 
+### v1.8.2_user_feedback
+**Value**: Comprehensive feedback on v1.8.2 received 2025-06-07. WHAT WORKED WELL: 1) Documentation updates were helpful and clear, 2) Branch cleanup improved repo organization, 3) Multi-machine sync guidance was practical, 4) Team collaboration section addressed real needs. AREAS FOR IMPROVEMENT: 1) Installation - npm install warnings about funding and vulnerabilities need addressing, 2) First-time setup - unclear error messages when no .claude directory exists, 3) Performance - noticeable lag with large memory.json files (1MB), 4) Error handling - cryptic errors for permission issues and file conflicts. SUGGESTED IMPROVEMENTS: 1) Setup wizard - interactive first-time setup to create directories and initial config, 2) Performance optimization - implement pagination or chunking for large memory files, 3) Better error messages - user-friendly explanations with suggested fixes, 4) Health check command - verify installation and diagnose common issues. OVERALL RATING: 7/10 - Good foundation with soli
+**Updated**: 2025-06-08T00:53:30.993Z
+
 ## implementation
 ### Issue_8_Implementation
 **Value**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGIN MANUAL SECTION: Name --), automatic backups to .claude/backups/CLAUDE-*.md, and intelligent merging that preserves manual content while updating auto-generated sections. System tested and operational - manual sections survive multiple auto-updates. All acceptance criteria met.
 **Updated**: 2025-06-05T01:06:14.267Z
+
+### config_flag_PR37
+**Value**: Reimplemented --config flag after refactoring. PR #37 merged to develop branch. Flag allows specifying alternate memory file location. Supports both relative and absolute paths with proper validation. Test coverage ensures functionality.
+**Updated**: 2025-06-09T00:31:04.110Z
+
+### dry_run_flag_PR36
+**Value**: Reimplemented --dry-run flag after refactoring. PR #36 merged to develop branch. Flag prevents all file operations and shows 'Would' messages in verbose mode. Comprehensive test coverage ensures functionality across all commands.
+**Updated**: 2025-06-09T00:30:52.388Z
+
+### dry_run_implementation
+**Value**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file write operations. Shows DRY RUN MODE indicator, prevents all changes, verbose mode shows Would messages. PR #34 created. Test coverage: 5/6 tests pass.
+**Updated**: 2025-06-08T22:14:32.461Z
 
 ## progress
 ### Current_Status_v1.5.0
@@ -77,6 +105,10 @@
 **Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
 **Updated**: 2025-06-07T02:13:05.143Z
 
+### PR_status_v1.9.0
+**Value**: PR #33 (code refactoring) and PR #34 (--dry-run flag) both open targeting develop branch. Both implementations complete with tests passing. Waiting for review/merge before implementing remaining CLI flags.
+**Updated**: 2025-06-08T22:15:06.021Z
+
 ### Parity_Status_v1.5.0
 **Value**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and available. Local: repository at v1.5.0, global claude-memory v1.5.0 installed, all systems synchronized. Ready for Issues #8-9 development.
 **Updated**: 2025-06-05T00:46:46.757Z
@@ -104,6 +136,22 @@
 ### v1.8.0_Status
 **Value**: PR #20 created for Issue #19 CLI flags implementation. All 17 tests passing. Version-first workflow established - already at v1.8.0 in package.json. Ready for review and merge.
 **Updated**: 2025-06-07T00:27:58.805Z
+
+### v1.9.0_completion
+**Value**: v1.9.0 development complete. All CLI flags implemented: --dry-run (PR #36), --config (PR #37), --force (PR #38), --debug (PR #39). All PRs merged to develop branch. All tests passing, ESLint clean. Ready to create final PR from develop to main.
+**Updated**: 2025-06-09T01:59:00.714Z
+
+### v1.9.0_development
+**Value**: Started v1.9.0 development with develop branch workflow. Created PR #33 for code refactoring (Issue #32) and PR #34 for --dry-run flag (Issue #22). Both PRs target develop branch. Remaining: --config (#23), --force (#24), --debug (#25) flags.
+**Updated**: 2025-06-08T22:14:11.741Z
+
+### v1.9.0_development_status
+**Value**: v1.9.0 development on track. Develop branch clean with PRs #33 (dry-run), #36 (config-dir), #37 (output-format) merged. PR #38 (force flag) ready for merge. Only --debug flag (Issue #25) remains. All obsolete branches cleaned up. Issues #22, #23, #32 closed. Current branch: feature/issue-23-config-flag
+**Updated**: 2025-06-09T01:16:07.714Z
+
+### v1.9.0_progress
+**Value**: v1.9.0 development 60% complete. Merged PRs: #33 (refactoring), #36 (--dry-run), #37 (--config). All ESLint errors fixed in develop branch. Remaining: --force flag (Issue #24) and --debug flag (Issue #25). Using develop branch workflow for clean main branch.
+**Updated**: 2025-06-09T00:31:15.835Z
 
 ## testing
 ### CLI_Flag_Testing
