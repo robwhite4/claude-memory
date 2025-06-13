@@ -725,8 +725,123 @@ const commands = {
       } catch (error) {
         console.error('❌ Error listing tasks:', error.message);
       }
+    } else if (action === 'add-bulk') {
+      const filePath = args[0];
+      
+      if (!filePath) {
+        console.error('❌ JSON file path required');
+        console.log('Usage: claude-memory task add-bulk <tasks.json>');
+        console.log('\nExample JSON format:');
+        console.log(JSON.stringify({
+          tasks: [
+            { description: "Task 1", priority: "high", assignee: "Alice" },
+            { description: "Task 2", priority: "medium" }
+          ]
+        }, null, 2));
+        return;
+      }
+
+      try {
+        // Read and parse the JSON file
+        const resolvedPath = path.resolve(filePath);
+        if (!fs.existsSync(resolvedPath)) {
+          console.error(`❌ File not found: ${filePath}`);
+          return;
+        }
+
+        const fileContent = fs.readFileSync(resolvedPath, 'utf8');
+        const data = JSON.parse(fileContent);
+
+        // Validate against schema (removed for now, will add validation later)
+        
+        if (!data.tasks || !Array.isArray(data.tasks)) {
+          console.error('❌ Invalid JSON format. Must have a "tasks" array.');
+          return;
+        }
+
+        const memory = new ClaudeMemory(projectPath);
+        let addedCount = 0;
+        const taskIds = [];
+
+        // Add each task
+        for (const task of data.tasks) {
+          if (!task.description) {
+            console.warn(`⚠️ Skipping task without description`);
+            continue;
+          }
+
+          const sanitizedDescription = sanitizeDescription(task.description, 300);
+          const priority = ['high', 'medium', 'low'].includes(task.priority) ? task.priority : 'medium';
+          const status = ['pending', 'in-progress', 'completed'].includes(task.status) ? task.status : 'pending';
+          const assignee = task.assignee ? sanitizeInput(task.assignee, 50) : null;
+          const dueDate = task.dueDate || null;
+
+          const taskId = memory.addTask(sanitizedDescription, priority, status, assignee, dueDate);
+          taskIds.push(taskId);
+          addedCount++;
+          
+          verbose(`Added task ${taskId}: ${sanitizedDescription}`);
+        }
+
+        console.log(`✅ Bulk import complete: ${addedCount} tasks added`);
+        console.log(`📋 Task IDs: ${taskIds.join(', ')}`);
+        
+      } catch (error) {
+        if (error.code === 'ENOENT') {
+          console.error(`❌ File not found: ${filePath}`);
+        } else if (error instanceof SyntaxError) {
+          console.error(`❌ Invalid JSON in file: ${error.message}`);
+        } else {
+          console.error('❌ Error importing tasks:', error.message);
+        }
+      }
+    } else if (action === 'export') {
+      const format = args[0] || 'json';
+      const status = args[1]; // optional status filter
+      
+      try {
+        const memory = new ClaudeMemory(projectPath);
+        const tasks = memory.getTasks(status);
+        
+        // Transform tasks to export format
+        const exportData = {
+          exportedAt: new Date().toISOString(),
+          totalTasks: tasks.length,
+          tasks: tasks.map(task => ({
+            id: task.id,
+            description: task.description,
+            priority: task.priority,
+            status: task.status,
+            assignee: task.assignee,
+            dueDate: task.dueDate,
+            createdAt: task.createdAt,
+            completedAt: task.completedAt,
+            outcome: task.outcome
+          }))
+        };
+
+        if (format === 'json') {
+          output(JSON.stringify(exportData, null, 2));
+        } else if (format === 'github-issues') {
+          // Format for GitHub issue creation
+          console.log('# Tasks for GitHub Issues\n');
+          tasks.forEach(task => {
+            console.log(`## ${task.description}`);
+            console.log(`Priority: ${task.priority}`);
+            console.log(`Status: ${task.status}`);
+            if (task.assignee) console.log(`Assignee: ${task.assignee}`);
+            if (task.dueDate) console.log(`Due: ${task.dueDate}`);
+            console.log('\n---\n');
+          });
+        } else {
+          console.error(`❌ Unknown export format: ${format}`);
+          console.log('Valid formats: json, github-issues');
+        }
+      } catch (error) {
+        console.error('❌ Error exporting tasks:', error.message);
+      }
     } else {
-      console.error('❌ Task action must be: add, complete, or list');
+      console.error('❌ Task action must be: add, complete, list, add-bulk, or export');
     }
   },
 
@@ -1388,7 +1503,8 @@ QUICK EXAMPLES:
           'task add "description" [options]': 'Add a new task with optional priority and assignee',
           'task complete <task-id> ["outcome"]': 'Mark task as completed with optional outcome note',
           'task list [status]': 'List tasks (all, open, completed, in-progress)',
-          'task update <task-id> [options]': 'Update task properties'
+          'task add-bulk <tasks.json>': 'Import multiple tasks from JSON file',
+          'task export [format] [status]': 'Export tasks to JSON or GitHub issue format'
         },
         options: {
           '--priority <level>': 'Set priority: critical, high, medium, low (default: medium)',
@@ -1400,7 +1516,10 @@ QUICK EXAMPLES:
           'cmem task add "Write tests" --assignee "developer" --due "2024-01-15"',
           'cmem task complete abc123 "Successfully implemented with JWT"',
           'cmem task list open',
-          'cmem task list completed'
+          'cmem task list completed',
+          'cmem task add-bulk ./project-tasks.json',
+          'cmem task export json > tasks-backup.json',
+          'cmem task export github-issues completed'
         ],
         tips: [
           '💡 Task IDs are auto-generated short codes (e.g., abc123)',

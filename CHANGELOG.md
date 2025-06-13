@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - Unreleased
+
+### Added
+- Bulk task operations with JSON import/export (Issue #27)
+  - `task add-bulk <file.json>` - Import multiple tasks from JSON file
+  - `task export [format] [status]` - Export tasks to JSON or GitHub issue format
+- Shared JSON schemas for standardized data formats
+- Test suite for bulk operations
+- Example JSON format in help documentation
+
+### Changed
+- Enhanced task management with import/export capabilities
+- Updated help documentation to include new bulk operations
+
 ## [1.9.0] - 2025-06-09
 
 ### Added
