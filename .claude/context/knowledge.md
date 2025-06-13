@@ -1,17 +1,18 @@
 # Project Knowledge Base
-*Generated: 2025-06-09T02:28:12.421Z | 51 items across 10 categories*
+*Generated: 2025-06-13T02:11:20.620Z | 55 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
 - [design](#design) (1 items)
+- [documentation](#documentation) (1 items)
 - [features](#features) (2 items)
 - [feedback](#feedback) (2 items)
 - [implementation](#implementation) (4 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (3 items)
-- [status](#status) (14 items)
+- [releases](#releases) (4 items)
+- [status](#status) (15 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (11 items)
+- [workflow](#workflow) (12 items)
 
 ## architecture
 ### Session_Architecture
@@ -34,6 +35,11 @@
 ### CLAUDE_Merge_Strategy
 **Value**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BEGIN AUTO SECTION -- for generated content. Backup before writes, detect dirty state, preserve manual edits while updating auto content. Parse existing file to extract manual sections before regeneration.
 **Updated**: 2025-06-05T01:02:14.772Z
+
+## documentation
+### wiki_documentation_complete
+**Value**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Claude Memory v1.9.0. All wiki links use hyphenated format and all commands/configs are accurate.
+**Updated**: 2025-06-13T02:11:07.988Z
 
 ## features
 ### v1.5.0_Features
@@ -96,6 +102,10 @@
 **Value**: Documentation release for multi-machine and team workflows. Hotfix pattern used for already-merged changes. Created retroactive Issue #21, proper release with CHANGELOG and release notes.
 **Updated**: 2025-06-07T02:46:18.980Z
 
+### v1.9.0_release
+**Value**: Successfully released v1.9.0 with CLI enhancements. Added global flags: --dry-run, --config, --force, --debug. Major code refactoring reduced main file by 37%. PR #40 merged, tag created, GitHub release published. NPM will auto-publish.
+**Updated**: 2025-06-09T02:31:40.396Z
+
 ## status
 ### Branch_Cleanup_Complete
 **Value**: Cleaned up 4 obsolete branches that contained work already merged through other PRs: feature/issue-19-cli-flags (PR #20), feature/v1.7.0-multi-file-context (PR #18), feature/pattern-subcommands, and fix/v1.4.1-hotfixes (PR #10). Repository now only has main branch. Auto-delete enabled for future merges.
@@ -152,6 +162,10 @@
 ### v1.9.0_progress
 **Value**: v1.9.0 development 60% complete. Merged PRs: #33 (refactoring), #36 (--dry-run), #37 (--config). All ESLint errors fixed in develop branch. Remaining: --force flag (Issue #24) and --debug flag (Issue #25). Using develop branch workflow for clean main branch.
 **Updated**: 2025-06-09T00:31:15.835Z
+
+### wiki_sync_completed
+**Value**: Successfully synchronized GitHub wiki with v1.9.0 release. Wiki repository cloned to /claude-memory.wiki, updated Home.md and Roadmap.md to reflect current release status, committed and pushed changes. Wiki is now live at https://github.com/robwhite4/claude-memory/wiki
+**Updated**: 2025-06-13T00:41:01.754Z
 
 ## testing
 ### CLI_Flag_Testing
@@ -226,4 +240,8 @@
 ### version_strategy
 **Value**: Version bumping strategy: MAJOR (2.0.0) for breaking changes, MINOR (1.8.0) for new features, PATCH (1.7.1) for bug fixes. Always bump version in package.json FIRST when starting feature work. Test version flag to verify. Update CHANGELOG.md before committing.
 **Updated**: 2025-06-06T23:24:02.346Z
+
+### wiki_workflow
+**Value**: GitHub wikis are separate Git repositories from the main project. To update: 1) Clone wiki repo with .wiki.git extension, 2) Update markdown files locally, 3) Commit and push to wiki repo. Wiki location: /claude-memory.wiki. Remember to use user email robwhite4@yahoo.com for commits.
+**Updated**: 2025-06-13T00:41:10.699Z
 

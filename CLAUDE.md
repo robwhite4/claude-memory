@@ -1,8 +1,8 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Project Setup
-- **Started**: 2025-06-09
+- **Current**: Night Development
+- **Started**: 2025-06-13
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
@@ -31,10 +31,10 @@
 - **unified_design_v1.10.0**: Created unified design proposal addressing user feedback. Phase 1 (v1.10.0) focu...
 - ... and 2 more items
 
-#### status (14 items)
+#### status (15 items)
 - **Parity_Status_v1.5.0**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documen...
 - **v1.6.0_Released**: Successfully released v1.6.0 with 100% user feedback addressed. PRs #13 (Issue #...
-- ... and 12 more items
+- ... and 13 more items
 
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BE...
@@ -49,15 +49,18 @@
 - **dry_run_implementation**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file wri...
 - ... and 2 more items
 
-#### workflow (11 items)
+#### workflow (12 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug,...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robw...
-- ... and 9 more items
+- ... and 10 more items
 
-#### releases (3 items)
+#### releases (4 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by ...
 - **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learning...
-- ... and 1 more items
+- ... and 2 more items
+
+#### documentation (1 items)
+- **wiki_documentation_complete**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Clau...
 
 
 ### Open Patterns
@@ -88,22 +91,22 @@
 
 ## Recent Decisions Log
 
-### 2025-06-09: Create v1.9.0 release PR
-**Decision**: Create v1.9.0 release PR
-**Reasoning**: All features implemented, tests passing, documentation updated. PR #40 created from develop to main with all v1.9.0 changes.
-**Alternatives Considered**: Direct merge to main, Wait for more features, Delay release
+### 2025-06-13: Create comprehensive GitHub wiki
+**Decision**: Create comprehensive GitHub wiki
+**Reasoning**: Wiki was missing 12 pages with many broken links. Created full documentation covering installation, usage, configuration, troubleshooting, and development workflows.
+**Alternatives Considered**: Leave wiki incomplete, Update through web interface, Create minimal documentation
 
 
-### 2025-06-09: Clean up obsolete branches after PR merges
-**Decision**: Clean up obsolete branches after PR merges
-**Reasoning**: After merging PRs #33, #36, #37 to develop branch, cleaned up all obsolete feature branches. This keeps repository organized and prevents confusion. Only active branches remain: main, develop, and feature/issue-25-debug-flag.
-**Alternatives Considered**: Keep branches indefinitely, Clean up manually each time, Set retention policy
+### 2025-06-13: Sync GitHub wiki with v1.9.0 release
+**Decision**: Sync GitHub wiki with v1.9.0 release
+**Reasoning**: Wiki was out of date showing v1.9.0 as upcoming when it was already released. Updated wiki content and established workflow for future wiki updates.
+**Alternatives Considered**: Leave wiki outdated, Update through web interface, Automate wiki updates
 
 
-### 2025-06-09: Rebase feature branches after refactoring
-**Decision**: Rebase feature branches after refactoring
-**Reasoning**: After merging PR #33 (code refactoring), feature branches had conflicts due to structural changes. Used rebase strategy to update branches with new module structure, then reimplemented features cleanly.
-**Alternatives Considered**: Cherry-pick commits, Merge with conflicts, Start fresh branches
+### 2025-06-09: Keep develop branch persistent
+**Decision**: Keep develop branch persistent
+**Reasoning**: Develop branch should not be auto-deleted after PRs. It serves as the integration branch following Git Flow. Only feature branches should be auto-deleted.
+**Alternatives Considered**: Auto-delete all branches, Manual branch management, No auto-deletion
 
 
 ## Commands & Workflows
@@ -141,9 +144,9 @@ claude-memory search "query"
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (51 items)
-- 🧩 **All Patterns**: `.claude/context/patterns.md` (46 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (61 decisions)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (55 items)
+- 🧩 **All Patterns**: `.claude/context/patterns.md` (48 patterns)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (64 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (15 tasks)
 
 ## Session Continuation

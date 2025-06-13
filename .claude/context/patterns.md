@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-09T02:28:12.425Z | 46 total patterns*
+*Generated: 2025-06-13T02:11:20.621Z | 48 total patterns*
 
 ## Summary
-- Open Patterns: 36
+- Open Patterns: 38
 - Resolved Patterns: 10
 
 ## Open Patterns
@@ -90,6 +90,13 @@
 - **Effectiveness**: 0.9
 - **First Seen**: 2025-06-09T00:31:27.776Z
 - **Last Seen**: 2025-06-09T00:31:27.776Z
+- **Frequency**: 1
+
+#### Wiki documentation needs (ID: 95f1a1f9)
+- **Description**: Always verify wiki commands and configs match actual implementation before publishing
+- **Effectiveness**: 1
+- **First Seen**: 2025-06-13T02:11:20.601Z
+- **Last Seen**: 2025-06-13T02:11:20.601Z
 - **Frequency**: 1
 
 ### Medium Priority
@@ -252,6 +259,13 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-08T22:14:48.595Z
 - **Last Seen**: 2025-06-08T22:14:48.595Z
+- **Frequency**: 1
+
+#### Maintain persistent develop branch (ID: fa0420b6)
+- **Description**: Always keep a develop branch as the integration branch for features. All work happens on develop or feature branches, never directly on main. Only merge to main for releases.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-09T03:10:58.271Z
+- **Last Seen**: 2025-06-09T03:10:58.271Z
 - **Frequency**: 1
 
 ## Resolved Patterns
