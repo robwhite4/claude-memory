@@ -56,7 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously these flags were incorrectly passed as arguments to the help command
   - Now properly shows the full help message when using --help or -h
 - Added --help and -h to the global flags documentation
-
 ## [1.9.1] - 2025-06-14
 
 ### Fixed
