@@ -372,7 +372,9 @@ async function runTests() {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" report summary --save`);
     assert(stdout.includes('Report saved to:'), 'Should save report');
-    assert(stdout.includes('.claude/reports/'), 'Should save in reports directory');
+    // Use path.join for cross-platform compatibility
+    const expectedPath = path.join('.claude', 'reports');
+    assert(stdout.includes(expectedPath), 'Should save in reports directory');
     assert(stdout.includes('summary-'), 'Should have timestamped filename');
 
     // Verify file was created
