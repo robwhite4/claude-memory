@@ -24,12 +24,12 @@ try {
   // Create test tasks JSON file
   const testTasks = {
     tasks: [
-      { description: "Setup development environment", priority: "high", assignee: "Alice" },
-      { description: "Create database schema", priority: "high", assignee: "Bob" },
-      { description: "Implement user authentication", priority: "high" },
-      { description: "Write unit tests", priority: "medium", assignee: "Charlie" },
-      { description: "Setup CI/CD pipeline", priority: "medium" },
-      { description: "Create API documentation", priority: "low" }
+      { description: 'Setup development environment', priority: 'high', assignee: 'Alice' },
+      { description: 'Create database schema', priority: 'high', assignee: 'Bob' },
+      { description: 'Implement user authentication', priority: 'high' },
+      { description: 'Write unit tests', priority: 'medium', assignee: 'Charlie' },
+      { description: 'Setup CI/CD pipeline', priority: 'medium' },
+      { description: 'Create API documentation', priority: 'low' }
     ]
   };
 
@@ -60,7 +60,7 @@ try {
   if (tasks.tasks.length > 0) {
     const taskId = tasks.tasks[0].id;
     execSync(`node "${cliPath}" task complete ${taskId} "Task completed for testing"`, { stdio: 'pipe' });
-    
+
     const completedExport = execSync(`node "${cliPath}" task export json completed`, { encoding: 'utf8' });
     const completedData = JSON.parse(completedExport);
     console.log(`Exported ${completedData.totalTasks} completed tasks\n`);
@@ -71,12 +71,11 @@ try {
   // Cleanup
   process.chdir(__dirname);
   fs.rmSync(testDir, { recursive: true, force: true });
-
 } catch (error) {
   console.error('❌ Test failed:', error.message);
   if (error.stdout) console.error('stdout:', error.stdout.toString());
   if (error.stderr) console.error('stderr:', error.stderr.toString());
-  
+
   // Cleanup on error
   try {
     process.chdir(__dirname);
@@ -84,6 +83,6 @@ try {
   } catch (cleanupError) {
     // Ignore cleanup errors
   }
-  
+
   process.exit(1);
 }

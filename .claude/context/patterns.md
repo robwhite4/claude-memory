@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-13T02:11:20.621Z | 48 total patterns*
+*Generated: 2025-06-14T16:11:27.896Z | 49 total patterns*
 
 ## Summary
-- Open Patterns: 38
+- Open Patterns: 39
 - Resolved Patterns: 10
 
 ## Open Patterns
@@ -266,6 +266,13 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-09T03:10:58.271Z
 - **Last Seen**: 2025-06-09T03:10:58.271Z
+- **Frequency**: 1
+
+#### JSON Schema Foundation (ID: 20aed3e1)
+- **Description**: Create shared JSON schemas before implementing import/export features to ensure consistency
+- **Effectiveness**: null
+- **First Seen**: 2025-06-14T16:11:27.871Z
+- **Last Seen**: 2025-06-14T16:11:27.871Z
 - **Frequency**: 1
 
 ## Resolved Patterns

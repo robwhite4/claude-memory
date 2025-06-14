@@ -11,13 +11,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bulk task operations with JSON import/export (Issue #27)
   - `task add-bulk <file.json>` - Import multiple tasks from JSON file
   - `task export [format] [status]` - Export tasks to JSON or GitHub issue format
+- Enhanced export command with advanced filtering (Issue #30)
+  - Multiple output formats: JSON, YAML, CSV, Markdown
+  - Type filtering with `--types` flag
+  - Date range filtering with `--from` and `--to` flags
+  - Metadata control with `--no-metadata` flag
+  - Sanitization option with `--sanitized` flag
+- New report generation command (Issue #30)
+  - Six report types: summary, tasks, patterns, decisions, progress, sprint
+  - JSON and Markdown output formats
+  - Date range filtering for focused reports
+  - File output support for all report types
 - Shared JSON schemas for standardized data formats
-- Test suite for bulk operations
+- Comprehensive test coverage for export and report functionality
 - Example JSON format in help documentation
+- js-yaml dependency for YAML format support
 
 ### Changed
 - Enhanced task management with import/export capabilities
-- Updated help documentation to include new bulk operations
+- Export command now supports multiple formats beyond JSON
+- Updated help documentation to include new bulk operations and report generation
+- Improved data filtering capabilities across all export types
 
 ## [1.9.0] - 2025-06-09
 

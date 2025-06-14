@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-13T02:11:20.620Z | 55 items across 11 categories*
+*Generated: 2025-06-14T16:11:27.893Z | 56 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
@@ -7,7 +7,7 @@
 - [documentation](#documentation) (1 items)
 - [features](#features) (2 items)
 - [feedback](#feedback) (2 items)
-- [implementation](#implementation) (4 items)
+- [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (4 items)
 - [status](#status) (15 items)
@@ -75,6 +75,10 @@
 ### dry_run_implementation
 **Value**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file write operations. Shows DRY RUN MODE indicator, prevents all changes, verbose mode shows Would messages. PR #34 created. Test coverage: 5/6 tests pass.
 **Updated**: 2025-06-08T22:14:32.461Z
+
+### v1.10.0_bulk_operations
+**Value**: Successfully implemented bulk task operations (Issue #27). Added task add-bulk for JSON import and task export for JSON/GitHub formats. Created shared JSON schemas foundation for future features.
+**Updated**: 2025-06-14T16:11:18.502Z
 
 ## progress
 ### Current_Status_v1.5.0

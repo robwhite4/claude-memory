@@ -325,14 +325,74 @@ cmem session end "Completed Stripe integration"
 cmem session list
 ```
 
-### Import/Export
+### Import/Export (Enhanced in v1.10.0)
 ```bash
-# Backup your entire memory
+# Basic export (JSON format)
 cmem export memory-backup.json
 
-# Share memory with team
+# Export with different formats
+cmem export report.md --format markdown
+cmem export data.yaml --format yaml
+cmem export tasks.csv --format csv
+
+# Filter by data types
+cmem export tasks-only.json --types tasks
+cmem export --types tasks,patterns,decisions
+
+# Date range filtering
+cmem export --from 2024-01-01 --to 2024-12-31
+cmem export quarterly-report.md --format markdown --from 2024-10-01
+
+# Sanitize sensitive information
 cmem export --sanitized team-memory.json
+
+# Combine options for focused exports
+cmem export sprint-report.md --format markdown --types tasks,decisions --from 2024-01-01 --sanitized
+
+# Bulk task operations
+cmem task add-bulk tasks.json     # Import multiple tasks
+cmem task export json > tasks.json # Export tasks for backup
 ```
+
+**Export Formats:**
+- **JSON**: Complete data structure, perfect for backups and re-import
+- **YAML**: Human-readable, good for configuration management
+- **CSV**: Spreadsheet-compatible for analysis
+- **Markdown**: Documentation-ready reports
+
+### Report Generation (v1.10.0)
+```bash
+# Generate project summary report
+cmem report
+cmem report summary
+
+# Different report types
+cmem report tasks                  # Task-focused report
+cmem report patterns               # Pattern analysis
+cmem report decisions              # Decision log
+cmem report progress               # Progress timeline
+cmem report sprint                 # 2-week sprint summary
+
+# Output formats
+cmem report --format json          # JSON format
+cmem report --format markdown      # Markdown (default)
+
+# Save to file
+cmem report summary project-status.md
+cmem report sprint sprint-review.md
+
+# Date filtering
+cmem report --from 2024-01-01 --to 2024-01-31
+cmem report tasks monthly.md --from 2024-01-01
+```
+
+**Report Types:**
+- **Summary**: High-level project overview with statistics
+- **Tasks**: Detailed task breakdown by status
+- **Patterns**: Pattern analysis with priorities and solutions
+- **Decisions**: Chronological decision log with reasoning
+- **Progress**: Timeline of activities and completion metrics
+- **Sprint**: 2-week activity summary for agile workflows
 
 ### AI Assistant Handoffs
 ```bash
