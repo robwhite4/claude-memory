@@ -50,17 +50,20 @@ Claude Memory is a universal memory system that transforms AI conversations into
 - **CLAUDE.md Generation**: Optimized context file for AI assistants
 - **Knowledge Base**: Categorized storage for project information
 
-### Recent Additions (v1.8.x)
+### Recent Additions (v1.9.0)
+- **CLI Enhancement Flags**:
+  - --dry-run flag for safe testing
+  - --config for alternate configurations
+  - --force to skip confirmations
+  - --debug for troubleshooting
+- **Code Refactoring**: Modularized architecture (37% reduction in main file)
+- **Improved Testing**: Enhanced test coverage for all new features
+
+### Previous Release (v1.8.x)
 - Standard CLI flags (--version, --quiet, --output, --no-color, --verbose)
 - Multi-machine development support
 - Team collaboration workflows
 - Enhanced documentation
-
-### Coming in v1.9.0
-- --dry-run flag for safe testing
-- --config for alternate configurations
-- --force to skip confirmations
-- --debug for troubleshooting
 
 ## 💡 Why Claude Memory?
 

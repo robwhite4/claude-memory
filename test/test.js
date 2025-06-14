@@ -326,6 +326,78 @@ async function runTests() {
     assert(patternsContent.includes('For testing context files'), 'Patterns file should contain description');
   });
 
+  // Report generation tests
+  await test('Report command - summary', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report summary`);
+    assert(stdout.includes('Project Summary Report'), 'Should generate summary report');
+    assert(stdout.includes('Project Statistics'), 'Should include statistics');
+    assert(stdout.includes('Recent Activity'), 'Should include recent activity');
+  });
+
+  await test('Report command - tasks report', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report tasks`);
+    assert(stdout.includes('Task Report'), 'Should generate task report');
+    assert(stdout.includes('Total Tasks'), 'Should show total tasks');
+  });
+
+  await test('Report command - JSON format', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report summary --format json`);
+    const json = JSON.parse(stdout);
+    assert(json.summary, 'Should output valid JSON with summary');
+    assert(json.summary.statistics, 'Should include statistics in JSON');
+  });
+
+  await test('Report command - file output', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const reportFile = 'test-report.md';
+    await execAsync(`node "${cliPath}" report summary ${reportFile}`);
+    assert(fs.existsSync(reportFile), 'Should create report file');
+    const content = fs.readFileSync(reportFile, 'utf8');
+    assert(content.includes('Project Summary Report'), 'Report file should contain summary');
+    fs.unlinkSync(reportFile);
+  });
+
+  await test('Report command - sprint report', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report sprint`);
+    assert(stdout.includes('Sprint Report'), 'Should generate sprint report');
+    assert(stdout.includes('Sprint Summary'), 'Should include sprint summary');
+    assert(stdout.includes('Tasks Added'), 'Should show tasks added in sprint');
+  });
+
+  await test('Report command - auto-save', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report summary --save`);
+    assert(stdout.includes('Report saved to:'), 'Should save report');
+    assert(stdout.includes('.claude/reports/'), 'Should save in reports directory');
+    assert(stdout.includes('summary-'), 'Should have timestamped filename');
+
+    // Verify file was created
+    const reportsDir = path.join('.claude', 'reports');
+    assert(fs.existsSync(reportsDir), 'Reports directory should exist');
+    const files = fs.readdirSync(reportsDir);
+    assert(files.some(f => f.startsWith('summary-')), 'Should create summary report file');
+  });
+
+  await test('Report command - custom save directory', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const customDir = 'test-reports';
+    const { stdout } = await execAsync(`node "${cliPath}" report tasks --save --save-dir ${customDir}`);
+    assert(stdout.includes('Report saved to:'), 'Should save report');
+    assert(stdout.includes(customDir), 'Should use custom directory');
+
+    // Verify file was created
+    assert(fs.existsSync(customDir), 'Custom directory should exist');
+    const files = fs.readdirSync(customDir);
+    assert(files.some(f => f.startsWith('tasks-')), 'Should create tasks report file');
+
+    // Clean up
+    fs.rmSync(customDir, { recursive: true, force: true });
+  });
+
   console.log(`\n📊 Test Results: ${passCount}/${testCount} passed`);
 
   if (passCount === testCount) {

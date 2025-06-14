@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-09T02:28:12.425Z | 46 total patterns*
+*Generated: 2025-06-14T18:10:48.193Z | 52 total patterns*
 
 ## Summary
-- Open Patterns: 36
+- Open Patterns: 42
 - Resolved Patterns: 10
 
 ## Open Patterns
@@ -19,6 +19,13 @@
 - **Effectiveness**: 1
 - **First Seen**: 2025-06-03T22:09:31.446Z
 - **Last Seen**: 2025-06-03T22:09:31.446Z
+- **Frequency**: 1
+
+#### Bug Fix Protocol (ID: 04eaa5e2)
+- **Description**: When discovering bugs in released versions, ALWAYS: 1) Create GitHub issue first, 2) Fix on hotfix branch from main, 3) Release as patch version (x.x.1), 4) Cherry-pick to develop if needed. Never fix bugs directly on feature branches.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-14T16:50:14.550Z
+- **Last Seen**: 2025-06-14T16:50:14.550Z
 - **Frequency**: 1
 
 ### High Priority
@@ -90,6 +97,13 @@
 - **Effectiveness**: 0.9
 - **First Seen**: 2025-06-09T00:31:27.776Z
 - **Last Seen**: 2025-06-09T00:31:27.776Z
+- **Frequency**: 1
+
+#### Wiki documentation needs (ID: 95f1a1f9)
+- **Description**: Always verify wiki commands and configs match actual implementation before publishing
+- **Effectiveness**: 1
+- **First Seen**: 2025-06-13T02:11:20.601Z
+- **Last Seen**: 2025-06-13T02:11:20.601Z
 - **Frequency**: 1
 
 ### Medium Priority
@@ -252,6 +266,34 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-08T22:14:48.595Z
 - **Last Seen**: 2025-06-08T22:14:48.595Z
+- **Frequency**: 1
+
+#### Maintain persistent develop branch (ID: fa0420b6)
+- **Description**: Always keep a develop branch as the integration branch for features. All work happens on develop or feature branches, never directly on main. Only merge to main for releases.
+- **Effectiveness**: null
+- **First Seen**: 2025-06-09T03:10:58.271Z
+- **Last Seen**: 2025-06-09T03:10:58.271Z
+- **Frequency**: 1
+
+#### JSON Schema Foundation (ID: 20aed3e1)
+- **Description**: Create shared JSON schemas before implementing import/export features to ensure consistency
+- **Effectiveness**: null
+- **First Seen**: 2025-06-14T16:11:27.871Z
+- **Last Seen**: 2025-06-14T16:11:27.871Z
+- **Frequency**: 1
+
+#### Import/Export Symmetry (ID: 31ad9f32)
+- **Description**: Always ensure import and export functionality are symmetrical - what can be exported should be importable
+- **Effectiveness**: null
+- **First Seen**: 2025-06-14T17:37:13.022Z
+- **Last Seen**: 2025-06-14T17:37:13.022Z
+- **Frequency**: 1
+
+#### Report Archival (ID: de046baf)
+- **Description**: Reports should be easily archivable for historical reference. Auto-save option creates timestamped files in dedicated directory for easy access and comparison over time
+- **Effectiveness**: null
+- **First Seen**: 2025-06-14T17:44:02.936Z
+- **Last Seen**: 2025-06-14T17:44:02.936Z
 - **Frequency**: 1
 
 ## Resolved Patterns

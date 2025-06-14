@@ -1,17 +1,18 @@
 # Project Knowledge Base
-*Generated: 2025-06-09T02:28:12.421Z | 51 items across 10 categories*
+*Generated: 2025-06-14T18:10:48.192Z | 60 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
 - [design](#design) (1 items)
-- [features](#features) (2 items)
+- [documentation](#documentation) (1 items)
+- [features](#features) (3 items)
 - [feedback](#feedback) (2 items)
-- [implementation](#implementation) (4 items)
+- [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (3 items)
-- [status](#status) (14 items)
+- [releases](#releases) (4 items)
+- [status](#status) (17 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (11 items)
+- [workflow](#workflow) (13 items)
 
 ## architecture
 ### Session_Architecture
@@ -35,7 +36,16 @@
 **Value**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BEGIN AUTO SECTION -- for generated content. Backup before writes, detect dirty state, preserve manual edits while updating auto content. Parse existing file to extract manual sections before regeneration.
 **Updated**: 2025-06-05T01:02:14.772Z
 
+## documentation
+### wiki_documentation_complete
+**Value**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Claude Memory v1.9.0. All wiki links use hyphenated format and all commands/configs are accurate.
+**Updated**: 2025-06-13T02:11:07.988Z
+
 ## features
+### report_save_feature
+**Value**: Add --save flag to report command that automatically saves reports to .claude/reports/ directory with timestamped filenames (e.g., summary-2024-01-15-143022.md)
+**Updated**: 2025-06-14T17:43:53.128Z
+
 ### v1.5.0_Features
 **Value**: Pattern subcommands (add/list/search/resolve), Knowledge management system with categories, Enhanced search with --type filtering (decisions/patterns/tasks/knowledge), JSON output with --json flag, Result limiting with --limit N, All backward compatible
 **Updated**: 2025-06-05T00:41:10.713Z
@@ -70,6 +80,10 @@
 **Value**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file write operations. Shows DRY RUN MODE indicator, prevents all changes, verbose mode shows Would messages. PR #34 created. Test coverage: 5/6 tests pass.
 **Updated**: 2025-06-08T22:14:32.461Z
 
+### v1.10.0_bulk_operations
+**Value**: Successfully implemented bulk task operations (Issue #27). Added task add-bulk for JSON import and task export for JSON/GitHub formats. Created shared JSON schemas foundation for future features.
+**Updated**: 2025-06-14T16:11:18.502Z
+
 ## progress
 ### Current_Status_v1.5.0
 **Value**: ✅ COMPLETED (7/9 issues): Issues #1-7 covering pattern management fixes, knowledge management system, enhanced search functionality. 🔄 REMAINING (2/9 issues): Issue #8 CLAUDE.md merge strategy, Issue #9 help/UX improvements. Original user feedback 78% addressed with v1.5.0 release. Next focus: Complete remaining UX issues for comprehensive user experience improvements.
@@ -96,10 +110,18 @@
 **Value**: Documentation release for multi-machine and team workflows. Hotfix pattern used for already-merged changes. Created retroactive Issue #21, proper release with CHANGELOG and release notes.
 **Updated**: 2025-06-07T02:46:18.980Z
 
+### v1.9.0_release
+**Value**: Successfully released v1.9.0 with CLI enhancements. Added global flags: --dry-run, --config, --force, --debug. Major code refactoring reduced main file by 37%. PR #40 merged, tag created, GitHub release published. NPM will auto-publish.
+**Updated**: 2025-06-09T02:31:40.396Z
+
 ## status
 ### Branch_Cleanup_Complete
 **Value**: Cleaned up 4 obsolete branches that contained work already merged through other PRs: feature/issue-19-cli-flags (PR #20), feature/v1.7.0-multi-file-context (PR #18), feature/pattern-subcommands, and fix/v1.4.1-hotfixes (PR #10). Repository now only has main branch. Auto-delete enabled for future merges.
 **Updated**: 2025-06-07T23:05:05.605Z
+
+### CLAUDE_MD_improvements
+**Value**: Token optimization improvements: increased truncation to 120 chars, added Recent Changes section, updated command examples for v1.10.0
+**Updated**: 2025-06-14T18:10:04.947Z
 
 ### Current_Version
 **Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
@@ -112,6 +134,10 @@
 ### Parity_Status_v1.5.0
 **Value**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and available. Local: repository at v1.5.0, global claude-memory v1.5.0 installed, all systems synchronized. Ready for Issues #8-9 development.
 **Updated**: 2025-06-05T00:46:46.757Z
+
+### v1.10.0_features
+**Value**: Export/Import functionality complete with multiple formats (JSON, YAML, CSV, Markdown), filtering options, merge/replace modes, validation, and comprehensive report generation
+**Updated**: 2025-06-14T17:37:22.132Z
 
 ### v1.6.0_NPM_Published
 **Value**: v1.6.0 successfully published to npm. Users can now install with 'npm install -g claude-memory' to get all improvements.
@@ -152,6 +178,10 @@
 ### v1.9.0_progress
 **Value**: v1.9.0 development 60% complete. Merged PRs: #33 (refactoring), #36 (--dry-run), #37 (--config). All ESLint errors fixed in develop branch. Remaining: --force flag (Issue #24) and --debug flag (Issue #25). Using develop branch workflow for clean main branch.
 **Updated**: 2025-06-09T00:31:15.835Z
+
+### wiki_sync_completed
+**Value**: Successfully synchronized GitHub wiki with v1.9.0 release. Wiki repository cloned to /claude-memory.wiki, updated Home.md and Roadmap.md to reflect current release status, committed and pushed changes. Wiki is now live at https://github.com/robwhite4/claude-memory/wiki
+**Updated**: 2025-06-13T00:41:01.754Z
 
 ## testing
 ### CLI_Flag_Testing
@@ -207,6 +237,10 @@
 **Value**: New development workflow: Bump version in package.json FIRST before implementing features. This ensures --version flag and all version references are correct from the start. Successfully tested with v1.8.0 development.
 **Updated**: 2025-06-07T00:28:41.067Z
 
+### bug_fix_workflow
+**Value**: When finding bugs in released versions: 1) Create GitHub issue immediately, 2) Switch to main branch, 3) Create hotfix/issue-XX branch, 4) Fix and test, 5) PR to main, 6) Release patch version (npm version patch), 7) Cherry-pick to develop if needed
+**Updated**: 2025-06-14T16:51:04.979Z
+
 ### git_co_author
 **Value**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
 **Updated**: 2025-06-06T22:05:13.747Z
@@ -226,4 +260,8 @@
 ### version_strategy
 **Value**: Version bumping strategy: MAJOR (2.0.0) for breaking changes, MINOR (1.8.0) for new features, PATCH (1.7.1) for bug fixes. Always bump version in package.json FIRST when starting feature work. Test version flag to verify. Update CHANGELOG.md before committing.
 **Updated**: 2025-06-06T23:24:02.346Z
+
+### wiki_workflow
+**Value**: GitHub wikis are separate Git repositories from the main project. To update: 1) Clone wiki repo with .wiki.git extension, 2) Update markdown files locally, 3) Commit and push to wiki repo. Wiki location: /claude-memory.wiki. Remember to use user email robwhite4@yahoo.com for commits.
+**Updated**: 2025-06-13T00:41:10.699Z
 

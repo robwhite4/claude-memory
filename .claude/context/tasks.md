@@ -1,12 +1,16 @@
 # Task Management
-*Generated: 2025-06-09T02:28:12.438Z | 15 total tasks*
+*Generated: 2025-06-14T18:10:48.204Z | 17 total tasks*
 
 ## Summary
-- Open: 6
+- Open: 8
 - In Progress: 0
 - Completed: 9
 
 ## Open Tasks
+### High Priority
+- [ ] **Increase knowledge truncation limit from 80 to 120-150 chars in CLAUDE.md** (ID: 4688fe1e)
+  - Created: 6/14/2025
+
 ### Medium Priority
 - [ ] **Test task with tag** (ID: 440d71c1)
   - Assigned: /test
@@ -17,6 +21,8 @@
   - Created: 6/4/2025
 - [ ] **Test dry run task** (ID: 98eb6a3a)
   - Created: 6/8/2025
+- [ ] **Add Recent Changes section to CLAUDE.md showing latest features/decisions** (ID: cc788f33)
+  - Created: 6/14/2025
 
 ### Low Priority
 - [ ] **Add task status update command (in-progress, blocked, etc)** (ID: 1e143f85)

@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Decision",
+  "description": "Schema for Claude Memory decision objects",
+  "type": "object",
+  "required": ["decision", "reasoning"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the decision"
+    },
+    "decision": {
+      "type": "string",
+      "description": "The decision made",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "Reasoning behind the decision",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "alternativesConsidered": {
+      "type": ["string", "null"],
+      "description": "Alternative options that were considered",
+      "maxLength": 2000
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Decision timestamp in ISO format"
+    }
+  },
+  "additionalProperties": false
+}

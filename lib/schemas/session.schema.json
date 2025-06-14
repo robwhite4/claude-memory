@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Session",
+  "description": "Schema for Claude Memory session objects",
+  "type": "object",
+  "required": ["name", "startTime"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the session"
+    },
+    "name": {
+      "type": "string",
+      "description": "Session name",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Session start time in ISO format"
+    },
+    "endTime": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Session end time in ISO format"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "completed", "paused"],
+      "description": "Current status of the session"
+    },
+    "outcome": {
+      "type": ["string", "null"],
+      "description": "Session outcome or summary",
+      "maxLength": 2000
+    },
+    "context": {
+      "type": "object",
+      "description": "Additional context data for the session",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
