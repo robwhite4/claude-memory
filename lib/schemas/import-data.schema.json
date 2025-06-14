@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ImportData",
+  "description": "Schema for Claude Memory import data",
+  "type": "object",
+  "properties": {
+    "exportedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Export timestamp"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "projectName": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "task.schema.json"
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "$ref": "pattern.schema.json"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "decision.schema.json"
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "$ref": "session.schema.json"
+      }
+    },
+    "knowledge": {
+      "$ref": "knowledge.schema.json"
+    }
+  },
+  "additionalProperties": true
+}

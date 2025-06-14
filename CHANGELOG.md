@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - Unreleased
+
+### Added
+- Bulk task operations with JSON import/export (Issue #27)
+  - `task add-bulk <file.json>` - Import multiple tasks from JSON file
+  - `task export [format] [status]` - Export tasks to JSON or GitHub issue format
+- Enhanced export command with advanced filtering (Issue #30)
+  - Multiple output formats: JSON, YAML, CSV, Markdown
+  - Type filtering with `--types` flag
+  - Date range filtering with `--from` and `--to` flags
+  - Metadata control with `--no-metadata` flag
+  - Sanitization option with `--sanitized` flag
+- New report generation command (Issue #30)
+  - Six report types: summary, tasks, patterns, decisions, progress, sprint
+  - JSON and Markdown output formats
+  - Date range filtering for focused reports
+  - File output support for all report types
+- New import command with advanced options (Issue #30)
+  - Merge mode (default): Adds new items, skips duplicates
+  - Replace mode: Clears existing data before importing
+  - Type filtering with `--types` flag
+  - Dry-run mode with `--dry-run` flag
+  - Support for JSON and YAML formats
+  - Comprehensive validation before import
+  - Auto-generates IDs for items without them
+- Report auto-save feature (Issue #43)
+  - `--save` flag automatically saves reports with timestamps
+  - Default location: `.claude/reports/` directory
+  - `--save-dir` flag for custom save directories
+  - Timestamped filenames: `{type}-{YYYYMMDDHHMMSS}.{ext}`
+  - Supports all report types and formats
+- Shared JSON schemas for standardized data formats
+- Comprehensive test coverage for export, import, and report functionality
+- Example JSON format in help documentation
+- js-yaml dependency for YAML format support
+- CLAUDE.md token optimization improvements
+  - Increased knowledge truncation from 80 to 120 characters
+  - Added Recent Changes section showing last 7 days of activity
+  - Updated command examples to include v1.10.0 features
+
+### Changed
+- Enhanced task management with import/export capabilities
+- Export command now supports multiple formats beyond JSON
+- Updated help documentation to include new bulk operations and report generation
+- Improved data filtering capabilities across all export types
+
+### Fixed
+- Fixed --help and -h flags not showing general help (Issue #41)
+  - Previously these flags were incorrectly passed as arguments to the help command
+  - Now properly shows the full help message when using --help or -h
+- Added --help and -h to the global flags documentation
+
 ## [1.9.1] - 2025-06-14
 
 ### Fixed

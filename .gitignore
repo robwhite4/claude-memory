@@ -41,6 +41,7 @@ coverage/
 .claude/memory.json
 .claude/config.json
 .claude/settings.local.json
+.claude/reports/
 
 # Include context files for multi-machine development
 !.claude/context/
@@ -60,3 +61,4 @@ coverage/
 claude-memory-export-*.json
 claude-memory.wiki/
 wiki-repo/
+wiki/

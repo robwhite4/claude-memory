@@ -1,18 +1,18 @@
 # Project Knowledge Base
-*Generated: 2025-06-13T02:11:20.620Z | 55 items across 11 categories*
+*Generated: 2025-06-14T18:10:48.192Z | 60 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
 - [design](#design) (1 items)
 - [documentation](#documentation) (1 items)
-- [features](#features) (2 items)
+- [features](#features) (3 items)
 - [feedback](#feedback) (2 items)
-- [implementation](#implementation) (4 items)
+- [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (4 items)
-- [status](#status) (15 items)
+- [status](#status) (17 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (12 items)
+- [workflow](#workflow) (13 items)
 
 ## architecture
 ### Session_Architecture
@@ -42,6 +42,10 @@
 **Updated**: 2025-06-13T02:11:07.988Z
 
 ## features
+### report_save_feature
+**Value**: Add --save flag to report command that automatically saves reports to .claude/reports/ directory with timestamped filenames (e.g., summary-2024-01-15-143022.md)
+**Updated**: 2025-06-14T17:43:53.128Z
+
 ### v1.5.0_Features
 **Value**: Pattern subcommands (add/list/search/resolve), Knowledge management system with categories, Enhanced search with --type filtering (decisions/patterns/tasks/knowledge), JSON output with --json flag, Result limiting with --limit N, All backward compatible
 **Updated**: 2025-06-05T00:41:10.713Z
@@ -75,6 +79,10 @@
 ### dry_run_implementation
 **Value**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file write operations. Shows DRY RUN MODE indicator, prevents all changes, verbose mode shows Would messages. PR #34 created. Test coverage: 5/6 tests pass.
 **Updated**: 2025-06-08T22:14:32.461Z
+
+### v1.10.0_bulk_operations
+**Value**: Successfully implemented bulk task operations (Issue #27). Added task add-bulk for JSON import and task export for JSON/GitHub formats. Created shared JSON schemas foundation for future features.
+**Updated**: 2025-06-14T16:11:18.502Z
 
 ## progress
 ### Current_Status_v1.5.0
@@ -111,6 +119,10 @@
 **Value**: Cleaned up 4 obsolete branches that contained work already merged through other PRs: feature/issue-19-cli-flags (PR #20), feature/v1.7.0-multi-file-context (PR #18), feature/pattern-subcommands, and fix/v1.4.1-hotfixes (PR #10). Repository now only has main branch. Auto-delete enabled for future merges.
 **Updated**: 2025-06-07T23:05:05.605Z
 
+### CLAUDE_MD_improvements
+**Value**: Token optimization improvements: increased truncation to 120 chars, added Recent Changes section, updated command examples for v1.10.0
+**Updated**: 2025-06-14T18:10:04.947Z
+
 ### Current_Version
 **Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
 **Updated**: 2025-06-07T02:13:05.143Z
@@ -122,6 +134,10 @@
 ### Parity_Status_v1.5.0
 **Value**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and available. Local: repository at v1.5.0, global claude-memory v1.5.0 installed, all systems synchronized. Ready for Issues #8-9 development.
 **Updated**: 2025-06-05T00:46:46.757Z
+
+### v1.10.0_features
+**Value**: Export/Import functionality complete with multiple formats (JSON, YAML, CSV, Markdown), filtering options, merge/replace modes, validation, and comprehensive report generation
+**Updated**: 2025-06-14T17:37:22.132Z
 
 ### v1.6.0_NPM_Published
 **Value**: v1.6.0 successfully published to npm. Users can now install with 'npm install -g claude-memory' to get all improvements.
@@ -220,6 +236,10 @@
 ### Version_First_Workflow
 **Value**: New development workflow: Bump version in package.json FIRST before implementing features. This ensures --version flag and all version references are correct from the start. Successfully tested with v1.8.0 development.
 **Updated**: 2025-06-07T00:28:41.067Z
+
+### bug_fix_workflow
+**Value**: When finding bugs in released versions: 1) Create GitHub issue immediately, 2) Switch to main branch, 3) Create hotfix/issue-XX branch, 4) Fix and test, 5) PR to main, 6) Release patch version (npm version patch), 7) Cherry-pick to develop if needed
+**Updated**: 2025-06-14T16:51:04.979Z
 
 ### git_co_author
 **Value**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
