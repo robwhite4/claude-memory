@@ -1,10 +1,10 @@
 # Task Management
-*Generated: 2025-06-14T18:10:48.204Z | 17 total tasks*
+*Generated: 2025-06-14T22:06:16.681Z | 18 total tasks*
 
 ## Summary
 - Open: 8
 - In Progress: 0
-- Completed: 9
+- Completed: 10
 
 ## Open Tasks
 ### High Priority
@@ -33,6 +33,9 @@
 ## In Progress
 
 ## Recently Completed
+- [x] **Fix --help flag handling in all subcommands (Issue #46)** (ID: 740437a2)
+  - Completed: 6/14/2025
+  - Outcome: Successfully implemented and released v1.10.1 with --help flag fixes for all subcommands
 - [x] **Implement CLAUDE.md merge strategy system** (ID: 6f7edef3)
   - Completed: 6/4/2025
   - Outcome: Successfully implemented CLAUDE.md merge strategy system with section markers, backup protection, and full preservation of manual content during auto-updates

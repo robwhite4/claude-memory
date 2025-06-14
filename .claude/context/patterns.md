@@ -1,9 +1,9 @@
 # Project Patterns
-*Generated: 2025-06-14T18:10:48.193Z | 52 total patterns*
+*Generated: 2025-06-14T22:06:16.671Z | 54 total patterns*
 
 ## Summary
 - Open Patterns: 42
-- Resolved Patterns: 10
+- Resolved Patterns: 12
 
 ## Open Patterns
 ### Critical Priority
@@ -297,6 +297,14 @@
 - **Frequency**: 1
 
 ## Resolved Patterns
+### CLI flag parsing bug pattern (ID: d94b5374)
+- **Solution**: Implemented comprehensive --help flag handling in all subcommands. Each command now checks for --help/-h before processing other arguments.
+- **Resolved**: 2025-06-14T22:06:16.641Z
+
+### v1.10.0 feature completion tracking (ID: f7e21125)
+- **Solution**: v1.10.0 development completed successfully. All features implemented, tested, and documented. PR #44 created and ready for merge to develop branch.
+- **Resolved**: 2025-06-14T19:18:30.611Z
+
 ### v1.9.0 feature completion tracking (ID: d4182676)
 - **Solution**: v1.9.0 development completed successfully. All CLI flags implemented, tested, and documented. PR #40 created and ready for merge.
 - **Resolved**: 2025-06-09T02:28:12.397Z
@@ -328,12 +336,4 @@
 ### Test parsing 1 (ID: 8e5f6fab)
 - **Solution**: Test pattern completed - functionality verified
 - **Resolved**: 2025-06-06T23:05:50.708Z
-
-### Another test pattern (ID: cea020a8)
-- **Solution**: Test pattern no longer needed
-- **Resolved**: 2025-06-06T23:05:23.193Z
-
-### malicious (ID: 8113232f)
-- **Solution**: Test pattern removed - security testing complete
-- **Resolved**: 2025-06-05T00:41:38.500Z
 
