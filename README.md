@@ -180,6 +180,16 @@ cmem pattern "API-first design" "Build APIs before UI" 0.9 high
 cmem task add "Implement user settings" --priority high
 cmem task complete abc123 "Added settings page"
 
+# Bulk task operations (v1.10.0+)
+cmem task add-bulk tasks.json
+cmem task export github pending
+
+# Enhanced export and reporting (v1.10.0+)
+cmem export --format yaml --types tasks,patterns --from 2024-01-01
+cmem import backup.json --mode merge
+cmem report summary --save
+cmem report sprint --format markdown
+
 # Search your memory
 cmem search "authentication"
 ```
