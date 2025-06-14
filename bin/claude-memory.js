@@ -1350,6 +1350,7 @@ GLOBAL FLAGS:
   --force, -f                            Skip confirmation prompts
   --debug                                Show debug information for troubleshooting
   --version, -v                          Show version number
+  --help, -h                             Show this help message
 
 ENVIRONMENT VARIABLES:
   CLAUDE_MEMORY_CONFIG                   Path to custom config file
@@ -1814,7 +1815,9 @@ debug('Command parsing complete', {
 
 // Handle help flags
 if (!command || command === 'help' || command === '--help' || command === '-h') {
-  commands.help(cleanArgs[0]);
+  // For --help and -h flags, show general help, not help for a specific command
+  const helpTopic = (command === 'help') ? cleanArgs[0] : null;
+  commands.help(helpTopic);
   process.exit(0);
 }
 
