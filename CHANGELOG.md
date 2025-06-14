@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2025-06-14
+
+### Fixed
+- Fixed `--help` flag not working on subcommands (Issue #46)
+  - `task --help`, `export --help`, `import --help`, etc. now show proper help text
+  - All subcommands now recognize both `--help` and `-h` flags
+  - Previously showed "Unknown flag" errors instead of help
+
 ## [1.10.0] - 2025-06-14
 
 ### Added
