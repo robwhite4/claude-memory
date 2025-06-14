@@ -1,16 +1,16 @@
 # Project Knowledge Base
-*Generated: 2025-06-14T18:10:48.192Z | 60 items across 11 categories*
+*Generated: 2025-06-14T19:18:30.633Z | 62 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
 - [design](#design) (1 items)
 - [documentation](#documentation) (1 items)
-- [features](#features) (3 items)
+- [features](#features) (4 items)
 - [feedback](#feedback) (2 items)
 - [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (4 items)
-- [status](#status) (17 items)
+- [status](#status) (18 items)
 - [testing](#testing) (7 items)
 - [workflow](#workflow) (13 items)
 
@@ -45,6 +45,10 @@
 ### report_save_feature
 **Value**: Add --save flag to report command that automatically saves reports to .claude/reports/ directory with timestamped filenames (e.g., summary-2024-01-15-143022.md)
 **Updated**: 2025-06-14T17:43:53.128Z
+
+### v1.10.0_features_complete
+**Value**: All v1.10.0 features implemented and tested: 1) Bulk task operations (task add-bulk, task export), 2) Enhanced export command (JSON/YAML/CSV/Markdown formats, type/date filtering), 3) Import command (merge/replace modes, validation, YAML support), 4) Report generation (6 types: summary/tasks/patterns/decisions/progress/sprint, auto-save feature), 5) CLAUDE.md improvements (120 char truncation, Recent Changes section, v1.10.0 commands in examples)
+**Updated**: 2025-06-14T19:17:58.007Z
 
 ### v1.5.0_Features
 **Value**: Pattern subcommands (add/list/search/resolve), Knowledge management system with categories, Enhanced search with --type filtering (decisions/patterns/tasks/knowledge), JSON output with --json flag, Result limiting with --limit N, All backward compatible
@@ -126,6 +130,10 @@
 ### Current_Version
 **Value**: v1.8.1 - Latest release includes CLI flags (v1.8.0) and repository housekeeping fixes (v1.8.1)
 **Updated**: 2025-06-07T02:13:05.143Z
+
+### PR_44_v1.10.0_status
+**Value**: PR #44 created for v1.10.0 release targeting develop branch. Implements Issues #27, #30, #43. All features complete: bulk task operations, enhanced export/import with multiple formats, report generation with 6 types, and CLAUDE.md token optimization. All tests pass (76/76), no linting errors, PR is MERGEABLE after resolving conflicts with develop.
+**Updated**: 2025-06-14T19:17:37.605Z
 
 ### PR_status_v1.9.0
 **Value**: PR #33 (code refactoring) and PR #34 (--dry-run flag) both open targeting develop branch. Both implementations complete with tests passing. Waiting for review/merge before implementing remaining CLI flags.
