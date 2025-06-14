@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2025-06-14
+
+### Fixed
+- Fixed --help and -h flags not showing general help (Issue #41)
+  - Previously these flags were incorrectly passed as arguments to the help command
+  - Now properly shows the full help message when using --help or -h
+- Added --help and -h to the global flags documentation
+
 ## [1.9.0] - 2025-06-09
 
 ### Added
