@@ -230,6 +230,9 @@ const commands = {
       } else if (arg === '--limit' && args[i + 1]) {
         limit = parseInt(args[i + 1]);
         i++;
+      } else if (arg === '--help' || arg === '-h') {
+        commands.showContextualHelp('search');
+        process.exit(0);
       } else if (arg?.startsWith('--')) {
         console.error(`❌ Unknown flag: ${arg}`);
         console.log('Usage: claude-memory search "query" [--json] [--type TYPE] [--limit N] [path]');
@@ -397,6 +400,12 @@ const commands = {
 
   async pattern(action, ...args) {
     const projectPath = process.cwd();
+
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('pattern');
+      process.exit(0);
+    }
 
     if (action === 'add') {
       const pattern = args[0];
@@ -633,6 +642,12 @@ const commands = {
 
   async task(action, ...args) {
     const projectPath = process.cwd();
+
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('task');
+      process.exit(0);
+    }
 
     if (action === 'add') {
       const description = args[0];
@@ -887,6 +902,9 @@ const commands = {
         i++;
       } else if (arg === '--no-metadata') {
         includeMetadata = false;
+      } else if (arg === '--help' || arg === '-h') {
+        commands.showContextualHelp('export');
+        process.exit(0);
       } else if (arg?.startsWith('--')) {
         console.error(`❌ Unknown flag: ${arg}`);
         console.log('Usage: claude-memory export [filename] [options] [path]');
@@ -1304,6 +1322,12 @@ const commands = {
   session(action, ...args) {
     const projectPath = process.cwd();
 
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('session');
+      process.exit(0);
+    }
+
     if (action === 'start') {
       const sessionName = args[0];
       const context = args[1] || '{}';
@@ -1404,6 +1428,9 @@ const commands = {
         i++;
       } else if (arg === '--dry-run') {
         dryRun = true;
+      } else if (arg === '--help' || arg === '-h') {
+        commands.showContextualHelp('import');
+        process.exit(0);
       } else if (arg?.startsWith('--')) {
         console.error(`❌ Unknown flag: ${arg}`);
         console.log('Usage: claude-memory import <filename> [options] [path]');
@@ -2522,6 +2549,12 @@ const commands = {
     const projectPath = process.cwd();
     const configPath = path.join(projectPath, '.claude', 'config.json');
 
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('config');
+      process.exit(0);
+    }
+
     if (action === 'get') {
       try {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -2554,6 +2587,12 @@ const commands = {
 
   async knowledge(action, ...args) {
     const projectPath = process.cwd();
+
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('knowledge');
+      process.exit(0);
+    }
 
     if (action === 'add') {
       const key = args[0];
