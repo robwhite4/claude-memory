@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive test coverage for export, import, and report functionality
 - Example JSON format in help documentation
 - js-yaml dependency for YAML format support
+- CLAUDE.md token optimization improvements
+  - Increased knowledge truncation from 80 to 120 characters
+  - Added Recent Changes section showing last 7 days of activity
+  - Updated command examples to include v1.10.0 features
 
 ### Changed
 - Enhanced task management with import/export capabilities
