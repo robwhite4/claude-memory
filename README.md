@@ -360,6 +360,36 @@ cmem task export json > tasks.json # Export tasks for backup
 - **CSV**: Spreadsheet-compatible for analysis
 - **Markdown**: Documentation-ready reports
 
+### Import Command (v1.10.0)
+```bash
+# Basic import (merge mode by default)
+cmem import backup.json
+
+# Import with replace mode (clears existing data)
+cmem import fresh-start.json --mode replace
+
+# Preview import without making changes
+cmem import data.json --dry-run
+
+# Import specific data types only
+cmem import tasks.json --types tasks
+cmem import --types tasks,patterns archived-data.yaml
+
+# Import from YAML
+cmem import config.yaml
+
+# Combine options
+cmem import sprint-data.json --types tasks,decisions --dry-run
+```
+
+**Import Features:**
+- **Merge Mode** (default): Adds new items, skips duplicates by ID
+- **Replace Mode**: Clears existing data before importing
+- **Type Filtering**: Import only specific data types
+- **Format Support**: JSON and YAML files
+- **Validation**: Ensures data integrity before import
+- **Dry Run**: Preview changes without applying them
+
 ### Report Generation (v1.10.0)
 ```bash
 # Generate project summary report
@@ -380,6 +410,11 @@ cmem report --format markdown      # Markdown (default)
 # Save to file
 cmem report summary project-status.md
 cmem report sprint sprint-review.md
+
+# Auto-save with timestamps (v1.10.0)
+cmem report summary --save                        # Saves to .claude/reports/
+cmem report sprint --save --format json          # Auto-timestamp: sprint-20240115143022.json
+cmem report tasks --save --save-dir ./archives   # Custom directory
 
 # Date filtering
 cmem report --from 2024-01-01 --to 2024-01-31

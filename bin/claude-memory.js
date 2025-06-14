@@ -1380,6 +1380,407 @@ const commands = {
     }
   },
 
+  async import(...args) {
+    let filename = null;
+    let projectPath = null;
+    let mode = 'merge'; // merge or replace
+    let types = null;
+    let dryRun = globalDryRunMode;
+
+    // Parse arguments and flags
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      const nextArg = args[i + 1];
+
+      if (arg === '--mode' && nextArg) {
+        if (!['merge', 'replace'].includes(nextArg)) {
+          console.error(`❌ Invalid mode: ${nextArg}. Valid options: merge, replace`);
+          process.exit(1);
+        }
+        mode = nextArg;
+        i++;
+      } else if (arg === '--types' && nextArg) {
+        types = nextArg.split(',').map(t => t.trim());
+        i++;
+      } else if (arg === '--dry-run') {
+        dryRun = true;
+      } else if (arg?.startsWith('--')) {
+        console.error(`❌ Unknown flag: ${arg}`);
+        console.log('Usage: claude-memory import <filename> [options] [path]');
+        console.log('Options:');
+        console.log('  --mode <mode>        Import mode: merge (default) or replace');
+        console.log('  --types <list>       Comma-separated list of types to import');
+        console.log('                       (tasks, patterns, decisions, knowledge, sessions)');
+        console.log('  --dry-run            Preview import without making changes');
+        process.exit(1);
+      } else if (!filename) {
+        filename = arg;
+      } else if (!projectPath) {
+        projectPath = arg;
+      }
+    }
+
+    if (!filename) {
+      console.error('❌ Filename required');
+      console.log('Usage: claude-memory import <filename> [options] [path]');
+      process.exit(1);
+    }
+
+    // Validate types if specified
+    const validTypes = ['tasks', 'patterns', 'decisions', 'knowledge', 'sessions'];
+    if (types) {
+      const invalidTypes = types.filter(t => !validTypes.includes(t));
+      if (invalidTypes.length > 0) {
+        console.error(`❌ Invalid types: ${invalidTypes.join(', ')}`);
+        console.log(`Valid types: ${validTypes.join(', ')}`);
+        process.exit(1);
+      }
+    }
+
+    // Use current directory if no path provided
+    const targetPath = validatePath(projectPath || process.cwd());
+
+    try {
+      // Check if file exists
+      if (!fs.existsSync(filename)) {
+        console.error(`❌ File not found: ${filename}`);
+        process.exit(1);
+      }
+
+      // Read and parse the file
+      const fileContent = fs.readFileSync(filename, 'utf8');
+      let importData;
+
+      // Detect format and parse accordingly
+      const extension = path.extname(filename).toLowerCase();
+      if (extension === '.json') {
+        importData = JSON.parse(fileContent);
+      } else if (extension === '.yaml' || extension === '.yml') {
+        importData = yaml.load(fileContent);
+      } else {
+        // Try to auto-detect format
+        try {
+          importData = JSON.parse(fileContent);
+        } catch (e) {
+          try {
+            importData = yaml.load(fileContent);
+          } catch (e2) {
+            console.error('❌ Unable to parse file. Please use JSON or YAML format.');
+            process.exit(1);
+          }
+        }
+      }
+
+      // Validate import data structure
+      const validationErrors = commands.validateImportData(importData);
+      if (validationErrors.length > 0) {
+        console.error('❌ Import validation failed:');
+        validationErrors.forEach(error => console.error(`  - ${error}`));
+        process.exit(1);
+      }
+
+      // Filter by types if specified
+      if (types) {
+        const filteredData = {};
+        types.forEach(type => {
+          if (importData[type]) {
+            filteredData[type] = importData[type];
+          }
+        });
+        importData = filteredData;
+      }
+
+      // Initialize memory
+      const memory = createMemory(targetPath);
+
+      // Preview mode
+      if (dryRun) {
+        log('🔍 DRY RUN MODE - No changes will be made\n');
+
+        // Show what would be imported
+        const importSummary = commands.getImportSummary(importData);
+        log('📊 Import Summary:');
+        Object.entries(importSummary).forEach(([type, count]) => {
+          if (count > 0) {
+            log(`  - ${type}: ${count} items`);
+          }
+        });
+
+        if (mode === 'replace') {
+          log('\n⚠️  REPLACE MODE: Existing data will be replaced');
+          const currentSummary = commands.getImportSummary(memory.exportMemory());
+          log('\n📊 Current Data (will be replaced):');
+          Object.entries(currentSummary).forEach(([type, count]) => {
+            if (count > 0) {
+              log(`  - ${type}: ${count} items`);
+            }
+          });
+        } else {
+          log('\n🔄 MERGE MODE: New data will be added to existing data');
+        }
+
+        log('\n✅ Dry run complete. Use without --dry-run to perform import.');
+        return;
+      }
+
+      // Perform the import
+      let imported = 0;
+      let skipped = 0;
+      const errors = [];
+
+      // Import based on mode
+      if (mode === 'replace') {
+        // Replace mode - clear existing data first
+        if (importData.tasks) {
+          memory.tasks = [];
+        }
+        if (importData.patterns) {
+          memory.patterns = [];
+        }
+        if (importData.decisions) {
+          memory.decisions = [];
+        }
+        if (importData.knowledge) {
+          memory.knowledge = {};
+        }
+        if (importData.sessions) {
+          memory.sessions = [];
+        }
+      }
+
+      // Import tasks
+      if (importData.tasks) {
+        importData.tasks.forEach(task => {
+          try {
+            // In merge mode, check for duplicates
+            if (mode === 'merge' && memory.tasks.some(t => t.id === task.id)) {
+              skipped++;
+              return;
+            }
+
+            // Add task with proper structure
+            memory.tasks.push({
+              id: task.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              description: task.description,
+              priority: task.priority || 'medium',
+              status: task.status || 'pending',
+              assignee: task.assignee || null,
+              dueDate: task.dueDate || null,
+              createdAt: task.createdAt || new Date().toISOString(),
+              completedAt: task.completedAt || null,
+              outcome: task.outcome || null
+            });
+            imported++;
+          } catch (error) {
+            errors.push(`Task import error: ${error.message}`);
+          }
+        });
+      }
+
+      // Import patterns
+      if (importData.patterns) {
+        importData.patterns.forEach(pattern => {
+          try {
+            if (mode === 'merge' && memory.patterns.some(p => p.id === pattern.id)) {
+              skipped++;
+              return;
+            }
+
+            memory.patterns.push({
+              id: pattern.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              pattern: pattern.pattern || pattern.name,
+              description: pattern.description,
+              priority: pattern.priority || 'medium',
+              effectiveness: pattern.effectiveness || 0.5,
+              status: pattern.status || 'active',
+              solution: pattern.solution || null,
+              createdAt: pattern.createdAt || new Date().toISOString(),
+              timestamp: pattern.timestamp || new Date().toISOString()
+            });
+            imported++;
+          } catch (error) {
+            errors.push(`Pattern import error: ${error.message}`);
+          }
+        });
+      }
+
+      // Import decisions
+      if (importData.decisions) {
+        importData.decisions.forEach(decision => {
+          try {
+            if (mode === 'merge' && memory.decisions.some(d => d.id === decision.id)) {
+              skipped++;
+              return;
+            }
+
+            memory.recordDecision(
+              decision.decision,
+              decision.reasoning,
+              decision.alternativesConsidered || ''
+            );
+            imported++;
+          } catch (error) {
+            errors.push(`Decision import error: ${error.message}`);
+          }
+        });
+      }
+
+      // Import knowledge
+      if (importData.knowledge) {
+        Object.entries(importData.knowledge).forEach(([category, items]) => {
+          Object.entries(items).forEach(([key, data]) => {
+            try {
+              memory.storeKnowledge(key, data.value || data, category);
+              imported++;
+            } catch (error) {
+              errors.push(`Knowledge import error: ${error.message}`);
+            }
+          });
+        });
+      }
+
+      // Import sessions
+      if (importData.sessions) {
+        importData.sessions.forEach(session => {
+          try {
+            if (mode === 'merge' && memory.sessions.some(s => s.id === session.id)) {
+              skipped++;
+              return;
+            }
+
+            memory.sessions.push({
+              id: session.id,
+              name: session.name,
+              startTime: session.startTime,
+              endTime: session.endTime || null,
+              status: session.status || (session.endTime ? 'completed' : 'active'),
+              outcome: session.outcome || null,
+              context: session.context || {}
+            });
+            imported++;
+          } catch (error) {
+            errors.push(`Session import error: ${error.message}`);
+          }
+        });
+      }
+
+      // Save the imported data
+      memory.saveMemory();
+
+      // Report results
+      log('✅ Import completed successfully!');
+      log('📊 Results:');
+      log(`  - Imported: ${imported} items`);
+      if (skipped > 0) {
+        log(`  - Skipped: ${skipped} items (duplicates)`);
+      }
+      if (errors.length > 0) {
+        log(`  - Errors: ${errors.length}`);
+        errors.forEach(error => log(`    - ${error}`));
+      }
+      log(`  - Mode: ${mode}`);
+      log(`  - File: ${filename}`);
+    } catch (error) {
+      console.error('❌ Import failed:', error.message);
+      if (globalDebugMode) {
+        console.error('\n[DEBUG] Full error details:');
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  },
+
+  validateImportData(data) {
+    const errors = [];
+
+    // Check basic structure
+    if (!data || typeof data !== 'object') {
+      errors.push('Import data must be a valid object');
+      return errors;
+    }
+
+    // Validate tasks
+    if (data.tasks && !Array.isArray(data.tasks)) {
+      errors.push('Tasks must be an array');
+    } else if (data.tasks) {
+      data.tasks.forEach((task, index) => {
+        if (!task.description) {
+          errors.push(`Task at index ${index} missing required field: description`);
+        }
+        if (task.priority && !['low', 'medium', 'high'].includes(task.priority)) {
+          errors.push(`Task at index ${index} has invalid priority: ${task.priority}`);
+        }
+        if (task.status && !['pending', 'in_progress', 'completed'].includes(task.status)) {
+          errors.push(`Task at index ${index} has invalid status: ${task.status}`);
+        }
+      });
+    }
+
+    // Validate patterns
+    if (data.patterns && !Array.isArray(data.patterns)) {
+      errors.push('Patterns must be an array');
+    } else if (data.patterns) {
+      data.patterns.forEach((pattern, index) => {
+        if (!pattern.pattern && !pattern.name) {
+          errors.push(`Pattern at index ${index} missing required field: pattern or name`);
+        }
+        if (!pattern.description) {
+          errors.push(`Pattern at index ${index} missing required field: description`);
+        }
+        if (pattern.priority && !['low', 'medium', 'high', 'critical'].includes(pattern.priority)) {
+          errors.push(`Pattern at index ${index} has invalid priority: ${pattern.priority}`);
+        }
+      });
+    }
+
+    // Validate decisions
+    if (data.decisions && !Array.isArray(data.decisions)) {
+      errors.push('Decisions must be an array');
+    } else if (data.decisions) {
+      data.decisions.forEach((decision, index) => {
+        if (!decision.decision) {
+          errors.push(`Decision at index ${index} missing required field: decision`);
+        }
+        if (!decision.reasoning) {
+          errors.push(`Decision at index ${index} missing required field: reasoning`);
+        }
+      });
+    }
+
+    // Validate knowledge
+    if (data.knowledge && typeof data.knowledge !== 'object') {
+      errors.push('Knowledge must be an object with categories');
+    }
+
+    // Validate sessions
+    if (data.sessions && !Array.isArray(data.sessions)) {
+      errors.push('Sessions must be an array');
+    } else if (data.sessions) {
+      data.sessions.forEach((session, index) => {
+        if (!session.name) {
+          errors.push(`Session at index ${index} missing required field: name`);
+        }
+        if (!session.startTime) {
+          errors.push(`Session at index ${index} missing required field: startTime`);
+        }
+      });
+    }
+
+    return errors;
+  },
+
+  getImportSummary(data) {
+    return {
+      tasks: data.tasks?.length || 0,
+      patterns: data.patterns?.length || 0,
+      decisions: data.decisions?.length || 0,
+      knowledge: data.knowledge
+        ? Object.values(data.knowledge).reduce((sum, cat) => sum + Object.keys(cat).length, 0)
+        : 0,
+      sessions: data.sessions?.length || 0
+    };
+  },
+
   async report(type = 'summary', ...args) {
     debug('Report command called', { type, args });
 
@@ -1388,6 +1789,8 @@ const commands = {
     let format = 'markdown';
     let dateFrom = null;
     let dateTo = null;
+    let autoSave = false;
+    let saveDir = null;
 
     // Parse arguments
     for (let i = 0; i < args.length; i++) {
@@ -1413,6 +1816,12 @@ const commands = {
           console.error('❌ Invalid to date format. Use YYYY-MM-DD');
           process.exit(1);
         }
+        i++;
+      } else if (arg === '--save') {
+        autoSave = true;
+      } else if (arg === '--save-dir' && nextArg) {
+        saveDir = nextArg;
+        autoSave = true;
         i++;
       } else if (!arg.startsWith('--')) {
         if (!outputFile && arg !== type) {
@@ -1472,11 +1881,37 @@ const commands = {
           fs.writeFileSync(outputFile, reportContent);
         }
         log(`✅ Report saved to: ${outputFile}`);
+      } else if (autoSave) {
+        // Auto-save with timestamp
+        const timestamp = new Date().toISOString()
+          .replace(/[:.]/g, '-')
+          .replace('T', '-')
+          .split('-')
+          .slice(0, -1)
+          .join('');
+        const extension = format === 'json' ? 'json' : 'md';
+        const fileName = `${type}-${timestamp}.${extension}`;
+
+        // Determine save directory
+        const reportDir = saveDir || path.join(targetPath, '.claude', 'reports');
+
+        if (!globalDryRunMode) {
+          // Create directory if it doesn't exist
+          if (!fs.existsSync(reportDir)) {
+            fs.mkdirSync(reportDir, { recursive: true });
+          }
+
+          const filePath = path.join(reportDir, fileName);
+          fs.writeFileSync(filePath, reportContent);
+          log(`✅ Report saved to: ${filePath}`);
+        } else {
+          log(`Would save report to: ${path.join(reportDir, fileName)}`);
+        }
       } else {
         output(reportContent);
       }
 
-      if (globalDryRunMode) {
+      if (globalDryRunMode && (outputFile || autoSave)) {
         log('\n🏃 DRY RUN - No files were written');
       }
     } catch (error) {
@@ -2310,6 +2745,7 @@ UTILITIES:
   🔧 config <action> [options]           View and update configuration
   📤 backup [path]                       Create memory backup
   📄 export [filename] [options]         Export memory with advanced options
+  📥 import <filename> [options]         Import memory data with merge/replace options
   📊 report [type] [options]             Generate project reports and analytics
   🤖 context [path]                      Get AI integration context (JSON)
   🔄 handoff [options] [path]            Generate AI assistant handoff summary
@@ -2337,6 +2773,7 @@ GET DETAILED HELP:
   cmem help session                 📚 Session tracking and context management
   cmem help search                  🔍 Advanced search and filtering options
   cmem help export                  📄 Advanced export options and formats
+  cmem help import                  📥 Import options and merge strategies
   cmem help report                  📊 Report generation and analytics
   cmem help examples                📚 Common usage patterns and workflows
 
@@ -2535,6 +2972,33 @@ QUICK EXAMPLES:
         ]
       },
 
+      import: {
+        title: '📥 Import Command',
+        description: 'Import memory data from exported files with merge or replace options',
+        commands: {
+          'import <filename> [options] [path]': 'Import memory data from JSON or YAML files'
+        },
+        options: {
+          '--mode <mode>': 'Import mode: merge (default) or replace',
+          '--types <list>': 'Comma-separated types: tasks, patterns, decisions, knowledge, sessions',
+          '--dry-run': 'Preview import without making changes'
+        },
+        examples: [
+          'cmem import backup.json',
+          'cmem import tasks.json --types tasks',
+          'cmem import project-data.yaml --mode replace',
+          'cmem import data.json --dry-run',
+          'cmem import archive.json --types tasks,decisions --mode merge'
+        ],
+        tips: [
+          '💡 Merge mode adds new items and skips duplicates',
+          '💡 Replace mode clears existing data before importing',
+          '💡 Use --dry-run to preview what will be imported',
+          '💡 Supports both JSON and YAML formats',
+          '💡 Import validates data structure before processing'
+        ]
+      },
+
       report: {
         title: '📊 Report Generation',
         description: 'Generate project reports and analytics in various formats',
@@ -2545,7 +3009,9 @@ QUICK EXAMPLES:
           '--type <type>': 'Report type: summary, tasks, patterns, decisions, progress, sprint',
           '--format <format>': 'Output format: markdown, json (default: markdown)',
           '--from <date>': 'Include data from this date (ISO format: YYYY-MM-DD)',
-          '--to <date>': 'Include data up to this date (ISO format: YYYY-MM-DD)'
+          '--to <date>': 'Include data up to this date (ISO format: YYYY-MM-DD)',
+          '--save': 'Auto-save report with timestamp in .claude/reports/',
+          '--save-dir <path>': 'Custom directory for auto-saved reports'
         },
         examples: [
           'cmem report',
@@ -2553,14 +3019,19 @@ QUICK EXAMPLES:
           'cmem report tasks report.md',
           'cmem report --type sprint --format json',
           'cmem report progress weekly.md --from 2024-01-01 --to 2024-01-07',
-          'cmem report decisions --format json > decisions.json'
+          'cmem report decisions --format json > decisions.json',
+          'cmem report summary --save',
+          'cmem report sprint --save --format json',
+          'cmem report tasks --save --save-dir ./my-reports'
         ],
         tips: [
           '💡 Summary report provides a high-level project overview',
           '💡 Sprint report shows activity from the last 2 weeks',
           '💡 Progress report includes a timeline of activities',
           '💡 Use date filters to generate reports for specific periods',
-          '💡 JSON format is useful for further processing or integration'
+          '💡 JSON format is useful for further processing or integration',
+          '💡 --save creates timestamped files for historical tracking',
+          '💡 Reports directory can be tracked in git or ignored as needed'
         ]
       },
 
@@ -2603,7 +3074,7 @@ QUICK EXAMPLES:
       console.log(`❌ No detailed help available for: ${command}
       
 Available help topics:
-  task, pattern, knowledge, session, search, export, report, examples
+  task, pattern, knowledge, session, search, export, import, report, examples
   
 Usage: cmem help <topic>`);
       return;

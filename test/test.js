@@ -368,6 +368,36 @@ async function runTests() {
     assert(stdout.includes('Tasks Added'), 'Should show tasks added in sprint');
   });
 
+  await test('Report command - auto-save', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report summary --save`);
+    assert(stdout.includes('Report saved to:'), 'Should save report');
+    assert(stdout.includes('.claude/reports/'), 'Should save in reports directory');
+    assert(stdout.includes('summary-'), 'Should have timestamped filename');
+
+    // Verify file was created
+    const reportsDir = path.join('.claude', 'reports');
+    assert(fs.existsSync(reportsDir), 'Reports directory should exist');
+    const files = fs.readdirSync(reportsDir);
+    assert(files.some(f => f.startsWith('summary-')), 'Should create summary report file');
+  });
+
+  await test('Report command - custom save directory', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const customDir = 'test-reports';
+    const { stdout } = await execAsync(`node "${cliPath}" report tasks --save --save-dir ${customDir}`);
+    assert(stdout.includes('Report saved to:'), 'Should save report');
+    assert(stdout.includes(customDir), 'Should use custom directory');
+
+    // Verify file was created
+    assert(fs.existsSync(customDir), 'Custom directory should exist');
+    const files = fs.readdirSync(customDir);
+    assert(files.some(f => f.startsWith('tasks-')), 'Should create tasks report file');
+
+    // Clean up
+    fs.rmSync(customDir, { recursive: true, force: true });
+  });
+
   console.log(`\n📊 Test Results: ${passCount}/${testCount} passed`);
 
   if (passCount === testCount) {

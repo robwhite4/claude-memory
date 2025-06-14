@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Knowledge",
+  "description": "Schema for Claude Memory knowledge structure",
+  "type": "object",
+  "patternProperties": {
+    "^[a-zA-Z0-9_-]+$": {
+      "type": "object",
+      "description": "Knowledge category",
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "Simple string value"
+            },
+            {
+              "type": "object",
+              "required": ["value"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "Knowledge value",
+                  "minLength": 1
+                },
+                "lastUpdated": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Last update timestamp"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Alternative timestamp field"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

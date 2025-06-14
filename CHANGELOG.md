@@ -22,8 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - JSON and Markdown output formats
   - Date range filtering for focused reports
   - File output support for all report types
+- New import command with advanced options (Issue #30)
+  - Merge mode (default): Adds new items, skips duplicates
+  - Replace mode: Clears existing data before importing
+  - Type filtering with `--types` flag
+  - Dry-run mode with `--dry-run` flag
+  - Support for JSON and YAML formats
+  - Comprehensive validation before import
+  - Auto-generates IDs for items without them
+- Report auto-save feature (Issue #43)
+  - `--save` flag automatically saves reports with timestamps
+  - Default location: `.claude/reports/` directory
+  - `--save-dir` flag for custom save directories
+  - Timestamped filenames: `{type}-{YYYYMMDDHHMMSS}.{ext}`
+  - Supports all report types and formats
 - Shared JSON schemas for standardized data formats
-- Comprehensive test coverage for export and report functionality
+- Comprehensive test coverage for export, import, and report functionality
 - Example JSON format in help documentation
 - js-yaml dependency for YAML format support
 

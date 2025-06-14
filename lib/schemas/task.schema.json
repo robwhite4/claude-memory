@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task",
+  "description": "Schema for Claude Memory task objects",
+  "type": "object",
+  "required": ["description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the task"
+    },
+    "description": {
+      "type": "string",
+      "description": "Task description",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium",
+      "description": "Task priority level"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "completed"],
+      "default": "pending",
+      "description": "Current status of the task"
+    },
+    "assignee": {
+      "type": ["string", "null"],
+      "description": "Person assigned to the task",
+      "maxLength": 100
+    },
+    "dueDate": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Due date in ISO format (YYYY-MM-DD)"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp in ISO format"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Completion timestamp in ISO format"
+    },
+    "outcome": {
+      "type": ["string", "null"],
+      "description": "Outcome or notes when task is completed",
+      "maxLength": 1000
+    }
+  },
+  "additionalProperties": false
+}
