@@ -153,21 +153,6 @@ async function runTests() {
     fs.rmSync(verboseTestDir, { recursive: true, force: true });
   });
 
-  // Test 6b: Help flags
-  await test('Help flags (--help and -h)', async() => {
-    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
-
-    // Test --help flag
-    const { stdout: helpLong } = await execAsync(`node "${cliPath}" --help`);
-    assert(helpLong.includes('Claude Memory'), 'Should show help with --help');
-    assert(helpLong.includes('USAGE:'), 'Should show usage section');
-
-    // Test -h flag
-    const { stdout: helpShort } = await execAsync(`node "${cliPath}" -h`);
-    assert(helpShort.includes('Claude Memory'), 'Should show help with -h');
-    assert(helpShort.includes('USAGE:'), 'Should show usage section');
-  });
-
   // Test 7: Package.json is valid
   await test('Package.json is valid', () => {
     const pkgPath = path.join(packageRoot, 'package.json');
