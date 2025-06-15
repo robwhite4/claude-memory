@@ -1811,6 +1811,26 @@ const commands = {
   async report(type = 'summary', ...args) {
     debug('Report command called', { type, args });
 
+    // Check for help flag first
+    if (type === '--help' || type === '-h' || args.includes('--help') || args.includes('-h')) {
+      commands.showContextualHelp('report');
+      return;
+    }
+
+    // Handle case where --type flag is used as positional argument
+    let skipFirstArg = false;
+    if (type === '--type') {
+      // When called as 'report --type progress', we get:
+      // type = '--type' and args = ['progress']
+      // So we need to extract the actual type from args[0]
+      if (args.length > 0 && !args[0].startsWith('--')) {
+        type = args[0];
+        args = args.slice(1); // Remove the type from args
+      } else {
+        type = 'summary'; // Default if no type specified after --type
+      }
+    }
+
     let projectPath = null;
     let outputFile = null;
     let format = 'markdown';

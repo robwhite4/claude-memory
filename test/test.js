@@ -368,6 +368,14 @@ async function runTests() {
     assert(stdout.includes('Tasks Added'), 'Should show tasks added in sprint');
   });
 
+  await test('Report command - --type flag syntax', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" report --type progress`);
+    assert(stdout.includes('Progress Report'), 'Should generate progress report with --type flag');
+    assert(stdout.includes('Progress Overview'), 'Should include progress overview');
+    assert(stdout.includes('Activity Timeline'), 'Should show activity timeline');
+  });
+
   await test('Report command - auto-save', async() => {
     const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
     const { stdout } = await execAsync(`node "${cliPath}" report summary --save`);
