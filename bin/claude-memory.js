@@ -1818,7 +1818,6 @@ const commands = {
     }
 
     // Handle case where --type flag is used as positional argument
-    let skipFirstArg = false;
     if (type === '--type') {
       // When called as 'report --type progress', we get:
       // type = '--type' and args = ['progress']
