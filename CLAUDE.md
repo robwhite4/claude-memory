@@ -1,8 +1,8 @@
 # Claude Project Memory
 
 ## Active Session
-- **Current**: Morning Development
-- **Started**: 2025-06-14
+- **Current**: Afternoon Development
+- **Started**: 2025-06-15
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
@@ -22,20 +22,20 @@
 - **Progress_Status_89_Percent**: 89% user feedback addressed (8/9 issues complete). Issue #8 CLAUDE.md merge strategy just completed successfully. Only I...
 - ... and 1 more items
 
-#### features (3 items)
+#### features (4 items)
 - **v1.5.0_Features**: Pattern subcommands (add/list/search/resolve), Knowledge management system with categories, Enhanced search with --type ...
 - **v1.8.0_CLI_Flags**: Successfully implemented Issue #19 CLI flags feature. Added 5 flags: --version (show version), --quiet (suppress output)...
-- ... and 1 more items
+- ... and 2 more items
 
 #### architecture (4 items)
 - **Session_Architecture**: Sessions stored in memory.json, not individual files. Sessions folder exists but unused in current design. Session manag...
 - **unified_design_v1.10.0**: Created unified design proposal addressing user feedback. Phase 1 (v1.10.0) focuses on export/import commands and bulk o...
 - ... and 2 more items
 
-#### status (17 items)
+#### status (18 items)
 - **Parity_Status_v1.5.0**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and availa...
 - **v1.6.0_Released**: Successfully released v1.6.0 with 100% user feedback addressed. PRs #13 (Issue #9: Enhanced help) and #14 (Issue #8: CLA...
-- ... and 15 more items
+- ... and 16 more items
 
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BEGIN AUTO SECTION -- for generated conten...
@@ -50,15 +50,15 @@
 - **dry_run_implementation**: Implemented --dry-run flag (Issue #22) with comprehensive checks in all file write operations. Shows DRY RUN MODE indica...
 - ... and 3 more items
 
-#### workflow (13 items)
+#### workflow (14 items)
 - **github_workflow**: Professional GitHub workflow: 1) Ensure required labels exist (enhancement, bug, documentation, priority:*, cli, etc.), ...
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
-- ... and 11 more items
+- ... and 12 more items
 
-#### releases (4 items)
+#### releases (6 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after mer...
 - **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learnings: 1) Version-first workflow critical, 2...
-- ... and 2 more items
+- ... and 4 more items
 
 #### documentation (1 items)
 - **wiki_documentation_complete**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Claude Memory v1.9.0. All wiki links use hyp...
@@ -66,27 +66,27 @@
 
 ### Recent Changes
 #### Recent Decisions
-- **2025-06-14**: CLAUDE.md token optimization complete
-- **2025-06-14**: Implement report auto-save feature
-- **2025-06-14**: Implement import command
+- **2025-06-15**: Release v1.10.2 patch for report command fix
+- **2025-06-14**: Release v1.10.1 as patch for CLI usability
+- **2025-06-14**: Create v1.10.1 patch for --help bug
 
 #### Recent Patterns
-- **2025-06-07**: Clean up merged branches (medium)
-- **2025-06-08**: Develop branch workflow (medium)
+- **2025-06-15**: Test pattern (high)
 - **2025-06-09**: Rebase after major refactoring (high)
+- **2025-06-09**: v1.9.0 feature completion tracking (high)
 
 #### Recent Knowledge Updates
-- **2025-06-14**: status/CLAUDE_MD_improvements
-- **2025-06-14**: features/report_save_feature
-- **2025-06-14**: status/v1.10.0_features
+- **2025-06-15**: workflow/git_flow_workflow
+- **2025-06-15**: releases/v1.10.2_release
+- **2025-06-14**: releases/v1.10.1_release
 
 
 ### Open Patterns
 
 
 ### Recently Resolved
-- **Merged functionality test**: Test pattern completed - functionality verified (2025-06-06)
-- **v1.9.0 feature completion tracking**: v1.9.0 development completed successfully. All CLI flags implemented, tested, and documented. PR #40 created and ready for merge. (2025-06-09)
+- **v1.10.0 feature completion tracking**: v1.10.0 development completed successfully. All features implemented, tested, and documented. PR #44 created and ready for merge to develop branch. (2025-06-14)
+- **CLI flag parsing bug pattern**: Implemented comprehensive --help flag handling in all subcommands. Each command now checks for --help/-h before processing other arguments. (2025-06-14)
 
 ### Project Conventions
 <!-- Discovered during development -->
@@ -104,27 +104,27 @@
 - No tasks in progress
 
 ### Recently Completed
-- [x] **Review PR #12 and merge knowledge management features** (completed: 2025-06-05)
-- [x] **Implement CLAUDE.md merge strategy system** (completed: 2025-06-05)
+- [x] **--priority** (completed: 2025-06-15)
+- [x] **Test with valid priority** (completed: 2025-06-15)
 
 ## Recent Decisions Log
 
-### 2025-06-14: CLAUDE.md token optimization complete
-**Decision**: CLAUDE.md token optimization complete
-**Reasoning**: Successfully implemented all three improvements: increased knowledge truncation to 120 chars, added Recent Changes section, and updated command examples to include v1.10.0 features
-**Alternatives Considered**: Leave as is, Different truncation limit
+### 2025-06-15: Release v1.10.2 patch for report command fix
+**Decision**: Release v1.10.2 patch for report command fix
+**Reasoning**: Critical CLI usability fix for report command --type flag handling
+**Alternatives Considered**: Wait for more fixes, Delay release
 
 
-### 2025-06-14: Implement report auto-save feature
-**Decision**: Implement report auto-save feature
-**Reasoning**: Added --save flag to automatically save reports with timestamps in dedicated directory, improving historical tracking and report archival
-**Alternatives Considered**: Manual filename specification only, No archival system
+### 2025-06-14: Release v1.10.1 as patch for CLI usability
+**Decision**: Release v1.10.1 as patch for CLI usability
+**Reasoning**: Critical bug affecting user experience with --help flags - immediate patch release needed
+**Alternatives Considered**: Wait for v1.11.0, Create hotfix branch
 
 
-### 2025-06-14: Implement import command
-**Decision**: Implement import command
-**Reasoning**: Completes Issue #30 by adding import functionality with merge/replace modes, validation, and multi-format support
-**Alternatives Considered**: Manual data entry, No import functionality
+### 2025-06-14: Create v1.10.1 patch for --help bug
+**Decision**: Create v1.10.1 patch for --help bug
+**Reasoning**: Critical CLI usability issue discovered in v1.10.0 - subcommands don't handle --help flags properly
+**Alternatives Considered**: Wait for next major release, Create separate branch
 
 
 ## Commands & Workflows
@@ -168,10 +168,10 @@ claude-memory handoff [--format markdown|json]
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (60 items)
-- 🧩 **All Patterns**: `.claude/context/patterns.md` (52 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (69 decisions)
-- ✅ **Task Details**: `.claude/context/tasks.md` (17 tasks)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (65 items)
+- 🧩 **All Patterns**: `.claude/context/patterns.md` (54 patterns)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (74 decisions)
+- ✅ **Task Details**: `.claude/context/tasks.md` (22 tasks)
 
 ## Session Continuation
 To resume work, tell Claude:

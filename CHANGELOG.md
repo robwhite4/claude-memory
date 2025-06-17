@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.3] - 2025-06-17
+
+### Fixed
+- Fixed npm package integrity issue
+  - v1.10.2 package on npm registry had corrupted integrity checksum
+  - Users upgrading from v1.10.1 to v1.10.2 encountered `EINTEGRITY` errors
+  - This release republishes the package with correct integrity hash
+  - No code changes from v1.10.2
+
 ## [1.10.2] - 2025-06-15
 
 ### Fixed

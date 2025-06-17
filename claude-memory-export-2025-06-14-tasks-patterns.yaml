@@ -1,0 +1,696 @@
+exportedAt: '2025-06-14T18:55:29.677Z'
+metadata:
+  created: '2025-06-01T22:34:14.892Z'
+  version: 1.10.0
+  projectName: Claude Memory NPM Package
+  lastBackup: '2025-06-14T18:10:04.992Z'
+  actionsSinceBackup: 3
+tasks:
+  - id: 892500bc
+    description: Test edge cases in CLI argument parsing
+    priority: medium
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:28.879Z'
+    completedAt: '2025-06-04T21:52:28.005Z'
+    outcome: ''
+  - id: 1e143f85
+    description: Add task status update command (in-progress, blocked, etc)
+    priority: low
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:29.674Z'
+  - id: aadd7590
+    description: Consider JSON import/export for task migration
+    priority: low
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:30.437Z'
+  - id: cd22ba9f
+    description: Test enhanced task management in production
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:45:30.210Z'
+    completedAt: '2025-06-01T22:45:55.798Z'
+    outcome: Successfully deployed to production npm registry
+  - id: c56da03e
+    description: Add comprehensive test coverage and CI/CD badges
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T23:14:56.629Z'
+    completedAt: '2025-06-01T23:19:26.741Z'
+    outcome: Added comprehensive test suite with 25 tests, CI/CD pipeline, professional badges, and security policy
+  - id: f2d03a2d
+    description: Implement real code coverage and linting tools
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T23:21:01.083Z'
+    completedAt: '2025-06-01T23:26:45.704Z'
+    outcome: Implemented real coverage (78.79%) and ESLint linting with comprehensive CI/CD pipeline
+  - id: 1fa54f15
+    description: Update NPM badges to use shields.io
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-03T21:45:39.202Z'
+    completedAt: '2025-06-03T21:45:52.393Z'
+    outcome: Fixed badges and CI/CD pipeline
+  - id: 95441cf1
+    description: Implement default directory for stats/search/backup/export
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-03T21:46:00.269Z'
+    completedAt: '2025-06-03T21:46:08.613Z'
+    outcome: Implemented in v1.1.4
+  - id: 440d71c1
+    description: Test task with tag
+    priority: medium
+    status: open
+    assignee: /test
+    dueDate: null
+    createdAt: '2025-06-03T23:47:05.567Z'
+    sessionId: 2025-06-03-evening-development
+  - id: 258266bc
+    description: 'Implement v1.4.1 hotfixes (Issues #1-4)'
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T21:52:42.103Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-04T22:24:45.360Z'
+    outcome: ''
+  - id: cf9a7ca1
+    description: 'Design and implement v1.5.0 features (Issues #5-9)'
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T21:52:51.368Z'
+    sessionId: 2025-06-04-afternoon-development
+  - id: c5401666
+    description: Test task
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T22:13:40.445Z'
+    sessionId: 2025-06-04-afternoon-development
+  - id: 01363d02
+    description: 'Review PR #12 and merge knowledge management features'
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-05T00:14:04.325Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-05T00:35:26.398Z'
+    outcome: 'Successfully merged PR #12 and released v1.5.0'
+  - id: 6f7edef3
+    description: Implement CLAUDE.md merge strategy system
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-05T01:01:47.658Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-05T01:04:57.242Z'
+    outcome: >-
+      Successfully implemented CLAUDE.md merge strategy system with section markers, backup protection, and full
+      preservation of manual content during auto-updates
+  - id: 98eb6a3a
+    description: Test dry run task
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-09T02:11:51.529Z'
+    sessionId: 2025-06-08-project-setup
+  - id: 4688fe1e
+    description: Increase knowledge truncation limit from 80 to 120-150 chars in CLAUDE.md
+    priority: high
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-14T17:58:26.644Z'
+    sessionId: 2025-06-14-morning-development
+  - id: cc788f33
+    description: Add Recent Changes section to CLAUDE.md showing latest features/decisions
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-14T17:58:41.686Z'
+    sessionId: 2025-06-14-morning-development
+patterns:
+  - id: '501068e7'
+    pattern: Dogfooding validates design
+    description: Using your own product reveals real usability issues and missing features
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: open
+    firstSeen: '2025-06-01T22:34:28.049Z'
+    lastSeen: '2025-06-01T22:34:28.049Z'
+  - id: 545aa25e
+    pattern: Cost transparency builds trust
+    description: Being upfront about initial costs vs long-term savings helps users make informed decisions
+    frequency: 1
+    effectiveness: 0.85
+    priority: medium
+    status: open
+    firstSeen: '2025-06-01T22:39:12.048Z'
+    lastSeen: '2025-06-01T22:39:12.048Z'
+  - id: ef3b14cb
+    pattern: Selective git strategy
+    description: Commit curated knowledge (CLAUDE.md) but keep personal memory private (.claude/ folder)
+    frequency: 1
+    effectiveness: 0.9
+    priority: high
+    status: open
+    firstSeen: '2025-06-01T22:40:26.917Z'
+    lastSeen: '2025-06-01T22:40:26.917Z'
+  - id: fd74e9b5
+    pattern: Fix linting before release
+    description: Always run npm run lint before publishing
+    frequency: 1
+    effectiveness: 1
+    priority: critical
+    status: open
+    firstSeen: '2025-06-03T21:47:42.186Z'
+    lastSeen: '2025-06-03T21:47:42.186Z'
+  - id: 25b78a8e
+    pattern: Automatic by default
+    description: Make tools work without manual intervention - users should get value immediately
+    frequency: 1
+    effectiveness: 1
+    priority: critical
+    status: open
+    firstSeen: '2025-06-03T22:09:31.446Z'
+    lastSeen: '2025-06-03T22:09:31.446Z'
+  - id: 2407f773
+    pattern: Automated GitHub releases
+    description: Release workflow automatically creates GitHub releases with changelog content and generates release notes
+    frequency: 1
+    effectiveness: 1
+    priority: medium
+    status: open
+    firstSeen: '2025-06-03T23:03:02.505Z'
+    lastSeen: '2025-06-03T23:03:02.505Z'
+  - id: 3c4bbfb6
+    pattern: Stay synced with automated releases
+    description: Always pull after automated releases to stay current with package.json version bumps and changelog updates
+    frequency: 1
+    effectiveness: 1
+    priority: high
+    status: open
+    firstSeen: '2025-06-03T23:28:06.676Z'
+    lastSeen: '2025-06-03T23:28:06.676Z'
+  - id: 1fc60644
+    pattern: Remove unused directories
+    description: Clean up directories that aren't actually used to avoid confusion
+    frequency: 1
+    effectiveness: 1
+    priority: medium
+    status: open
+    firstSeen: '2025-06-03T23:31:09.151Z'
+    lastSeen: '2025-06-03T23:31:09.151Z'
+  - id: 8113232f
+    pattern: malicious
+    description: test
+    frequency: 1
+    effectiveness: 0.5
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-03T23:38:01.497Z'
+    lastSeen: '2025-06-03T23:38:01.497Z'
+    solution: Test pattern removed - security testing complete
+    resolvedAt: '2025-06-05T00:41:38.500Z'
+  - id: 4f28c98e
+    pattern: Deep project audits reveal critical improvements
+    description: Systematic review of security, features, and documentation uncovers major enhancement opportunities
+    frequency: 1
+    effectiveness: 1
+    priority: high
+    status: open
+    firstSeen: '2025-06-03T23:47:42.597Z'
+    lastSeen: '2025-06-03T23:47:42.597Z'
+  - id: 63abf582
+    pattern: Final repository cleanup ensures release readiness
+    description: Systematic removal of test artifacts and verification of all components for production release
+    frequency: 1
+    effectiveness: 1
+    priority: high
+    status: open
+    firstSeen: '2025-06-04T00:08:06.644Z'
+    lastSeen: '2025-06-04T00:08:06.644Z'
+  - id: 324bcbb8
+    pattern: Organize work into GitHub issues before implementing
+    description: >-
+      Creating GitHub issues for each logical chunk of work improves tracking, enables parallel development, and
+      provides clear scope for branches
+    frequency: 1
+    effectiveness: 0.95
+    priority: '--priority'
+    status: open
+    firstSeen: '2025-06-04T21:51:58.044Z'
+    lastSeen: '2025-06-04T21:51:58.044Z'
+  - id: cea020a8
+    pattern: Another test pattern
+    description: Testing ID display
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T22:04:17.535Z'
+    lastSeen: '2025-06-04T22:04:17.535Z'
+    solution: Test pattern no longer needed
+    resolvedAt: '2025-06-06T23:05:23.193Z'
+  - id: 4018bdf2
+    pattern: Direct test
+    description: Testing with node
+    frequency: 1
+    effectiveness: 0.8
+    priority: medium
+    status: open
+    firstSeen: '2025-06-04T22:04:52.022Z'
+    lastSeen: '2025-06-04T22:04:52.022Z'
+  - id: 8e5f6fab
+    pattern: Test parsing 1
+    description: With effectiveness and priority
+    frequency: 1
+    effectiveness: 0.9
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T22:06:17.961Z'
+    lastSeen: '2025-06-04T22:06:17.961Z'
+    solution: Test pattern completed - functionality verified
+    resolvedAt: '2025-06-06T23:05:50.708Z'
+  - id: ddb2dc82
+    pattern: Test parsing 2
+    description: With only priority
+    frequency: 1
+    effectiveness: null
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T22:06:29.038Z'
+    lastSeen: '2025-06-04T22:06:29.038Z'
+    solution: Test pattern completed - functionality verified
+    resolvedAt: '2025-06-06T23:05:50.798Z'
+  - id: 840141d1
+    pattern: Test parsing 3
+    description: With only effectiveness
+    frequency: 1
+    effectiveness: 0.75
+    priority: medium
+    status: resolved
+    firstSeen: '2025-06-04T22:06:36.111Z'
+    lastSeen: '2025-06-04T22:06:36.111Z'
+    solution: Tested and working
+    resolvedAt: '2025-06-04T22:11:24.159Z'
+  - id: d651cb51
+    pattern: Fix test
+    description: Testing fix
+    frequency: 1
+    effectiveness: null
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T22:13:40.252Z'
+    lastSeen: '2025-06-04T22:13:40.252Z'
+    solution: Test pattern completed - functionality verified
+    resolvedAt: '2025-06-06T23:05:50.886Z'
+  - id: dba1fa8c
+    pattern: ID test
+    description: Testing ID display
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-04T22:13:40.358Z'
+    lastSeen: '2025-06-04T22:13:40.358Z'
+  - id: b3e7b7e6
+    pattern: Create GitHub issues before implementing features
+    description: >-
+      Organization approach that breaks down feedback into logical chunks with clear scope, enables branch-based
+      development, and provides tracking through completion
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: open
+    firstSeen: '2025-06-04T22:25:25.803Z'
+    lastSeen: '2025-06-04T22:25:25.803Z'
+  - id: 2509c06a
+    pattern: Subcommand structure test
+    description: Testing new flag-based syntax
+    frequency: 1
+    effectiveness: 0.9
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T22:37:59.121Z'
+    lastSeen: '2025-06-04T22:37:59.121Z'
+    solution: Fully implemented with all subcommands working
+    resolvedAt: '2025-06-04T22:41:14.285Z'
+  - id: 068482a5
+    pattern: Backward compatibility test
+    description: Testing old syntax still works
+    frequency: 1
+    effectiveness: 0.8
+    priority: medium
+    status: open
+    firstSeen: '2025-06-04T22:38:28.179Z'
+    lastSeen: '2025-06-04T22:38:28.179Z'
+  - id: d8d6d941
+    pattern: Test install
+    description: Testing global install
+    frequency: 1
+    effectiveness: null
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T23:00:46.590Z'
+    lastSeen: '2025-06-04T23:00:46.590Z'
+    solution: Test pattern completed - functionality verified
+    resolvedAt: '2025-06-06T23:05:50.998Z'
+  - id: a64af0aa
+    pattern: Merged functionality test
+    description: Testing the combined v1.4.1 + subcommands
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-04T23:29:19.414Z'
+    lastSeen: '2025-06-04T23:29:19.414Z'
+    solution: Test pattern completed - functionality verified
+    resolvedAt: '2025-06-06T23:05:51.088Z'
+  - id: 13e9a589
+    pattern: Dogfood our own tool
+    description: >-
+      Use claude-memory to track development of claude-memory itself - store feedback, decisions, and progress in the
+      tool we're building
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: open
+    firstSeen: '2025-06-05T00:09:26.902Z'
+    lastSeen: '2025-06-05T00:09:26.902Z'
+  - id: 8e37a43c
+    pattern: CLAUDE.md merge strategy success
+    description: >-
+      Section-based merge system preserves manual content while updating auto-generated sections. Backup system protects
+      against data loss. Ready for production deployment.
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: open
+    firstSeen: '2025-06-05T01:04:33.665Z'
+    lastSeen: '2025-06-05T01:04:33.665Z'
+  - id: 106f33ba
+    pattern: Bundle related improvements
+    description: Group related changes into single releases for better coherence and easier adoption
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T21:43:16.755Z'
+    lastSeen: '2025-06-06T21:43:16.755Z'
+  - id: 25e3f12f
+    pattern: Dogfooding drives quality
+    description: Using claude-memory while developing it ensures features work and reveals pain points immediately
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T21:47:10.634Z'
+    lastSeen: '2025-06-06T21:47:10.634Z'
+  - id: c8a38a6c
+    pattern: Test pattern
+    description: Testing multi-file generation
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T21:57:39.546Z'
+    lastSeen: '2025-06-06T21:57:39.546Z'
+  - id: d330b6ba
+    pattern: Label GitHub issues
+    description: >-
+      Always add appropriate labels when creating issues (bug, enhancement, documentation, etc.) for better organization
+      and tracking
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:00:41.590Z'
+    lastSeen: '2025-06-06T22:00:41.590Z'
+  - id: dc7d4364
+    pattern: Test before commit
+    description: Always run 'npm test' and 'npm run lint' before committing code to ensure quality and prevent CI failures
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:25:12.149Z'
+    lastSeen: '2025-06-06T22:25:12.149Z'
+  - id: 7b911687
+    pattern: Release checklist
+    description: >-
+      Follow complete release checklist: □ Issues created with labels, □ Tests passing locally, □ Version bumped, □
+      CHANGELOG updated, □ PR description complete, □ CI passing, □ Issues will auto-close on merge
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:30:06.812Z'
+    lastSeen: '2025-06-06T22:30:06.812Z'
+  - id: 1b670ade
+    pattern: Tag releases after merge
+    description: >-
+      After merging PR to main, create and push version tag to trigger NPM publish: git tag vX.Y.Z && git push origin
+      vX.Y.Z
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:36:19.786Z'
+    lastSeen: '2025-06-06T22:36:19.786Z'
+  - id: bb71ad06
+    pattern: Verify GitHub releases
+    description: >-
+      After NPM publish, verify GitHub release was created. If not, create manually with 'gh release create' to keep
+      releases in sync
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:49:05.527Z'
+    lastSeen: '2025-06-06T22:49:05.527Z'
+  - id: 3e6519bf
+    pattern: Check labels before issues
+    description: >-
+      Always verify required labels exist before creating issues. Create missing labels with appropriate colors and
+      descriptions. Standard set: enhancement, bug, documentation, priority:high/medium/low, cli, performance,
+      breaking-change, needs-tests
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T22:58:52.499Z'
+    lastSeen: '2025-06-06T22:58:52.499Z'
+  - id: 908c36b6
+    pattern: Manage GitHub release order
+    description: >-
+      When creating missing GitHub releases retroactively: 1) Create them with --prerelease flag, 2) After all are
+      created, use 'gh release edit vX.Y.Z --latest' on the actual latest version, 3) Remove prerelease flag from old
+      releases. This prevents GitHub from auto-marking old versions as latest.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T23:02:19.862Z'
+    lastSeen: '2025-06-06T23:02:19.862Z'
+  - id: 9d7fdb7c
+    pattern: Version bump first
+    description: >-
+      Always update package.json version at the START of feature development, not at the end. This ensures tests and
+      code reflect the correct version throughout development.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-06T23:23:40.147Z'
+    lastSeen: '2025-06-06T23:23:40.147Z'
+  - id: f5b3dbd4
+    pattern: CLI Flag Implementation
+    description: >-
+      When implementing CLI flags, ensure comprehensive coverage: version info, output control (format/quiet), color
+      control, and verbosity levels. Follow yargs conventions and add thorough tests for each flag
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: open
+    firstSeen: '2025-06-07T00:28:12.902Z'
+    lastSeen: '2025-06-07T00:28:12.902Z'
+  - id: ac5701ad
+    pattern: Version-first workflow
+    description: Always bump version at START of feature development, not after. Prevents test failures and ensures consistency.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-07T02:12:25.780Z'
+    lastSeen: '2025-06-07T02:12:25.780Z'
+  - id: 04977c8e
+    pattern: GitHub workflow automation caveat
+    description: >-
+      GitHub Actions create-release fails if release already exists. When manually creating releases, expect workflow
+      failures. Consider using gh release edit instead.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-07T02:12:41.499Z'
+    lastSeen: '2025-06-07T02:12:41.499Z'
+  - id: ae7b12db
+    pattern: Pre-push memory update workflow
+    description: >-
+      Always update local memory (decisions, knowledge, patterns) BEFORE pushing to GitHub. This ensures CLAUDE.md and
+      context files reflect the latest work in the commit.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-07T02:17:57.755Z'
+    lastSeen: '2025-06-07T02:17:57.755Z'
+  - id: d0e92101
+    pattern: Practice what we preach
+    description: >-
+      Always follow established GitHub workflows, even for documentation changes. Create issues, use feature branches,
+      and PRs - no exceptions!
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-07T02:26:47.100Z'
+    lastSeen: '2025-06-07T02:26:47.100Z'
+  - id: 7201d3d6
+    pattern: Clean up merged branches
+    description: >-
+      After PR merge, delete the feature branch to keep repository clean. Either enable auto-delete in GitHub settings
+      or manually delete with 'git push origin --delete branch-name'. Prevents accumulation of stale branches.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-07T22:44:26.594Z'
+    lastSeen: '2025-06-07T22:44:26.594Z'
+  - id: 91f2f4a7
+    pattern: Develop branch workflow
+    description: >-
+      Use develop branch to collect all release changes before merging to main. Create feature branches from develop, PR
+      to develop, then final PR from develop to main for release.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-08T22:14:48.595Z'
+    lastSeen: '2025-06-08T22:14:48.595Z'
+  - id: ebc94953
+    pattern: Rebase after major refactoring
+    description: >-
+      When refactoring creates structural changes, rebase feature branches instead of merging with conflicts. Steps: 1)
+      Fetch latest develop, 2) Rebase feature branch, 3) Reimplement features cleanly on new structure, 4) Force push
+      updated branch. This maintains cleaner commit history.
+    frequency: 1
+    effectiveness: 0.9
+    priority: high
+    status: open
+    firstSeen: '2025-06-09T00:31:27.776Z'
+    lastSeen: '2025-06-09T00:31:27.776Z'
+  - id: d4182676
+    pattern: v1.9.0 feature completion tracking
+    description: >-
+      Track v1.9.0 CLI flag implementation progress. Completed: --dry-run (PR #36), --config (PR #37), --output-format
+      (PR #37). Ready for merge: --force (PR #38). Remaining: --debug flag (Issue #25). All work in develop branch
+      following Git Flow pattern.
+    frequency: 1
+    effectiveness: 0.95
+    priority: high
+    status: resolved
+    firstSeen: '2025-06-09T01:16:31.098Z'
+    lastSeen: '2025-06-09T01:16:31.098Z'
+    solution: >-
+      v1.9.0 development completed successfully. All CLI flags implemented, tested, and documented. PR #40 created and
+      ready for merge.
+    resolvedAt: '2025-06-09T02:28:12.397Z'
+  - id: fa0420b6
+    pattern: Maintain persistent develop branch
+    description: >-
+      Always keep a develop branch as the integration branch for features. All work happens on develop or feature
+      branches, never directly on main. Only merge to main for releases.
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-09T03:10:58.271Z'
+    lastSeen: '2025-06-09T03:10:58.271Z'
+  - id: 95f1a1f9
+    pattern: Wiki documentation needs
+    description: Always verify wiki commands and configs match actual implementation before publishing
+    frequency: 1
+    effectiveness: 1
+    priority: high
+    status: open
+    firstSeen: '2025-06-13T02:11:20.601Z'
+    lastSeen: '2025-06-13T02:11:20.601Z'
+  - id: 20aed3e1
+    pattern: JSON Schema Foundation
+    description: Create shared JSON schemas before implementing import/export features to ensure consistency
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-14T16:11:27.871Z'
+    lastSeen: '2025-06-14T16:11:27.871Z'
+  - id: 04eaa5e2
+    pattern: Bug Fix Protocol
+    description: >-
+      When discovering bugs in released versions, ALWAYS: 1) Create GitHub issue first, 2) Fix on hotfix branch from
+      main, 3) Release as patch version (x.x.1), 4) Cherry-pick to develop if needed. Never fix bugs directly on feature
+      branches.
+    frequency: 1
+    effectiveness: null
+    priority: critical
+    status: open
+    firstSeen: '2025-06-14T16:50:14.550Z'
+    lastSeen: '2025-06-14T16:50:14.550Z'
+  - id: 31ad9f32
+    pattern: Import/Export Symmetry
+    description: Always ensure import and export functionality are symmetrical - what can be exported should be importable
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-14T17:37:13.022Z'
+    lastSeen: '2025-06-14T17:37:13.022Z'
+  - id: de046baf
+    pattern: Report Archival
+    description: >-
+      Reports should be easily archivable for historical reference. Auto-save option creates timestamped files in
+      dedicated directory for easy access and comparison over time
+    frequency: 1
+    effectiveness: null
+    priority: medium
+    status: open
+    firstSeen: '2025-06-14T17:44:02.936Z'
+    lastSeen: '2025-06-14T17:44:02.936Z'

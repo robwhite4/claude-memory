@@ -1,0 +1,10 @@
+tasks:
+  - id: yaml-task-1
+    description: Task from YAML
+    priority: medium
+    status: pending
+patterns:
+  - pattern: YAML Pattern
+    description: Pattern from YAML file
+    priority: high
+    effectiveness: 0.7

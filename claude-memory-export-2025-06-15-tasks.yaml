@@ -1,0 +1,182 @@
+exportedAt: '2025-06-15T21:51:21.738Z'
+metadata:
+  created: '2025-06-01T22:34:14.892Z'
+  version: 1.10.2
+  projectName: Claude Memory NPM Package
+  lastBackup: '2025-06-15T21:26:17.680Z'
+  actionsSinceBackup: 7
+tasks:
+  - id: 892500bc
+    description: Test edge cases in CLI argument parsing
+    priority: medium
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:28.879Z'
+    completedAt: '2025-06-04T21:52:28.005Z'
+    outcome: ''
+  - id: 1e143f85
+    description: Add task status update command (in-progress, blocked, etc)
+    priority: low
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:29.674Z'
+  - id: aadd7590
+    description: Consider JSON import/export for task migration
+    priority: low
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:34:30.437Z'
+  - id: cd22ba9f
+    description: Test enhanced task management in production
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T22:45:30.210Z'
+    completedAt: '2025-06-01T22:45:55.798Z'
+    outcome: Successfully deployed to production npm registry
+  - id: c56da03e
+    description: Add comprehensive test coverage and CI/CD badges
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T23:14:56.629Z'
+    completedAt: '2025-06-01T23:19:26.741Z'
+    outcome: Added comprehensive test suite with 25 tests, CI/CD pipeline, professional badges, and security policy
+  - id: f2d03a2d
+    description: Implement real code coverage and linting tools
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-01T23:21:01.083Z'
+    completedAt: '2025-06-01T23:26:45.704Z'
+    outcome: Implemented real coverage (78.79%) and ESLint linting with comprehensive CI/CD pipeline
+  - id: 1fa54f15
+    description: Update NPM badges to use shields.io
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-03T21:45:39.202Z'
+    completedAt: '2025-06-03T21:45:52.393Z'
+    outcome: Fixed badges and CI/CD pipeline
+  - id: 95441cf1
+    description: Implement default directory for stats/search/backup/export
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-03T21:46:00.269Z'
+    completedAt: '2025-06-03T21:46:08.613Z'
+    outcome: Implemented in v1.1.4
+  - id: 440d71c1
+    description: Test task with tag
+    priority: medium
+    status: open
+    assignee: /test
+    dueDate: null
+    createdAt: '2025-06-03T23:47:05.567Z'
+    sessionId: 2025-06-03-evening-development
+  - id: 258266bc
+    description: 'Implement v1.4.1 hotfixes (Issues #1-4)'
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T21:52:42.103Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-04T22:24:45.360Z'
+    outcome: ''
+  - id: cf9a7ca1
+    description: 'Design and implement v1.5.0 features (Issues #5-9)'
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T21:52:51.368Z'
+    sessionId: 2025-06-04-afternoon-development
+  - id: c5401666
+    description: Test task
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-04T22:13:40.445Z'
+    sessionId: 2025-06-04-afternoon-development
+  - id: 01363d02
+    description: 'Review PR #12 and merge knowledge management features'
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-05T00:14:04.325Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-05T00:35:26.398Z'
+    outcome: 'Successfully merged PR #12 and released v1.5.0'
+  - id: 6f7edef3
+    description: Implement CLAUDE.md merge strategy system
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-05T01:01:47.658Z'
+    sessionId: 2025-06-04-afternoon-development
+    completedAt: '2025-06-05T01:04:57.242Z'
+    outcome: >-
+      Successfully implemented CLAUDE.md merge strategy system with section markers, backup protection, and full
+      preservation of manual content during auto-updates
+  - id: 98eb6a3a
+    description: Test dry run task
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-09T02:11:51.529Z'
+    sessionId: 2025-06-08-project-setup
+  - id: 4688fe1e
+    description: Increase knowledge truncation limit from 80 to 120-150 chars in CLAUDE.md
+    priority: high
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-14T17:58:26.644Z'
+    sessionId: 2025-06-14-morning-development
+  - id: cc788f33
+    description: Add Recent Changes section to CLAUDE.md showing latest features/decisions
+    priority: medium
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-14T17:58:41.686Z'
+    sessionId: 2025-06-14-morning-development
+  - id: 740437a2
+    description: 'Fix --help flag handling in all subcommands (Issue #46)'
+    priority: high
+    status: completed
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-14T20:52:09.333Z'
+    sessionId: 2025-06-14-afternoon-development
+    completedAt: '2025-06-14T21:33:45.946Z'
+    outcome: Successfully implemented and released v1.10.1 with --help flag fixes for all subcommands
+  - id: c8acfcbd
+    description: Test task
+    priority: high
+    status: open
+    assignee: null
+    dueDate: null
+    createdAt: '2025-06-15T21:48:45.468Z'
+    sessionId: 2025-06-15-afternoon-development
+  - id: 86987af7
+    description: Another test
+    priority: medium
+    status: open
+    assignee: Claude
+    dueDate: null
+    createdAt: '2025-06-15T21:48:52.777Z'
+    sessionId: 2025-06-15-afternoon-development

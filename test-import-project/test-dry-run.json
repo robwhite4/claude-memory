@@ -1,0 +1,65 @@
+{
+  "tasks": [
+    {
+      "id": "test-task-1",
+      "description": "Test task 1",
+      "priority": "high",
+      "status": "pending",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "test-task-2",
+      "description": "Test task 2",
+      "priority": "medium",
+      "status": "completed",
+      "createdAt": "2024-01-02T00:00:00Z",
+      "completedAt": "2024-01-03T00:00:00Z"
+    },
+    {
+      "id": "test-task-3",
+      "description": "New task for dry run",
+      "priority": "low",
+      "status": "pending"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "test-pattern-1",
+      "pattern": "Test Pattern",
+      "description": "A test pattern for import",
+      "priority": "high",
+      "effectiveness": 0.8,
+      "status": "active"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Use test framework",
+      "reasoning": "Better testing capabilities",
+      "alternativesConsidered": "Manual testing",
+      "timestamp": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "knowledge": {
+    "config": {
+      "api_url": {
+        "value": "https://api.test.com",
+        "lastUpdated": "2024-01-01T00:00:00Z"
+      },
+      "api_key": {
+        "value": "test-key-123",
+        "lastUpdated": "2024-01-01T00:00:00Z"
+      }
+    }
+  },
+  "sessions": [
+    {
+      "id": "test-session-1",
+      "name": "Test Session",
+      "startTime": "2024-01-01T00:00:00Z",
+      "endTime": "2024-01-01T02:00:00Z",
+      "status": "completed",
+      "outcome": "Session completed successfully"
+    }
+  ]
+}

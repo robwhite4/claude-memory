@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": "multi-task-1",
+      "description": "Multi-type test task",
+      "priority": "high",
+      "status": "pending"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "multi-pattern-1",
+      "pattern": "Multi-type test pattern",
+      "description": "Testing multiple type filter",
+      "priority": "medium"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Should not import this",
+      "reasoning": "This is filtered out",
+      "timestamp": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-14T22:06:16.669Z | 63 items across 11 categories*
+*Generated: 2025-06-15T22:49:13.787Z | 65 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
@@ -9,10 +9,10 @@
 - [feedback](#feedback) (2 items)
 - [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (5 items)
+- [releases](#releases) (6 items)
 - [status](#status) (18 items)
 - [testing](#testing) (7 items)
-- [workflow](#workflow) (13 items)
+- [workflow](#workflow) (14 items)
 
 ## architecture
 ### Session_Architecture
@@ -105,6 +105,10 @@
 ### v1.10.1_release
 **Value**: Successfully released v1.10.1 patch for --help flag bug (Issue #46). All subcommands now properly handle --help/-h flags. Released to NPM and GitHub. CI/CD failed due to manual release (expected behavior).
 **Updated**: 2025-06-14T22:05:04.157Z
+
+### v1.10.2_release
+**Value**: Fixed report command --type flag handling (Issue #48). Both 'report progress' and 'report --type progress' syntaxes now work correctly. Patch release ready for deployment.
+**Updated**: 2025-06-15T22:30:44.569Z
 
 ### v1.8.0_release_status
 **Value**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after merge. NPM publish successful, GitHub release created.
@@ -256,6 +260,10 @@
 ### git_co_author
 **Value**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
 **Updated**: 2025-06-06T22:05:13.747Z
+
+### git_flow_workflow
+**Value**: Standard Git Flow for claude-memory: 1) main branch for releases only, 2) develop branch for integration, 3) feature/* branches from develop for new features, 4) fix/* branches from develop for bug fixes, 5) hotfix/* branches from main for critical patches. Always merge to develop first, then create release PR from develop to main. Delete feature branches after merge.
+**Updated**: 2025-06-15T22:49:13.711Z
 
 ### github_labels
 **Value**: Standard GitHub labels: enhancement (new features), bug (something broken), documentation (docs changes), priority:high/medium/low (urgency), cli (CLI-related), performance (speed/efficiency), breaking-change (requires major version), needs-tests (tests required), good first issue (beginner-friendly), help wanted (community contributions welcome). Colors: priority:high=#FF0000, priority:medium=#FFB000, priority:low=#FFFF00
