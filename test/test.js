@@ -408,6 +408,70 @@ async function runTests() {
     fs.rmSync(customDir, { recursive: true, force: true });
   });
 
+  // Summary command tests
+  await test('Summary command - generate', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+    const { stdout } = await execAsync(`node "${cliPath}" summary generate "Test Summary"`);
+    assert(stdout.includes('Summary created'), 'Should create summary');
+    assert(stdout.includes('test-summary.md'), 'Should show filename');
+
+    // Clean up
+    const summariesDir = path.join('.claude', 'summaries');
+    if (fs.existsSync(summariesDir)) {
+      const files = fs.readdirSync(summariesDir);
+      files.forEach(file => {
+        if (file.includes('test-summary')) {
+          fs.unlinkSync(path.join(summariesDir, file));
+        }
+      });
+    }
+  });
+
+  await test('Summary command - list', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+
+    // First create a summary
+    await execAsync(`node "${cliPath}" summary generate "List Test"`);
+
+    // Then list summaries
+    const { stdout } = await execAsync(`node "${cliPath}" summary list`);
+    assert(stdout.includes('Found'), 'Should list summaries');
+    assert(stdout.includes('list-test.md'), 'Should show summary file');
+
+    // Clean up
+    const summariesDir = path.join('.claude', 'summaries');
+    if (fs.existsSync(summariesDir)) {
+      const files = fs.readdirSync(summariesDir);
+      files.forEach(file => {
+        if (file.includes('list-test')) {
+          fs.unlinkSync(path.join(summariesDir, file));
+        }
+      });
+    }
+  });
+
+  await test('Summary command - view', async() => {
+    const cliPath = path.join(packageRoot, 'bin', 'claude-memory.js');
+
+    // First create a summary
+    await execAsync(`node "${cliPath}" summary generate "View Test"`);
+
+    // Get the filename
+    const summariesDir = path.join('.claude', 'summaries');
+    const files = fs.readdirSync(summariesDir);
+    const viewFile = files.find(f => f.includes('view-test'));
+
+    // View the summary
+    const { stdout } = await execAsync(`node "${cliPath}" summary view ${viewFile}`);
+    assert(stdout.includes('View Test'), 'Should display summary title');
+    assert(stdout.includes('## Summary'), 'Should display summary content');
+
+    // Clean up
+    if (viewFile) {
+      fs.unlinkSync(path.join(summariesDir, viewFile));
+    }
+  });
+
   console.log(`\n📊 Test Results: ${passCount}/${testCount} passed`);
 
   if (passCount === testCount) {
