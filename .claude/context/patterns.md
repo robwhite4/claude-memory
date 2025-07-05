@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-15T22:49:13.790Z | 54 total patterns*
+*Generated: 2025-07-05T23:15:41.041Z | 55 total patterns*
 
 ## Summary
-- Open Patterns: 42
+- Open Patterns: 43
 - Resolved Patterns: 12
 
 ## Open Patterns
@@ -111,6 +111,13 @@
 - **Effectiveness**: 1
 - **First Seen**: 2025-06-13T02:11:20.601Z
 - **Last Seen**: 2025-06-13T02:11:20.601Z
+- **Frequency**: 1
+
+#### PR merge order strategy (ID: b82ca894)
+- **Description**: When multiple PRs need to merge, always merge bug fixes first (patch versions), then features (minor versions). Rebase feature branches after bug fixes merge to maintain clean history.
+- **Effectiveness**: null
+- **First Seen**: 2025-07-05T23:15:41.014Z
+- **Last Seen**: 2025-07-05T23:15:41.014Z
 - **Frequency**: 1
 
 ### Medium Priority
