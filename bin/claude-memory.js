@@ -2582,193 +2582,193 @@ const commands = {
     }
 
     switch (action) {
-      case 'generate': {
-        // Parse options
-        let sessionId = null;
-        let summaryType = 'manual';
-        let title = null;
-        
-        for (let i = 0; i < args.length; i++) {
-          if (args[i] === '--session' && args[i + 1]) {
-            sessionId = args[i + 1];
-            i++;
-          } else if (args[i] === '--type' && args[i + 1]) {
-            summaryType = args[i + 1];
-            i++;
-          } else if (!title) {
-            title = args[i];
+    case 'generate': {
+      // Parse options
+      let sessionId = null;
+      let summaryType = 'manual';
+      let title = null;
+
+      for (let i = 0; i < args.length; i++) {
+        if (args[i] === '--session' && args[i + 1]) {
+          sessionId = args[i + 1];
+          i++;
+        } else if (args[i] === '--type' && args[i + 1]) {
+          summaryType = args[i + 1];
+          i++;
+        } else if (!title) {
+          title = args[i];
+        }
+      }
+
+      if (!title) {
+        console.error('❌ Summary title required');
+        console.log('Usage: claude-memory summary generate "Title" [--session <id>] [--type <type>]');
+        return;
+      }
+
+      try {
+        // Generate summary content
+        const timestamp = new Date().toISOString();
+        const dateStr = timestamp.split('T')[0];
+        const filename = `${dateStr}-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}.md`;
+        const filepath = path.join(summariesDir, filename);
+
+        // Create summary content
+        let content = `# ${title}\n\n`;
+        content += `**Date**: ${dateStr}\n`;
+        content += `**Type**: ${summaryType}\n`;
+
+        if (sessionId) {
+          const session = memory.sessions.find(s => s.id === sessionId);
+          if (session) {
+            content += `**Session**: ${session.name} (${session.id})\n`;
           }
+        } else if (memory.currentSession) {
+          content += `**Session**: ${memory.currentSession.name} (${memory.currentSession.id})\n`;
         }
 
-        if (!title) {
-          console.error('❌ Summary title required');
-          console.log('Usage: claude-memory summary generate "Title" [--session <id>] [--type <type>]');
+        content += '\n## Summary\n\n';
+        content += '*Please add your summary content here...*\n\n';
+
+        // Add context sections
+        content += '## Context\n\n';
+        content += '### Active Tasks\n';
+        const activeTasks = memory.getTasks('open').slice(0, 5);
+        if (activeTasks.length > 0) {
+          activeTasks.forEach(task => {
+            content += `- ${task.description} (${task.priority})\n`;
+          });
+        } else {
+          content += '- No active tasks\n';
+        }
+
+        content += '\n### Recent Decisions\n';
+        const recentDecisions = memory.getRecentDecisions(3);
+        if (recentDecisions.length > 0) {
+          recentDecisions.forEach(decision => {
+            content += `- ${decision.decision}\n`;
+          });
+        } else {
+          content += '- No recent decisions\n';
+        }
+
+        content += '\n### Key Patterns\n';
+        const openPatterns = memory.patterns.filter(p => p.status === 'open' && p.priority === 'high').slice(0, 3);
+        if (openPatterns.length > 0) {
+          openPatterns.forEach(pattern => {
+            content += `- ${pattern.pattern} (${pattern.frequency} occurrences)\n`;
+          });
+        } else {
+          content += '- No high-priority patterns\n';
+        }
+
+        // Ensure summaries directory exists
+        if (!fs.existsSync(summariesDir)) {
+          fs.mkdirSync(summariesDir, { recursive: true });
+        }
+
+        // Write summary file
+        fs.writeFileSync(filepath, content, 'utf8');
+
+        // Record summary in memory
+        if (!memory.summaries) {
+          memory.summaries = [];
+        }
+        memory.summaries.push({
+          id: `sum_${Date.now()}`,
+          filename,
+          title,
+          type: summaryType,
+          sessionId: sessionId || memory.currentSession?.id,
+          created: timestamp,
+          path: filepath
+        });
+        memory.saveMemory();
+
+        console.log(`✅ Summary created: ${filename}`);
+        console.log(`📝 Path: ${filepath}`);
+        console.log('💡 Edit the file to add your summary content');
+      } catch (error) {
+        console.error('❌ Error creating summary:', error.message);
+      }
+      break;
+    }
+
+    case 'list': {
+      try {
+        // Ensure summaries directory exists
+        if (!fs.existsSync(summariesDir)) {
+          console.log('📂 No summaries found (directory does not exist)');
           return;
         }
 
-        try {
-          // Generate summary content
-          const timestamp = new Date().toISOString();
-          const dateStr = timestamp.split('T')[0];
-          const filename = `${dateStr}-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}.md`;
-          const filepath = path.join(summariesDir, filename);
+        // List all summary files
+        const files = fs.readdirSync(summariesDir)
+          .filter(f => f.endsWith('.md'))
+          .sort()
+          .reverse(); // Most recent first
 
-          // Create summary content
-          let content = `# ${title}\n\n`;
-          content += `**Date**: ${dateStr}\n`;
-          content += `**Type**: ${summaryType}\n`;
-          
-          if (sessionId) {
-            const session = memory.sessions.find(s => s.id === sessionId);
-            if (session) {
-              content += `**Session**: ${session.name} (${session.id})\n`;
-            }
-          } else if (memory.currentSession) {
-            content += `**Session**: ${memory.currentSession.name} (${memory.currentSession.id})\n`;
-          }
-          
-          content += `\n## Summary\n\n`;
-          content += `*Please add your summary content here...*\n\n`;
-          
-          // Add context sections
-          content += `## Context\n\n`;
-          content += `### Active Tasks\n`;
-          const activeTasks = memory.getTasks('open').slice(0, 5);
-          if (activeTasks.length > 0) {
-            activeTasks.forEach(task => {
-              content += `- ${task.description} (${task.priority})\n`;
-            });
-          } else {
-            content += `- No active tasks\n`;
-          }
-          
-          content += `\n### Recent Decisions\n`;
-          const recentDecisions = memory.getRecentDecisions(3);
-          if (recentDecisions.length > 0) {
-            recentDecisions.forEach(decision => {
-              content += `- ${decision.decision}\n`;
-            });
-          } else {
-            content += `- No recent decisions\n`;
-          }
-          
-          content += `\n### Key Patterns\n`;
-          const openPatterns = memory.patterns.filter(p => p.status === 'open' && p.priority === 'high').slice(0, 3);
-          if (openPatterns.length > 0) {
-            openPatterns.forEach(pattern => {
-              content += `- ${pattern.pattern} (${pattern.frequency} occurrences)\n`;
-            });
-          } else {
-            content += `- No high-priority patterns\n`;
-          }
-
-          // Ensure summaries directory exists
-          if (!fs.existsSync(summariesDir)) {
-            fs.mkdirSync(summariesDir, { recursive: true });
-          }
-
-          // Write summary file
-          fs.writeFileSync(filepath, content, 'utf8');
-          
-          // Record summary in memory
-          if (!memory.summaries) {
-            memory.summaries = [];
-          }
-          memory.summaries.push({
-            id: `sum_${Date.now()}`,
-            filename,
-            title,
-            type: summaryType,
-            sessionId: sessionId || memory.currentSession?.id,
-            created: timestamp,
-            path: filepath
-          });
-          memory.saveMemory();
-
-          console.log(`✅ Summary created: ${filename}`);
-          console.log(`📝 Path: ${filepath}`);
-          console.log(`💡 Edit the file to add your summary content`);
-        } catch (error) {
-          console.error('❌ Error creating summary:', error.message);
+        if (files.length === 0) {
+          console.log('📂 No summaries found');
+          console.log('💡 Create one with: claude-memory summary generate "Title"');
+          return;
         }
-        break;
+
+        console.log(`📚 Found ${files.length} summaries:\n`);
+
+        files.forEach(file => {
+          const filepath = path.join(summariesDir, file);
+          const stats = fs.statSync(filepath);
+          const content = fs.readFileSync(filepath, 'utf8');
+          const titleMatch = content.match(/^# (.+)$/m);
+          const title = titleMatch ? titleMatch[1] : 'Untitled';
+          const dateStr = new Date(stats.mtime).toISOString().split('T')[0];
+
+          console.log(`📄 ${file}`);
+          console.log(`   Title: ${title}`);
+          console.log(`   Modified: ${dateStr}`);
+          console.log(`   Size: ${(stats.size / 1024).toFixed(1)} KB`);
+          console.log('');
+        });
+      } catch (error) {
+        console.error('❌ Error listing summaries:', error.message);
+      }
+      break;
+    }
+
+    case 'view': {
+      const filename = args[0];
+
+      if (!filename) {
+        console.error('❌ Summary filename required');
+        console.log('Usage: claude-memory summary view <filename>');
+        console.log('Use "claude-memory summary list" to see available summaries');
+        return;
       }
 
-      case 'list': {
-        try {
-          // Ensure summaries directory exists
-          if (!fs.existsSync(summariesDir)) {
-            console.log('📂 No summaries found (directory does not exist)');
-            return;
-          }
+      try {
+        // Add .md extension if not provided
+        const file = filename.endsWith('.md') ? filename : `${filename}.md`;
+        const filepath = path.join(summariesDir, file);
 
-          // List all summary files
-          const files = fs.readdirSync(summariesDir)
-            .filter(f => f.endsWith('.md'))
-            .sort()
-            .reverse(); // Most recent first
-
-          if (files.length === 0) {
-            console.log('📂 No summaries found');
-            console.log('💡 Create one with: claude-memory summary generate "Title"');
-            return;
-          }
-
-          console.log(`📚 Found ${files.length} summaries:\n`);
-          
-          files.forEach(file => {
-            const filepath = path.join(summariesDir, file);
-            const stats = fs.statSync(filepath);
-            const content = fs.readFileSync(filepath, 'utf8');
-            const titleMatch = content.match(/^# (.+)$/m);
-            const title = titleMatch ? titleMatch[1] : 'Untitled';
-            const dateStr = new Date(stats.mtime).toISOString().split('T')[0];
-            
-            console.log(`📄 ${file}`);
-            console.log(`   Title: ${title}`);
-            console.log(`   Modified: ${dateStr}`);
-            console.log(`   Size: ${(stats.size / 1024).toFixed(1)} KB`);
-            console.log('');
-          });
-        } catch (error) {
-          console.error('❌ Error listing summaries:', error.message);
-        }
-        break;
-      }
-
-      case 'view': {
-        const filename = args[0];
-        
-        if (!filename) {
-          console.error('❌ Summary filename required');
-          console.log('Usage: claude-memory summary view <filename>');
+        if (!fs.existsSync(filepath)) {
+          console.error(`❌ Summary not found: ${file}`);
           console.log('Use "claude-memory summary list" to see available summaries');
           return;
         }
 
-        try {
-          // Add .md extension if not provided
-          const file = filename.endsWith('.md') ? filename : `${filename}.md`;
-          const filepath = path.join(summariesDir, file);
-          
-          if (!fs.existsSync(filepath)) {
-            console.error(`❌ Summary not found: ${file}`);
-            console.log('Use "claude-memory summary list" to see available summaries');
-            return;
-          }
-
-          const content = fs.readFileSync(filepath, 'utf8');
-          console.log(content);
-        } catch (error) {
-          console.error('❌ Error viewing summary:', error.message);
-        }
-        break;
+        const content = fs.readFileSync(filepath, 'utf8');
+        console.log(content);
+      } catch (error) {
+        console.error('❌ Error viewing summary:', error.message);
       }
+      break;
+    }
 
-      default:
-        console.error(`❌ Unknown summary action: ${action}`);
-        console.log('Available actions: generate, list, view');
-        console.log('Use "claude-memory summary --help" for more information');
+    default:
+      console.error(`❌ Unknown summary action: ${action}`);
+      console.log('Available actions: generate, list, view');
+      console.log('Use "claude-memory summary --help" for more information');
     }
   },
 

@@ -9,7 +9,7 @@
 
 ### Critical Information
 - **Project Name**: Claude Memory NPM Package
-- **Claude Memory**: v1.11.0
+- **Claude Memory**: v1.10.3
 - **Memory Created**: 2025-06-01
 
 ### Knowledge Base
@@ -55,10 +55,10 @@
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
 - ... and 12 more items
 
-#### releases (6 items)
+#### releases (7 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after mer...
 - **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learnings: 1) Version-first workflow critical, 2...
-- ... and 4 more items
+- ... and 5 more items
 
 #### documentation (1 items)
 - **wiki_documentation_complete**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Claude Memory v1.9.0. All wiki links use hyp...
@@ -72,6 +72,7 @@
 - **2025-07-05**: PR merge order strategy (high)
 
 #### Recent Knowledge Updates
+- **2025-07-05**: releases/v1.11.0_release_status
 - **2025-07-05**: status/summaries_feature_status
 - **2025-07-05**: testing/TEST_BUG_53
 
@@ -163,7 +164,7 @@ claude-memory handoff [--format markdown|json]
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (69 items)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (70 items)
 - 🧩 **All Patterns**: `.claude/context/patterns.md` (55 patterns)
 - 🎯 **Decision Log**: `.claude/context/decisions.md` (77 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (22 tasks)

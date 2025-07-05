@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-07-05T23:15:41.034Z | 69 items across 11 categories*
+*Generated: 2025-07-05T23:36:39.929Z | 70 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
@@ -9,7 +9,7 @@
 - [feedback](#feedback) (2 items)
 - [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (6 items)
+- [releases](#releases) (7 items)
 - [status](#status) (21 items)
 - [testing](#testing) (8 items)
 - [workflow](#workflow) (14 items)
@@ -109,6 +109,10 @@
 ### v1.10.2_release
 **Value**: Fixed report command --type flag handling (Issue #48). Both 'report progress' and 'report --type progress' syntaxes now work correctly. Patch release ready for deployment.
 **Updated**: 2025-06-15T22:30:44.569Z
+
+### v1.11.0_release_status
+**Value**: Ready for release - Summary management feature implemented (Issue #73). All tests passing, lint clean, security audit clean. Feature adds generate/list/view commands for .claude/summaries directory.
+**Updated**: 2025-07-05T23:36:39.907Z
 
 ### v1.8.0_release_status
 **Value**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after merge. NPM publish successful, GitHub release created.
