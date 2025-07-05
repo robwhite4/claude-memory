@@ -2,7 +2,7 @@
 
 ## Active Session
 - **Current**: Evening Development
-- **Started**: 2025-07-05
+- **Started**: 2025-06-23
 - **Project**: Claude Memory NPM Package
 
 ## Key Project Knowledge
@@ -40,10 +40,10 @@
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BEGIN AUTO SECTION -- for generated conten...
 
-#### testing (8 items)
+#### testing (7 items)
 - **Merge_Test**: Testing the CLAUDE.md merge strategy to ensure manual sections are preserved during auto-updates
 - **Test_Merge_System**: Testing the new merge implementation with local code
-- ... and 6 more items
+- ... and 5 more items
 
 #### implementation (5 items)
 - **Issue_8_Implementation**: Successfully implemented CLAUDE.md merge strategy with section markers (!-- BEGIN MANUAL SECTION: Name --), automatic ba...
@@ -65,8 +65,13 @@
 
 
 ### Recent Changes
+#### Recent Decisions
+- **2025-06-23**: Created comprehensive GitHub issues from feedback
+- **2025-06-23**: Create GitHub issues from Rob's feedback
+
 #### Recent Knowledge Updates
-- **2025-07-05**: testing/TEST_BUG_53
+- **2025-06-23**: status/github_issues_complete
+- **2025-06-23**: status/github_issues_from_feedback
 
 
 ### Open Patterns
@@ -156,7 +161,7 @@ claude-memory handoff [--format markdown|json]
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (68 items)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (67 items)
 - 🧩 **All Patterns**: `.claude/context/patterns.md` (54 patterns)
 - 🎯 **Decision Log**: `.claude/context/decisions.md` (76 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (22 tasks)

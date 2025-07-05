@@ -2391,6 +2391,15 @@ const commands = {
     try {
       const memory = new ClaudeMemory(targetPath, null, { silent: true });
 
+      // Check for --stdout flag
+      let outputToStdout = false;
+      const args = [format, include, projectPath].filter(Boolean);
+      if (args.includes('--stdout')) {
+        outputToStdout = true;
+        // Remove --stdout from args
+        format = args.find(arg => arg !== '--stdout' && !arg.startsWith('--')) || 'markdown';
+      }
+
       // Parse format option (support --format=json syntax)
       if (format?.startsWith('--format=')) {
         format = format.split('=')[1];
@@ -2444,7 +2453,24 @@ const commands = {
 
       // Generate markdown handoff summary
       const markdown = this.generateHandoffMarkdown(handoffData, include);
-      console.log(markdown);
+      
+      // Output handling - write to file by default, stdout if requested
+      if (outputToStdout) {
+        console.log(markdown);
+      } else {
+        // Write to HANDOFF.md instead of outputting to console to prevent accidental CLAUDE.md overwrites
+        const handoffPath = path.join(targetPath, 'HANDOFF.md');
+        try {
+          fs.writeFileSync(handoffPath, markdown, 'utf8');
+          console.log(`✅ Handoff summary written to: ${handoffPath}`);
+          console.log('📋 Use this file for AI assistant transitions');
+          console.log('💡 Tip: To output to console instead, use: claude-memory handoff --stdout');
+        } catch (writeError) {
+          console.error('❌ Error writing handoff file:', writeError.message);
+          console.log('\n--- Handoff Summary ---');
+          console.log(markdown);
+        }
+      }
     } catch (error) {
       if (format === 'json') {
         console.error(JSON.stringify({ error: error.message }));
@@ -2806,7 +2832,7 @@ UTILITIES:
   📥 import <filename> [options]         Import memory data with merge/replace options
   📊 report [type] [options]             Generate project reports and analytics
   🤖 context [path]                      Get AI integration context (JSON)
-  🔄 handoff [options] [path]            Generate AI assistant handoff summary
+  🔄 handoff [options] [path]            Generate AI handoff summary (saves to HANDOFF.md)
   ❓ help [command]                      Show help (add command name for details)
 
 GLOBAL FLAGS:
