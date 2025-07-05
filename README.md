@@ -441,8 +441,11 @@ cmem report tasks monthly.md --from 2024-01-01
 
 ### AI Assistant Handoffs
 ```bash
-# Generate comprehensive handoff summary
+# Generate comprehensive handoff summary (saves to HANDOFF.md)
 cmem handoff
+
+# Output to console instead of file
+cmem handoff --stdout
 
 # JSON format for programmatic use
 cmem handoff --format=json
@@ -452,7 +455,7 @@ cmem handoff --include=tasks
 cmem handoff --include=decisions
 ```
 
-Perfect for transitioning between AI assistants or team members. Includes active tasks, recent decisions, key patterns, and session context.
+Perfect for transitioning between AI assistants or team members. The handoff summary is saved to `HANDOFF.md` by default to prevent accidental overwrites of `CLAUDE.md`. Includes active tasks, recent decisions, key patterns, and session context.
 
 ## 🔄 Workflow Examples
 

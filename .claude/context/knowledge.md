@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-06-15T22:49:13.787Z | 65 items across 11 categories*
+*Generated: 2025-07-05T22:23:42.090Z | 68 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
@@ -10,8 +10,8 @@
 - [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
 - [releases](#releases) (6 items)
-- [status](#status) (18 items)
-- [testing](#testing) (7 items)
+- [status](#status) (20 items)
+- [testing](#testing) (8 items)
 - [workflow](#workflow) (14 items)
 
 ## architecture
@@ -151,6 +151,14 @@
 **Value**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and available. Local: repository at v1.5.0, global claude-memory v1.5.0 installed, all systems synchronized. Ready for Issues #8-9 development.
 **Updated**: 2025-06-05T00:46:46.757Z
 
+### github_issues_complete
+**Value**: Completed creating all 15 GitHub issues from Rob's feedback: #53-67 covering critical bugs (CLAUDE.md sync, handoff overwrite), high-priority features (git integration, token optimization, export templates), medium enhancements (search context, health dashboard, error messages, interactive mode, config system, test suite, migration), and low-priority items (session duration bug, pattern effectiveness, pagination). All feedback items now tracked in GitHub.
+**Updated**: 2025-06-23T00:29:49.232Z
+
+### github_issues_from_feedback
+**Value**: Created 5 high-priority GitHub issues from Rob's comprehensive feedback: #53 (CLAUDE.md sync bug), #54 (handoff overwrite bug), #55 (git integration), #56 (token optimization), #57 (export templates). Still need to create 10+ medium/low priority issues for remaining feedback items.
+**Updated**: 2025-06-23T00:06:09.666Z
+
 ### v1.10.0_features
 **Value**: Export/Import functionality complete with multiple formats (JSON, YAML, CSV, Markdown), filtering options, merge/replace modes, validation, and comprehensive report generation
 **Updated**: 2025-06-14T17:37:22.132Z
@@ -211,6 +219,10 @@
 ### Merge_Test_2
 **Value**: Second test to verify manual sections are preserved during updates
 **Updated**: 2025-06-05T01:04:22.525Z
+
+### TEST_BUG_53
+**Value**: Testing bug fix for stale counts
+**Updated**: 2025-07-05T22:23:42.069Z
 
 ### Test_Merge_System
 **Value**: Testing the new merge implementation with local code
