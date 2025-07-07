@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The previously empty `.claude/summaries/` directory now has functionality
 - Summaries are tracked in memory.json for better integration
 
+### Fixed
+- Fixed `handoff` command overwriting CLAUDE.md (Issue #54)
+  - Handoff now saves to HANDOFF.md by default to prevent data loss
+  - Added `--stdout` flag to output to console when needed
+  - Updated help text and documentation to reflect new behavior
+- Fixed stale knowledge counts in CLAUDE.md (Issue #53)
+  - Knowledge counts now update immediately after add/remove operations
+  - CLAUDE.md stays in sync with actual knowledge base contents
+
 ## [1.10.3] - 2025-06-17
 
 ### Fixed
