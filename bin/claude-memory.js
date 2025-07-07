@@ -2453,7 +2453,7 @@ const commands = {
 
       // Generate markdown handoff summary
       const markdown = this.generateHandoffMarkdown(handoffData, include);
-      
+
       // Output handling - write to file by default, stdout if requested
       if (outputToStdout) {
         console.log(markdown);
