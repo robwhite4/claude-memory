@@ -439,6 +439,23 @@ cmem report tasks monthly.md --from 2024-01-01
 - **Progress**: Timeline of activities and completion metrics
 - **Sprint**: 2-week activity summary for agile workflows
 
+### Summary Management
+```bash
+# Create a new summary with context
+cmem summary generate "Sprint Retrospective"
+
+# Link to specific session
+cmem summary generate "Feature Complete" --session 2025-01-15-morning
+
+# List all summaries
+cmem summary list
+
+# View a summary
+cmem summary view 2025-01-15-sprint-retrospective
+```
+
+The `.claude/summaries/` directory stores narrative documentation that complements your structured memory data. Generated summaries include context from your current session (tasks, decisions, patterns) and provide a template for adding your insights.
+
 ### AI Assistant Handoffs
 ```bash
 # Generate comprehensive handoff summary
