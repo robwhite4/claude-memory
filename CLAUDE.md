@@ -32,10 +32,10 @@
 - **unified_design_v1.10.0**: Created unified design proposal addressing user feedback. Phase 1 (v1.10.0) focuses on export/import commands and bulk o...
 - ... and 2 more items
 
-#### status (20 items)
+#### status (21 items)
 - **Parity_Status_v1.5.0**: GitHub: main branch up-to-date with v1.5.0 release and project knowledge documentation. NPM: v1.5.0 published and availa...
 - **v1.6.0_Released**: Successfully released v1.6.0 with 100% user feedback addressed. PRs #13 (Issue #9: Enhanced help) and #14 (Issue #8: CLA...
-- ... and 18 more items
+- ... and 19 more items
 
 #### design (1 items)
 - **CLAUDE_Merge_Strategy**: Section-based merge system: !-- BEGIN MANUAL SECTION -- for user content, !-- BEGIN AUTO SECTION -- for generated conten...
@@ -55,17 +55,25 @@
 - **git_co_author**: Always include Rob White as co-author in commits: Co-Authored-By: Rob White robwhite4@yahoo.com
 - ... and 12 more items
 
-#### releases (6 items)
+#### releases (7 items)
 - **v1.8.0_release_status**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after mer...
 - **v1.8.0_v1.8.1_releases**: Successfully released v1.8.0 (CLI flags) and v1.8.1 (housekeeping). Key learnings: 1) Version-first workflow critical, 2...
-- ... and 4 more items
+- ... and 5 more items
 
 #### documentation (1 items)
 - **wiki_documentation_complete**: Created comprehensive GitHub wiki with 12 new pages covering all aspects of Claude Memory v1.9.0. All wiki links use hyp...
 
 
 ### Recent Changes
+#### Recent Decisions
+- **2025-07-05**: Implement summaries feature for v1.11.0
+
+#### Recent Patterns
+- **2025-07-05**: PR merge order strategy (high)
+
 #### Recent Knowledge Updates
+- **2025-07-05**: releases/v1.11.0_release_status
+- **2025-07-05**: status/summaries_feature_status
 - **2025-07-05**: testing/TEST_BUG_53
 
 
@@ -97,6 +105,12 @@
 
 ## Recent Decisions Log
 
+### 2025-07-05: Implement summaries feature for v1.11.0
+**Decision**: Implement summaries feature for v1.11.0
+**Reasoning**: User feedback showed the empty .claude/summaries directory was confusing. Implemented generate, list, and view commands to manage project summaries with contextual templates.
+**Alternatives Considered**: Leave directory empty, Remove directory, Document as future feature
+
+
 ### 2025-06-23: Created comprehensive GitHub issues from feedback
 **Decision**: Created comprehensive GitHub issues from feedback
 **Reasoning**: Successfully created 19 total issues (#53-71) covering all feedback from Rob White IV, including critical bugs, features, and quality improvements
@@ -107,12 +121,6 @@
 **Decision**: Create GitHub issues from Rob's feedback
 **Reasoning**: Created 5 high-priority issues based on comprehensive feedback document to address critical bugs and important features
 **Alternatives Considered**: Wait for more feedback, Create all 17 issues at once, Focus only on bugs
-
-
-### 2025-06-15: Release v1.10.2 patch for report command fix
-**Decision**: Release v1.10.2 patch for report command fix
-**Reasoning**: Critical CLI usability fix for report command --type flag handling
-**Alternatives Considered**: Wait for more fixes, Delay release
 
 
 ## Commands & Workflows
@@ -156,9 +164,9 @@ claude-memory handoff [--format markdown|json]
 
 ## Full Context Files
 For complete information without truncation:
-- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (68 items)
-- 🧩 **All Patterns**: `.claude/context/patterns.md` (54 patterns)
-- 🎯 **Decision Log**: `.claude/context/decisions.md` (76 decisions)
+- 📚 **Knowledge Base**: `.claude/context/knowledge.md` (70 items)
+- 🧩 **All Patterns**: `.claude/context/patterns.md` (55 patterns)
+- 🎯 **Decision Log**: `.claude/context/decisions.md` (77 decisions)
 - ✅ **Task Details**: `.claude/context/tasks.md` (22 tasks)
 
 ## Session Continuation

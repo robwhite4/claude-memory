@@ -1,5 +1,5 @@
 # Project Knowledge Base
-*Generated: 2025-07-05T22:23:42.090Z | 68 items across 11 categories*
+*Generated: 2025-07-05T23:36:39.929Z | 70 items across 11 categories*
 
 ## Navigation
 - [architecture](#architecture) (4 items)
@@ -9,8 +9,8 @@
 - [feedback](#feedback) (2 items)
 - [implementation](#implementation) (5 items)
 - [progress](#progress) (3 items)
-- [releases](#releases) (6 items)
-- [status](#status) (20 items)
+- [releases](#releases) (7 items)
+- [status](#status) (21 items)
 - [testing](#testing) (8 items)
 - [workflow](#workflow) (14 items)
 
@@ -110,6 +110,10 @@
 **Value**: Fixed report command --type flag handling (Issue #48). Both 'report progress' and 'report --type progress' syntaxes now work correctly. Patch release ready for deployment.
 **Updated**: 2025-06-15T22:30:44.569Z
 
+### v1.11.0_release_status
+**Value**: Ready for release - Summary management feature implemented (Issue #73). All tests passing, lint clean, security audit clean. Feature adds generate/list/view commands for .claude/summaries directory.
+**Updated**: 2025-07-05T23:36:39.907Z
+
 ### v1.8.0_release_status
 **Value**: Successfully released v1.8.0 with CLI flags enhancement. Fixed version issue by committing package.json update after merge. NPM publish successful, GitHub release created.
 **Updated**: 2025-06-07T00:48:18.059Z
@@ -158,6 +162,10 @@
 ### github_issues_from_feedback
 **Value**: Created 5 high-priority GitHub issues from Rob's comprehensive feedback: #53 (CLAUDE.md sync bug), #54 (handoff overwrite bug), #55 (git integration), #56 (token optimization), #57 (export templates). Still need to create 10+ medium/low priority issues for remaining feedback items.
 **Updated**: 2025-06-23T00:06:09.666Z
+
+### summaries_feature_status
+**Value**: Implemented summary commands for v1.11.0. Created PR #74 targeting develop branch. Waiting for PR #72 (bug fixes) to merge first, then will rebase and merge.
+**Updated**: 2025-07-05T23:15:21.700Z
 
 ### v1.10.0_features
 **Value**: Export/Import functionality complete with multiple formats (JSON, YAML, CSV, Markdown), filtering options, merge/replace modes, validation, and comprehensive report generation
