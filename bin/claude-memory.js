@@ -2384,29 +2384,40 @@ const commands = {
     }
   },
 
-  async handoff(format = 'markdown', include = 'all', projectPath) {
+  async handoff(...args) {
     // AI Handoff command - Generate comprehensive context summary for assistant transitions
+    let format = 'markdown';
+    let include = 'all';
+    let projectPath = null;
+    let outputToStdout = false;
+    let outputFormat = format; // Track the actual format to use
+
+    // Parse arguments
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      
+      if (arg === '--stdout') {
+        outputToStdout = true;
+      } else if (arg.startsWith('--format=')) {
+        outputFormat = arg.split('=')[1];
+      } else if (arg === '--format' && i + 1 < args.length) {
+        outputFormat = args[++i];
+      } else if (arg.startsWith('--include=')) {
+        include = arg.split('=')[1];
+      } else if (arg === '--include' && i + 1 < args.length) {
+        include = args[++i];
+      } else if (!arg.startsWith('-')) {
+        // First non-flag argument is the project path
+        if (!projectPath) {
+          projectPath = arg;
+        }
+      }
+    }
+
     const targetPath = projectPath || process.cwd();
 
     try {
       const memory = new ClaudeMemory(targetPath, null, { silent: true });
-
-      // Check for --stdout flag
-      let outputToStdout = false;
-      const args = [format, include, projectPath].filter(Boolean);
-      if (args.includes('--stdout')) {
-        outputToStdout = true;
-        // Remove --stdout from args
-        format = args.find(arg => arg !== '--stdout' && !arg.startsWith('--')) || 'markdown';
-      }
-
-      // Parse format option (support --format=json syntax)
-      if (format?.startsWith('--format=')) {
-        format = format.split('=')[1];
-      }
-      if (include?.startsWith('--include=')) {
-        include = include.split('=')[1];
-      }
 
       // Gather comprehensive context
       const handoffData = {
@@ -2446,7 +2457,7 @@ const commands = {
         keyContext: memory.generateOptimizedContext ? memory.generateOptimizedContext() : null
       };
 
-      if (format === 'json') {
+      if (outputFormat === 'json') {
         console.log(JSON.stringify(handoffData, null, 2));
         return;
       }
@@ -2472,7 +2483,7 @@ const commands = {
         }
       }
     } catch (error) {
-      if (format === 'json') {
+      if (outputFormat === 'json') {
         console.error(JSON.stringify({ error: error.message }));
       } else {
         console.error('❌ Error generating handoff summary:', error.message);

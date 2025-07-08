@@ -117,7 +117,7 @@ passed += runTest('Export sanitized functionality', () => {
 // Test Handoff Command
 total++;
 passed += runTest('Handoff command functionality', () => {
-  const result = execSync(`node "${cliPath}" handoff`, { encoding: 'utf8' });
+  const result = execSync(`node "${cliPath}" handoff --stdout`, { encoding: 'utf8' });
   if (!result.includes('AI Handoff Summary')) {
     throw new Error('Handoff command not working');
   }
@@ -126,7 +126,7 @@ passed += runTest('Handoff command functionality', () => {
 // Test Handoff JSON Format
 total++;
 passed += runTest('Handoff JSON format', () => {
-  const result = execSync(`node "${cliPath}" handoff --format=json`, { encoding: 'utf8' });
+  const result = execSync(`node "${cliPath}" handoff --format=json --stdout`, { encoding: 'utf8' });
   try {
     const parsed = JSON.parse(result);
     if (!parsed.timestamp || !parsed.project) {
@@ -140,7 +140,7 @@ passed += runTest('Handoff JSON format', () => {
 // Test Handoff Task Focus
 total++;
 passed += runTest('Handoff task focus', () => {
-  const result = execSync(`node "${cliPath}" handoff --include=tasks`, { encoding: 'utf8' });
+  const result = execSync(`node "${cliPath}" handoff --include=tasks --stdout`, { encoding: 'utf8' });
   if (!result.includes('Active Tasks') && !result.includes('No active tasks')) {
     throw new Error('Task focus not working');
   }
