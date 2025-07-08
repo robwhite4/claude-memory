@@ -2386,7 +2386,7 @@ const commands = {
 
   async handoff(...args) {
     // AI Handoff command - Generate comprehensive context summary for assistant transitions
-    let format = 'markdown';
+    const format = 'markdown';
     let include = 'all';
     let projectPath = null;
     let outputToStdout = false;
@@ -2395,7 +2395,7 @@ const commands = {
     // Parse arguments
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      
+
       if (arg === '--stdout') {
         outputToStdout = true;
       } else if (arg.startsWith('--format=')) {
