@@ -439,10 +439,30 @@ cmem report tasks monthly.md --from 2024-01-01
 - **Progress**: Timeline of activities and completion metrics
 - **Sprint**: 2-week activity summary for agile workflows
 
+### Summary Management
+```bash
+# Create a new summary with context
+cmem summary generate "Sprint Retrospective"
+
+# Link to specific session
+cmem summary generate "Feature Complete" --session 2025-01-15-morning
+
+# List all summaries
+cmem summary list
+
+# View a summary
+cmem summary view 2025-01-15-sprint-retrospective
+```
+
+The `.claude/summaries/` directory stores narrative documentation that complements your structured memory data. Generated summaries include context from your current session (tasks, decisions, patterns) and provide a template for adding your insights.
+
 ### AI Assistant Handoffs
 ```bash
-# Generate comprehensive handoff summary
+# Generate comprehensive handoff summary (saves to HANDOFF.md)
 cmem handoff
+
+# Output to console instead of file
+cmem handoff --stdout
 
 # JSON format for programmatic use
 cmem handoff --format=json
@@ -452,7 +472,7 @@ cmem handoff --include=tasks
 cmem handoff --include=decisions
 ```
 
-Perfect for transitioning between AI assistants or team members. Includes active tasks, recent decisions, key patterns, and session context.
+Perfect for transitioning between AI assistants or team members. The handoff summary is saved to `HANDOFF.md` by default to prevent accidental overwrites of `CLAUDE.md`. Includes active tasks, recent decisions, key patterns, and session context.
 
 ## 🔄 Workflow Examples
 

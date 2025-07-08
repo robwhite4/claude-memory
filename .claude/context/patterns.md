@@ -1,8 +1,8 @@
 # Project Patterns
-*Generated: 2025-06-14T22:06:16.671Z | 54 total patterns*
+*Generated: 2025-07-05T23:36:39.932Z | 55 total patterns*
 
 ## Summary
-- Open Patterns: 42
+- Open Patterns: 43
 - Resolved Patterns: 12
 
 ## Open Patterns
@@ -85,6 +85,13 @@
 - **Last Seen**: 2025-06-05T01:04:33.665Z
 - **Frequency**: 1
 
+#### Test pattern (ID: c8a38a6c)
+- **Description**: Testing multi-file generation
+- **Effectiveness**: 0.8
+- **First Seen**: 2025-06-06T21:57:39.546Z
+- **Last Seen**: 2025-06-15T21:49:22.478Z
+- **Frequency**: 2
+
 #### CLI Flag Implementation (ID: f5b3dbd4)
 - **Description**: When implementing CLI flags, ensure comprehensive coverage: version info, output control (format/quiet), color control, and verbosity levels. Follow yargs conventions and add thorough tests for each flag
 - **Effectiveness**: 0.95
@@ -104,6 +111,13 @@
 - **Effectiveness**: 1
 - **First Seen**: 2025-06-13T02:11:20.601Z
 - **Last Seen**: 2025-06-13T02:11:20.601Z
+- **Frequency**: 1
+
+#### PR merge order strategy (ID: b82ca894)
+- **Description**: When multiple PRs need to merge, always merge bug fixes first (patch versions), then features (minor versions). Rebase feature branches after bug fixes merge to maintain clean history.
+- **Effectiveness**: null
+- **First Seen**: 2025-07-05T23:15:41.014Z
+- **Last Seen**: 2025-07-05T23:15:41.014Z
 - **Frequency**: 1
 
 ### Medium Priority
@@ -161,13 +175,6 @@
 - **Effectiveness**: null
 - **First Seen**: 2025-06-06T21:47:10.634Z
 - **Last Seen**: 2025-06-06T21:47:10.634Z
-- **Frequency**: 1
-
-#### Test pattern (ID: c8a38a6c)
-- **Description**: Testing multi-file generation
-- **Effectiveness**: null
-- **First Seen**: 2025-06-06T21:57:39.546Z
-- **Last Seen**: 2025-06-06T21:57:39.546Z
 - **Frequency**: 1
 
 #### Label GitHub issues (ID: d330b6ba)

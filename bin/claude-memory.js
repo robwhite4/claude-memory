@@ -2384,20 +2384,40 @@ const commands = {
     }
   },
 
-  async handoff(format = 'markdown', include = 'all', projectPath) {
+  async handoff(...args) {
     // AI Handoff command - Generate comprehensive context summary for assistant transitions
+    const format = 'markdown';
+    let include = 'all';
+    let projectPath = null;
+    let outputToStdout = false;
+    let outputFormat = format; // Track the actual format to use
+
+    // Parse arguments
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+
+      if (arg === '--stdout') {
+        outputToStdout = true;
+      } else if (arg.startsWith('--format=')) {
+        outputFormat = arg.split('=')[1];
+      } else if (arg === '--format' && i + 1 < args.length) {
+        outputFormat = args[++i];
+      } else if (arg.startsWith('--include=')) {
+        include = arg.split('=')[1];
+      } else if (arg === '--include' && i + 1 < args.length) {
+        include = args[++i];
+      } else if (!arg.startsWith('-')) {
+        // First non-flag argument is the project path
+        if (!projectPath) {
+          projectPath = arg;
+        }
+      }
+    }
+
     const targetPath = projectPath || process.cwd();
 
     try {
       const memory = new ClaudeMemory(targetPath, null, { silent: true });
-
-      // Parse format option (support --format=json syntax)
-      if (format?.startsWith('--format=')) {
-        format = format.split('=')[1];
-      }
-      if (include?.startsWith('--include=')) {
-        include = include.split('=')[1];
-      }
 
       // Gather comprehensive context
       const handoffData = {
@@ -2437,16 +2457,33 @@ const commands = {
         keyContext: memory.generateOptimizedContext ? memory.generateOptimizedContext() : null
       };
 
-      if (format === 'json') {
+      if (outputFormat === 'json') {
         console.log(JSON.stringify(handoffData, null, 2));
         return;
       }
 
       // Generate markdown handoff summary
       const markdown = this.generateHandoffMarkdown(handoffData, include);
-      console.log(markdown);
+
+      // Output handling - write to file by default, stdout if requested
+      if (outputToStdout) {
+        console.log(markdown);
+      } else {
+        // Write to HANDOFF.md instead of outputting to console to prevent accidental CLAUDE.md overwrites
+        const handoffPath = path.join(targetPath, 'HANDOFF.md');
+        try {
+          fs.writeFileSync(handoffPath, markdown, 'utf8');
+          console.log(`✅ Handoff summary written to: ${handoffPath}`);
+          console.log('📋 Use this file for AI assistant transitions');
+          console.log('💡 Tip: To output to console instead, use: claude-memory handoff --stdout');
+        } catch (writeError) {
+          console.error('❌ Error writing handoff file:', writeError.message);
+          console.log('\n--- Handoff Summary ---');
+          console.log(markdown);
+        }
+      }
     } catch (error) {
-      if (format === 'json') {
+      if (outputFormat === 'json') {
         console.error(JSON.stringify({ error: error.message }));
       } else {
         console.error('❌ Error generating handoff summary:', error.message);
@@ -2562,6 +2599,214 @@ const commands = {
     sections.push('*Use `claude-memory context` for JSON integration data*');
 
     return sections.join('\n');
+  },
+
+  async summary(action, ...args) {
+    const projectPath = process.cwd();
+    const memory = new ClaudeMemory(projectPath);
+    const summariesDir = path.join(projectPath, '.claude', 'summaries');
+
+    // Handle help flags
+    if (action === '--help' || action === '-h') {
+      commands.showContextualHelp('summary');
+      process.exit(0);
+    }
+
+    if (!action) {
+      console.error('❌ Summary action required');
+      console.log('Usage: claude-memory summary <generate|list|view> [options]');
+      return;
+    }
+
+    switch (action) {
+    case 'generate': {
+      // Parse options
+      let sessionId = null;
+      let summaryType = 'manual';
+      let title = null;
+
+      for (let i = 0; i < args.length; i++) {
+        if (args[i] === '--session' && args[i + 1]) {
+          sessionId = args[i + 1];
+          i++;
+        } else if (args[i] === '--type' && args[i + 1]) {
+          summaryType = args[i + 1];
+          i++;
+        } else if (!title) {
+          title = args[i];
+        }
+      }
+
+      if (!title) {
+        console.error('❌ Summary title required');
+        console.log('Usage: claude-memory summary generate "Title" [--session <id>] [--type <type>]');
+        return;
+      }
+
+      try {
+        // Generate summary content
+        const timestamp = new Date().toISOString();
+        const dateStr = timestamp.split('T')[0];
+        const filename = `${dateStr}-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}.md`;
+        const filepath = path.join(summariesDir, filename);
+
+        // Create summary content
+        let content = `# ${title}\n\n`;
+        content += `**Date**: ${dateStr}\n`;
+        content += `**Type**: ${summaryType}\n`;
+
+        if (sessionId) {
+          const session = memory.sessions.find(s => s.id === sessionId);
+          if (session) {
+            content += `**Session**: ${session.name} (${session.id})\n`;
+          }
+        } else if (memory.currentSession) {
+          content += `**Session**: ${memory.currentSession.name} (${memory.currentSession.id})\n`;
+        }
+
+        content += '\n## Summary\n\n';
+        content += '*Please add your summary content here...*\n\n';
+
+        // Add context sections
+        content += '## Context\n\n';
+        content += '### Active Tasks\n';
+        const activeTasks = memory.getTasks('open').slice(0, 5);
+        if (activeTasks.length > 0) {
+          activeTasks.forEach(task => {
+            content += `- ${task.description} (${task.priority})\n`;
+          });
+        } else {
+          content += '- No active tasks\n';
+        }
+
+        content += '\n### Recent Decisions\n';
+        const recentDecisions = memory.getRecentDecisions(3);
+        if (recentDecisions.length > 0) {
+          recentDecisions.forEach(decision => {
+            content += `- ${decision.decision}\n`;
+          });
+        } else {
+          content += '- No recent decisions\n';
+        }
+
+        content += '\n### Key Patterns\n';
+        const openPatterns = memory.patterns.filter(p => p.status === 'open' && p.priority === 'high').slice(0, 3);
+        if (openPatterns.length > 0) {
+          openPatterns.forEach(pattern => {
+            content += `- ${pattern.pattern} (${pattern.frequency} occurrences)\n`;
+          });
+        } else {
+          content += '- No high-priority patterns\n';
+        }
+
+        // Ensure summaries directory exists
+        if (!fs.existsSync(summariesDir)) {
+          fs.mkdirSync(summariesDir, { recursive: true });
+        }
+
+        // Write summary file
+        fs.writeFileSync(filepath, content, 'utf8');
+
+        // Record summary in memory
+        if (!memory.summaries) {
+          memory.summaries = [];
+        }
+        memory.summaries.push({
+          id: `sum_${Date.now()}`,
+          filename,
+          title,
+          type: summaryType,
+          sessionId: sessionId || memory.currentSession?.id,
+          created: timestamp,
+          path: filepath
+        });
+        memory.saveMemory();
+
+        console.log(`✅ Summary created: ${filename}`);
+        console.log(`📝 Path: ${filepath}`);
+        console.log('💡 Edit the file to add your summary content');
+      } catch (error) {
+        console.error('❌ Error creating summary:', error.message);
+      }
+      break;
+    }
+
+    case 'list': {
+      try {
+        // Ensure summaries directory exists
+        if (!fs.existsSync(summariesDir)) {
+          console.log('📂 No summaries found (directory does not exist)');
+          return;
+        }
+
+        // List all summary files
+        const files = fs.readdirSync(summariesDir)
+          .filter(f => f.endsWith('.md'))
+          .sort()
+          .reverse(); // Most recent first
+
+        if (files.length === 0) {
+          console.log('📂 No summaries found');
+          console.log('💡 Create one with: claude-memory summary generate "Title"');
+          return;
+        }
+
+        console.log(`📚 Found ${files.length} summaries:\n`);
+
+        files.forEach(file => {
+          const filepath = path.join(summariesDir, file);
+          const stats = fs.statSync(filepath);
+          const content = fs.readFileSync(filepath, 'utf8');
+          const titleMatch = content.match(/^# (.+)$/m);
+          const title = titleMatch ? titleMatch[1] : 'Untitled';
+          const dateStr = new Date(stats.mtime).toISOString().split('T')[0];
+
+          console.log(`📄 ${file}`);
+          console.log(`   Title: ${title}`);
+          console.log(`   Modified: ${dateStr}`);
+          console.log(`   Size: ${(stats.size / 1024).toFixed(1)} KB`);
+          console.log('');
+        });
+      } catch (error) {
+        console.error('❌ Error listing summaries:', error.message);
+      }
+      break;
+    }
+
+    case 'view': {
+      const filename = args[0];
+
+      if (!filename) {
+        console.error('❌ Summary filename required');
+        console.log('Usage: claude-memory summary view <filename>');
+        console.log('Use "claude-memory summary list" to see available summaries');
+        return;
+      }
+
+      try {
+        // Add .md extension if not provided
+        const file = filename.endsWith('.md') ? filename : `${filename}.md`;
+        const filepath = path.join(summariesDir, file);
+
+        if (!fs.existsSync(filepath)) {
+          console.error(`❌ Summary not found: ${file}`);
+          console.log('Use "claude-memory summary list" to see available summaries');
+          return;
+        }
+
+        const content = fs.readFileSync(filepath, 'utf8');
+        console.log(content);
+      } catch (error) {
+        console.error('❌ Error viewing summary:', error.message);
+      }
+      break;
+    }
+
+    default:
+      console.error(`❌ Unknown summary action: ${action}`);
+      console.log('Available actions: generate, list, view');
+      console.log('Use "claude-memory summary --help" for more information');
+    }
   },
 
   async config(action, key, value) {
@@ -2806,7 +3051,8 @@ UTILITIES:
   📥 import <filename> [options]         Import memory data with merge/replace options
   📊 report [type] [options]             Generate project reports and analytics
   🤖 context [path]                      Get AI integration context (JSON)
-  🔄 handoff [options] [path]            Generate AI assistant handoff summary
+  🔄 handoff [options] [path]            Generate AI handoff summary (saves to HANDOFF.md)
+  📝 summary <action> [options]          Manage project summaries (generate, list, view)
   ❓ help [command]                      Show help (add command name for details)
 
 GLOBAL FLAGS:
@@ -3090,6 +3336,36 @@ QUICK EXAMPLES:
           '💡 JSON format is useful for further processing or integration',
           '💡 --save creates timestamped files for historical tracking',
           '💡 Reports directory can be tracked in git or ignored as needed'
+        ]
+      },
+
+      summary: {
+        title: '📝 Summary Management',
+        description: 'Create and manage project summaries in the .claude/summaries directory',
+        commands: {
+          'summary generate <title> [options]': 'Create a new summary with template',
+          'summary list': 'List all available summaries',
+          'summary view <filename>': 'View a specific summary'
+        },
+        options: {
+          '--session <id>': 'Link summary to specific session (generate)',
+          '--type <type>': 'Summary type: manual, session, daily, weekly (default: manual)'
+        },
+        examples: [
+          'cmem summary generate "Sprint 1 Retrospective"',
+          'cmem summary generate "Feature Complete" --session 2025-01-15-morning',
+          'cmem summary generate "Weekly Review" --type weekly',
+          'cmem summary list',
+          'cmem summary view 2025-01-15-sprint-1-retrospective',
+          'cmem summary view 2025-01-15-sprint-1-retrospective.md'
+        ],
+        tips: [
+          '💡 Summaries provide narrative context alongside structured data',
+          '💡 Generated summaries include context from current session',
+          '💡 Edit generated files to add your own insights and notes',
+          '💡 Use summaries for sprint retrospectives and milestone documentation',
+          '💡 Summary files are markdown format for easy editing and reading',
+          '💡 Summaries complement the automated handoff and report features'
         ]
       },
 

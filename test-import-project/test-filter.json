@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "id": "filtered-task",
+      "description": "Task to import",
+      "priority": "high",
+      "status": "pending"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "filtered-pattern",
+      "pattern": "Should not import",
+      "description": "This pattern should be filtered out",
+      "priority": "low"
+    }
+  ]
+}

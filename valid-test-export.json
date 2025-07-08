@@ -1,0 +1,1142 @@
+{
+  "exportedAt": "2025-06-15T21:51:49.643Z",
+  "metadata": {
+    "created": "2025-06-01T22:34:14.892Z",
+    "version": "1.10.2",
+    "projectName": "Claude Memory NPM Package",
+    "lastBackup": "2025-06-15T21:26:17.680Z",
+    "actionsSinceBackup": 7
+  },
+  "decisions": [
+    {
+      "id": "3f8790fe",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T21:42:50.192Z",
+      "decision": "Release v1.10.1 as patch for CLI usability",
+      "reasoning": "Critical bug affecting user experience with --help flags - immediate patch release needed",
+      "alternatives": [
+        "Wait for v1.11.0",
+        "Create hotfix branch"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T19:16:29.355Z"
+      }
+    },
+    {
+      "id": "7da8dae6",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T20:52:07.064Z",
+      "decision": "Create v1.10.1 patch for --help bug",
+      "reasoning": "Critical CLI usability issue discovered in v1.10.0 - subcommands don't handle --help flags properly",
+      "alternatives": [
+        "Wait for next major release",
+        "Create separate branch"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T19:16:29.355Z"
+      }
+    },
+    {
+      "id": "c9ad72fe",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T19:17:18.780Z",
+      "decision": "Complete v1.10.0 development and create PR #44",
+      "reasoning": "Successfully implemented all v1.10.0 features including export/import, report generation, and CLAUDE...",
+      "alternatives": [
+        "Continue development",
+        "Delay release"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T19:16:29.355Z"
+      }
+    },
+    {
+      "id": "b19c0f8b",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T19:14:23.377Z",
+      "decision": "Complete v1.10.0 development and create PR #44",
+      "reasoning": "All v1.10.0 features successfully implemented: bulk task operations (Issue #27), enhanced export/imp...",
+      "alternatives": [
+        "Continue development",
+        "Add more features",
+        "Delay release"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "dab67d0e",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T18:10:48.172Z",
+      "decision": "CLAUDE.md token optimization complete",
+      "reasoning": "Successfully implemented all three improvements: increased knowledge truncation to 120 chars, added ...",
+      "alternatives": [
+        "Leave as is",
+        "Different truncation limit"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "6709a86b",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T17:51:51.761Z",
+      "decision": "Implement report auto-save feature",
+      "reasoning": "Added --save flag to automatically save reports with timestamps in dedicated directory, improving hi...",
+      "alternatives": [
+        "Manual filename specification only",
+        "No archival system"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "bdff61a3",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T17:37:04.220Z",
+      "decision": "Implement import command",
+      "reasoning": "Completes Issue #30 by adding import functionality with merge/replace modes, validation, and multi-f...",
+      "alternatives": [
+        "Manual data entry",
+        "No import functionality"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "8eb5ab02",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T16:50:32.172Z",
+      "decision": "Follow proper Git Flow for bug fixes",
+      "reasoning": "Discovered --help/-h bug should be fixed via hotfix branch from main and released as patch version, ...",
+      "alternatives": [
+        "Fix bugs on feature branches",
+        "Wait for next minor release"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "fc2b29ce",
+      "sessionId": "2025-06-14-morning-development",
+      "timestamp": "2025-06-14T16:11:06.193Z",
+      "decision": "Implement bulk task operations first",
+      "reasoning": "Addresses immediate user pain point of creating multiple tasks individually",
+      "alternatives": [
+        "Start with export features",
+        "Implement GitHub sync first"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T16:11:06.177Z"
+      }
+    },
+    {
+      "id": "9d4227b2",
+      "sessionId": "2025-06-13-night-development",
+      "timestamp": "2025-06-13T02:10:55.815Z",
+      "decision": "Create comprehensive GitHub wiki",
+      "reasoning": "Wiki was missing 12 pages with many broken links. Created full documentation covering installation, ...",
+      "alternatives": [
+        "Leave wiki incomplete",
+        "Update through web interface",
+        "Create minimal documentation"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-13T02:10:55.802Z"
+      }
+    },
+    {
+      "id": "81546484",
+      "sessionId": "2025-06-13-evening-development",
+      "timestamp": "2025-06-13T00:41:26.556Z",
+      "decision": "Sync GitHub wiki with v1.9.0 release",
+      "reasoning": "Wiki was out of date showing v1.9.0 as upcoming when it was already released. Updated wiki content a...",
+      "alternatives": [
+        "Leave wiki outdated",
+        "Update through web interface",
+        "Automate wiki updates"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-13T00:40:50.746Z"
+      }
+    },
+    {
+      "id": "e00fdf9d",
+      "sessionId": "2025-06-09-night-development",
+      "timestamp": "2025-06-09T03:11:31.640Z",
+      "decision": "Keep develop branch persistent",
+      "reasoning": "Develop branch should not be auto-deleted after PRs. It serves as the integration branch following G...",
+      "alternatives": [
+        "Auto-delete all branches",
+        "Manual branch management",
+        "No auto-deletion"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-09T03:10:58.254Z"
+      }
+    },
+    {
+      "id": "196219c5",
+      "sessionId": "2025-06-08-project-setup",
+      "timestamp": "2025-06-09T02:23:18.332Z",
+      "decision": "Create v1.9.0 release PR",
+      "reasoning": "All features implemented, tests passing, documentation updated. PR #40 created from develop to main ...",
+      "alternatives": [
+        "Direct merge to main",
+        "Wait for more features",
+        "Delay release"
+      ],
+      "outcome": null,
+      "context": {
+        "project": "claude-memory-npm",
+        "initialized": "2025-06-08T22:46:33.918Z",
+        "tool": "claude-memory"
+      }
+    },
+    {
+      "id": "eec50c39",
+      "sessionId": "2025-06-08-project-setup",
+      "timestamp": "2025-06-09T01:16:20.334Z",
+      "decision": "Clean up obsolete branches after PR merges",
+      "reasoning": "After merging PRs #33, #36, #37 to develop branch, cleaned up all obsolete feature branches. This ke...",
+      "alternatives": [
+        "Keep branches indefinitely",
+        "Clean up manually each time",
+        "Set retention policy"
+      ],
+      "outcome": null,
+      "context": {
+        "project": "claude-memory-npm",
+        "initialized": "2025-06-08T22:46:33.918Z",
+        "tool": "claude-memory"
+      }
+    },
+    {
+      "id": "80e9e202",
+      "sessionId": "2025-06-08-afternoon-development",
+      "timestamp": "2025-06-09T00:30:28.618Z",
+      "decision": "Rebase feature branches after refactoring",
+      "reasoning": "After merging PR #33 (code refactoring), feature branches had conflicts due to structural changes. U...",
+      "alternatives": [
+        "Cherry-pick commits",
+        "Merge with conflicts",
+        "Start fresh branches"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-08T21:40:41.163Z"
+      }
+    },
+    {
+      "id": "51370a63",
+      "sessionId": "2025-06-08-project-setup",
+      "timestamp": "2025-06-08T22:46:33.930Z",
+      "decision": "Install Claude Memory",
+      "reasoning": "Enable persistent AI memory across sessions for better project intelligence",
+      "alternatives": [
+        "Manual documentation",
+        "External tools",
+        "No memory system"
+      ],
+      "outcome": null,
+      "context": {
+        "project": "claude-memory-npm",
+        "initialized": "2025-06-08T22:46:33.918Z",
+        "tool": "claude-memory"
+      }
+    },
+    {
+      "id": "4bda4f97",
+      "sessionId": "2025-06-08-afternoon-development",
+      "timestamp": "2025-06-08T22:13:55.113Z",
+      "decision": "Use develop branch workflow for v1.9.0",
+      "reasoning": "Created develop branch to collect all v1.9.0 changes before merging to main. This follows Git Flow p...",
+      "alternatives": [
+        "Direct commits to main",
+        "Single large PR",
+        "Feature flags"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-08T21:40:41.163Z"
+      }
+    },
+    {
+      "id": "1cbca032",
+      "sessionId": "2025-06-08-afternoon-development",
+      "timestamp": "2025-06-08T21:40:41.178Z",
+      "decision": "Refactor code into modules",
+      "reasoning": "Main file grew to 2,828 lines, making it hard to maintain. Modularized into lib/ directory with Clau...",
+      "alternatives": [
+        "Keep monolithic file",
+        "Split differently",
+        "Wait until v2.0"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-08T21:40:41.163Z"
+      }
+    },
+    {
+      "id": "e0e1489a",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-08T02:24:13.408Z",
+      "decision": "Process v1.8.2 user feedback with unified design",
+      "reasoning": "User provided comprehensive feedback rating claude-memory 7/10. Created unified design proposal to a...",
+      "alternatives": [
+        "Create separate issues for each feature",
+        "Implement features ad-hoc",
+        "Wait for more feedback"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T22:44:26.579Z"
+      }
+    },
+    {
+      "id": "2aad28f6",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-07T23:37:40.364Z",
+      "decision": "Create GitHub Wiki",
+      "reasoning": "Create comprehensive GitHub Wiki to document project architecture, development workflows, planning r...",
+      "alternatives": [
+        "Keep docs in repo only",
+        "Use GitHub Discussions",
+        "Expand README instead"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T22:44:26.579Z"
+      }
+    },
+    {
+      "id": "db4c7fbc",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-07T23:16:56.451Z",
+      "decision": "Plan before code",
+      "reasoning": "All development work should start with proper GitHub planning: milestones for releases, issues for f...",
+      "alternatives": [
+        "Ad-hoc development",
+        "Internal planning only",
+        "Start coding immediately"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T22:44:26.579Z"
+      }
+    },
+    {
+      "id": "13a75d6f",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-07T22:44:47.720Z",
+      "decision": "Branch cleanup strategy",
+      "reasoning": "Enable GitHub auto-delete for merged branches and clean up existing stale branches. This prevents re...",
+      "alternatives": [
+        "Manual cleanup only",
+        "Leave branches as history",
+        "Create cleanup script"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T22:44:26.579Z"
+      }
+    },
+    {
+      "id": "72d6f3a8",
+      "sessionId": "2025-06-07-night-development",
+      "timestamp": "2025-06-07T02:29:16.908Z",
+      "decision": "Release v1.8.2 for documentation",
+      "reasoning": "Documentation changes need to reach NPM users. Multi-machine and team guidance is important enough t...",
+      "alternatives": [
+        "Skip release",
+        "Wait for next feature",
+        "Bundle with v1.9.0"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T02:12:25.764Z"
+      }
+    },
+    {
+      "id": "9dd67c76",
+      "sessionId": "2025-06-07-night-development",
+      "timestamp": "2025-06-07T02:25:02.214Z",
+      "decision": "Document multi-machine and team workflows",
+      "reasoning": "Users need guidance on how to use Claude Memory across multiple machines and in team environments. A...",
+      "alternatives": [
+        "Leave undocumented",
+        "Create separate tool",
+        "Add to FAQ only"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T02:12:25.764Z"
+      }
+    },
+    {
+      "id": "0e248d44",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-07T01:43:34.329Z",
+      "decision": "Session wrap-up approach",
+      "reasoning": "Complete v1.8.1 patch release for housekeeping fixes to ensure clean npm packages and correct reposi...",
+      "alternatives": [
+        "Skip patch release",
+        "Continue with v1.9.0",
+        "Document for later"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T00:27:29.747Z"
+      }
+    },
+    {
+      "id": "027fee1d",
+      "sessionId": "2025-06-07-evening-development",
+      "timestamp": "2025-06-07T00:27:46.047Z",
+      "decision": "Implement CLI flags for better UX",
+      "reasoning": "Issue #19 requires standard CLI flags for version info, output control, and verbosity. These are ess...",
+      "alternatives": [
+        "Skip CLI flags",
+        "Partial implementation",
+        "Different flag names"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-07T00:27:29.747Z"
+      }
+    },
+    {
+      "id": "97a2b971",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T23:25:23.858Z",
+      "decision": "v1.8.0 development started",
+      "reasoning": "Version bumped to 1.8.0, --version flag implemented with tests. Following new version-first workflow...",
+      "alternatives": [
+        "Skip version bump",
+        "Different flag first"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "6018dcc3",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T23:09:00.197Z",
+      "decision": "Ready for v1.8.0 development",
+      "reasoning": "v1.7.0 is stable with all tests passing. Context file tests added. Test patterns cleaned up. Issue #...",
+      "alternatives": [
+        "More v1.7.x patches",
+        "Different feature"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "a0809934",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T22:54:16.258Z",
+      "decision": "Plan CLI flags enhancement release",
+      "reasoning": "Missing standard CLI flags should be added as a minor version update (1.8.0) since they add new func...",
+      "alternatives": [
+        "Individual patches",
+        "Major version",
+        "Feature flags"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "226949b8",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T22:28:47.325Z",
+      "decision": "Merge PR #18 for v1.7.0 release",
+      "reasoning": "All tests passing, both issues addressed, clean implementation with no breaking changes. Multi-file ...",
+      "alternatives": [
+        "Wait for review",
+        "Add more tests"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "13fd1607",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T21:59:14.345Z",
+      "decision": "v1.7.0 implementation complete",
+      "reasoning": "Successfully implemented multi-file context system and updated README token claims. Context files pr...",
+      "alternatives": [
+        "Delay release",
+        "Add more features"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "614158e9",
+      "sessionId": "2025-06-06-afternoon-development",
+      "timestamp": "2025-06-06T21:42:04.540Z",
+      "decision": "Implement multi-file context system",
+      "reasoning": "Preserves full context while managing tokens through layered architecture with main CLAUDE.md as ind...",
+      "alternatives": [
+        "Keep truncating",
+        "Remove token optimization",
+        "Increase token limit"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-06T19:27:38.045Z"
+      }
+    },
+    {
+      "id": "87607a71",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T01:43:52.728Z",
+      "decision": "Complete v1.6.0 release",
+      "reasoning": "All 9 issues from user feedback successfully addressed. Enhanced help system and CLAUDE.md merge str...",
+      "alternatives": [
+        "Continue development",
+        "Wait for more feedback"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "ec4e466a",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T01:25:19.289Z",
+      "decision": "Follow GitHub best practices",
+      "reasoning": "Created feature branches and PRs for Issues #8 and #9 instead of direct commits. Ensures code review...",
+      "alternatives": [
+        "Direct commits to main",
+        "Merge without review"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "74428983",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T01:06:21.870Z",
+      "decision": "Handoff after Issue #8 completion",
+      "reasoning": "Issue #8 CLAUDE.md merge strategy successfully implemented and tested. All systems working: section ...",
+      "alternatives": [
+        "Continue immediately with Issue #9",
+        "Create comprehensive tests first"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "dc1ff2fd",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T01:04:59.596Z",
+      "decision": "Issue #8 CLAUDE.md merge strategy completed",
+      "reasoning": "Successfully implemented intelligent merge system with section markers, automatic backups, and prese...",
+      "alternatives": [
+        "Continue with more features",
+        "Focus on Issue #9 next"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "fdbf8a6d",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T01:01:44.817Z",
+      "decision": "Start with Issue #8 CLAUDE.md merge strategy",
+      "reasoning": "Critical workflow issue affecting development. Need intelligent file handling with section markers f...",
+      "alternatives": [
+        "Start with Issue #9 help improvements",
+        "Work on both simultaneously"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "f46d0a1f",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T00:46:55.922Z",
+      "decision": "Move forward with Issues #8-9 UX improvements",
+      "reasoning": "All systems at parity (GitHub, NPM, local) with v1.5.0. Project memory comprehensive with 78% user f...",
+      "alternatives": [
+        "Wait for more testing",
+        "Focus on maintenance"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "94b95ad4",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T00:34:48.071Z",
+      "decision": "Release v1.5.0 with pattern subcommands and knowledge management",
+      "reasoning": "Just merged PRs #11 and #12 which implement major features that address 60% of user feedback. These ...",
+      "alternatives": [
+        "Continue with v1.4.1",
+        "Wait for more features"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "fc32abab",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T00:21:10.838Z",
+      "decision": "Finalize PRs #11 and #12 sequentially",
+      "reasoning": "PR #11 (pattern subcommands) should be merged first as it builds on v1.4.1, then PR #12 (knowledge &...",
+      "alternatives": [
+        "Merge both simultaneously",
+        "Merge PR #12 first"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "fad2a380",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T00:13:55.351Z",
+      "decision": "Create PR #12 for knowledge management and enhanced search",
+      "reasoning": "These features address 60% of original user feedback and provide solid foundation for remaining UX i...",
+      "alternatives": [
+        "Bundle with UX improvements",
+        "Wait for pattern subcommands PR"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "f1195146",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-05T00:09:13.742Z",
+      "decision": "Address user feedback systematically via GitHub issues",
+      "reasoning": "Breaking down the comprehensive v1.4.0 feedback into specific GitHub issues allows for better tracki...",
+      "alternatives": [
+        "Address everything in one large PR",
+        "Ignore feedback until later"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "0789f4a6",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T23:28:47.277Z",
+      "decision": "Successfully rebased pattern subcommands on v1.4.1",
+      "reasoning": "Resolved merge conflicts and combined the advanced pattern subcommands structure with the v1.4.1 hot...",
+      "alternatives": [
+        "Restart from scratch",
+        "Create separate branch"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "b7b77be3",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T23:06:56.083Z",
+      "decision": "PR #10 is ready for merge",
+      "reasoning": "Completed comprehensive testing including security tests, functionality tests, linting fixes, and pa...",
+      "alternatives": [
+        "Merge immediately",
+        "Wait for additional review",
+        "Test more edge cases"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "d9502f31",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T22:41:45.506Z",
+      "decision": "Implemented pattern subcommands structure",
+      "reasoning": "Successfully created flag-based pattern commands (add, list, search, resolve) with backward compatib...",
+      "alternatives": [
+        "Implement without backward compatibility",
+        "Wait for user feedback first"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "0e1934b7",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T22:33:47.915Z",
+      "decision": "Created PR #10 for v1.4.1 hotfixes",
+      "reasoning": "All 4 critical usability issues implemented and ready for review. PR includes comprehensive testing,...",
+      "alternatives": [
+        "Wait for more testing",
+        "Create separate PRs for each issue"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "cfdea9e4",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T22:25:04.257Z",
+      "decision": "Successfully implemented v1.4.1 hotfixes",
+      "reasoning": "Completed all 4 GitHub issues: fixed pattern parsing, ensured ID display, improved search to include...",
+      "alternatives": [
+        "Continue working on other issues",
+        "Implement in main branch directly"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "3e202ab6",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T22:13:40.528Z",
+      "decision": "Test",
+      "reasoning": "Testing",
+      "alternatives": [
+        "None"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "b36f7577",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T22:05:02.482Z",
+      "decision": "Test decision ID",
+      "reasoning": "Testing ID display",
+      "alternatives": [
+        "No alternatives"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "ff2ac786",
+      "sessionId": "2025-06-04-afternoon-development",
+      "timestamp": "2025-06-04T21:51:47.322Z",
+      "decision": "Created GitHub issues for claude-memory improvements",
+      "reasoning": "Organized feedback into 9 GitHub issues across v1.4.1 hotfixes and v1.5.0 features based on user fee...",
+      "alternatives": [
+        "alternatives: Create one large issue",
+        "Fix issues ad-hoc without tracking"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-04T21:44:11.609Z"
+      }
+    },
+    {
+      "id": "434a8252",
+      "sessionId": "2025-06-03-evening-development",
+      "timestamp": "2025-06-04T00:10:18.978Z",
+      "decision": "Successfully released claude-memory v1.4.0",
+      "reasoning": "Major security release with comprehensive improvements including input validation, XSS protection, p...",
+      "alternatives": [
+        "Wait for more testing",
+        "Skip security features"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-03T23:29:10.800Z"
+      }
+    },
+    {
+      "id": "3f2d694a",
+      "sessionId": "2025-06-03-evening-development",
+      "timestamp": "2025-06-03T23:54:58.223Z",
+      "decision": "Test scriptalert('xss')/script",
+      "reasoning": "Clean input",
+      "alternatives": [],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-03T23:29:10.800Z"
+      }
+    },
+    {
+      "id": "23d073de",
+      "sessionId": "2025-06-03-evening-development",
+      "timestamp": "2025-06-03T23:47:01.120Z",
+      "decision": "Test scriptalert('xss')/script",
+      "reasoning": "Path //etc/passwd traversal test",
+      "alternatives": [
+        "/malicious/path"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-03T23:29:10.800Z"
+      }
+    },
+    {
+      "id": "0f7f3306",
+      "sessionId": "2025-06-03-evening-development",
+      "timestamp": "2025-06-03T23:37:36.837Z",
+      "decision": "../../../etc/passwd",
+      "reasoning": "test",
+      "alternatives": [
+        "test"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-03T23:29:10.800Z"
+      }
+    },
+    {
+      "id": "fab14390",
+      "sessionId": "2025-06-03-evening-development",
+      "timestamp": "2025-06-03T23:28:07.941Z",
+      "decision": "Use latest cmem for dogfooding",
+      "reasoning": "Always update global claude-memory to latest NPM version when working on the project to test real us...",
+      "alternatives": [
+        "Use local development version",
+        "Ignore version updates"
+      ],
+      "outcome": null,
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-03T23:09:41.875Z"
+      }
+    },
+    {
+      "id": "0899d191",
+      "timestamp": "2025-06-03T23:24:23.071Z",
+      "decision": "Successfully implemented and released AI handoff feature",
+      "reasoning": "Version 1.3.1 includes comprehensive handoff command for AI assistant transitions with automated rel...",
+      "alternatives": [
+        "Manual releases",
+        "No handoff feature"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "78e6a926",
+      "timestamp": "2025-06-03T23:03:04.539Z",
+      "decision": "Enhanced release automation",
+      "reasoning": "Always use GitHub Actions workflow for releases to ensure consistency",
+      "alternatives": [
+        "Manual releases",
+        "Missing GitHub releases"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "8ebc71ee",
+      "timestamp": "2025-06-03T22:09:17.271Z",
+      "decision": "Implement automatic session management",
+      "reasoning": "Zero-friction AI context - sessions rotate every 4 hours automatically",
+      "alternatives": [
+        "Manual sessions only",
+        "No session management"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "bb1ab84e",
+      "timestamp": "2025-06-03T21:46:24.214Z",
+      "decision": "Implement GitHub workflow templates",
+      "reasoning": "Establish professional open-source practices",
+      "alternatives": [
+        "Manual process",
+        "No templates"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "1f70a80a",
+      "timestamp": "2025-06-01T23:28:08.557Z",
+      "decision": "Bump version to 1.1.1 for quality infrastructure release",
+      "reasoning": "Patch release to include professional code coverage, ESLint integration, and enhanced CI/CD pipeline",
+      "alternatives": [
+        "Skip version bump",
+        "Major version bump",
+        "Beta release"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "22e37cc6",
+      "timestamp": "2025-06-01T23:26:47.290Z",
+      "decision": "Implemented professional code coverage and linting infrastructure",
+      "reasoning": "Added c8 coverage tool achieving 78.79% coverage, ESLint for code quality, comprehensive CI/CD pipel...",
+      "alternatives": [
+        "Manual code review",
+        "Basic testing only",
+        "External coverage service"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "2e1071f9",
+      "timestamp": "2025-06-01T23:19:25.303Z",
+      "decision": "Added comprehensive test coverage and CI/CD infrastructure",
+      "reasoning": "Enhanced project legitimacy with 25 total tests, GitHub Actions CI/CD, security policy, and professi...",
+      "alternatives": [
+        "Basic tests only",
+        "External CI service",
+        "Manual testing"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "c93fe4b4",
+      "timestamp": "2025-06-01T23:13:59.926Z",
+      "decision": "Successfully updated GitHub with enhanced documentation",
+      "reasoning": "README now includes comprehensive v1.1.0 workflow examples, concrete cost savings, and success stori...",
+      "alternatives": [
+        "Leave docs as-is",
+        "Update later",
+        "Create wiki instead"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "483a47b8",
+      "timestamp": "2025-06-01T23:13:21.094Z",
+      "decision": "Enhanced README with v1.1.0 workflow examples",
+      "reasoning": "Added comprehensive task management examples, concrete AI cost savings scenarios, and success storie...",
+      "alternatives": [
+        "Keep basic docs",
+        "Create separate guide",
+        "Add simple examples"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "74d506b6",
+      "timestamp": "2025-06-01T22:50:16.258Z",
+      "decision": "Successfully pushed v1.1.0 to GitHub",
+      "reasoning": "All changes including enhanced task management, documentation updates, and version bump now live on ...",
+      "alternatives": [
+        "Manual push later",
+        "Skip GitHub sync",
+        "Use different auth method"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "3db9f622",
+      "timestamp": "2025-06-01T22:47:22.475Z",
+      "decision": "Committed v1.1.0 to local git, need to push to GitHub",
+      "reasoning": "All changes committed locally with comprehensive release notes, but GitHub push requires authenticat...",
+      "alternatives": [
+        "Skip GitHub update",
+        "Manual push later",
+        "Setup git credentials"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "4c53aff8",
+      "timestamp": "2025-06-01T22:45:54.613Z",
+      "decision": "Successfully published claude-memory v1.1.0",
+      "reasoning": "Package published to npm with enhanced task management, pattern resolution, session improvements, an...",
+      "alternatives": [
+        "Wait for more testing",
+        "Publish beta version",
+        "Skip this release"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "e122323c",
+      "timestamp": "2025-06-01T22:43:32.978Z",
+      "decision": "Bumped version to 1.1.0",
+      "reasoning": "Major feature release with task management, pattern resolution, enhanced session handling, and cost ...",
+      "alternatives": [
+        "Keep at 1.0.0",
+        "Jump to 2.0.0",
+        "Use 1.0.1"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "c933d374",
+      "timestamp": "2025-06-01T22:42:40.820Z",
+      "decision": "Publish v1.1.0 with task management enhancements",
+      "reasoning": "Core functionality is complete, tested, and validated through dogfooding. Remaining tasks are enhanc...",
+      "alternatives": [
+        "Wait for all tasks",
+        "Ship basic version",
+        "Add more features first"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "82bc5c6f",
+      "timestamp": "2025-06-01T22:39:11.000Z",
+      "decision": "Added AI cost reduction benefits to README",
+      "reasoning": "Important selling point that claude-memory reduces AI usage costs by 40-60% after initial setup",
+      "alternatives": [
+        "Skip cost info",
+        "Add separate cost section",
+        "Focus only on time savings"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "cb8d0ac6",
+      "timestamp": "2025-06-01T22:36:49.930Z",
+      "decision": "Corrected author email",
+      "reasoning": "Fixed to use actual email address robwhite4@yahoo.com instead of GitHub placeholder",
+      "alternatives": [
+        "Keep wrong email"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "ad083f6c",
+      "timestamp": "2025-06-01T22:34:27.056Z",
+      "decision": "Enhanced claude-memory with task management",
+      "reasoning": "Real-world usage showed need for proper project management features beyond just knowledge storage",
+      "alternatives": [
+        "Keep basic patterns",
+        "External task tools",
+        "Rebuild from scratch"
+      ],
+      "outcome": null,
+      "context": {}
+    },
+    {
+      "id": "208a93b6",
+      "sessionId": "2025-06-01-project-setup",
+      "timestamp": "2025-06-01T22:34:14.914Z",
+      "decision": "Install Claude Memory",
+      "reasoning": "Enable persistent AI memory across sessions for better project intelligence",
+      "alternatives": [
+        "Manual documentation",
+        "External tools",
+        "No memory system"
+      ],
+      "outcome": null,
+      "context": {
+        "project": "Claude Memory NPM Package",
+        "initialized": "2025-06-01T22:34:14.903Z",
+        "tool": "claude-memory"
+      }
+    }
+  ]
+}

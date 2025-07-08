@@ -1,0 +1,16 @@
+{
+  "tasks": [
+    {
+      "description": "Task without ID",
+      "priority": "low",
+      "status": "pending"
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "Pattern without ID",
+      "description": "Should get auto ID",
+      "priority": "medium"
+    }
+  ]
+}

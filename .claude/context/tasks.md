@@ -1,15 +1,17 @@
 # Task Management
-*Generated: 2025-06-14T22:06:16.681Z | 18 total tasks*
+*Generated: 2025-07-05T23:36:39.944Z | 22 total tasks*
 
 ## Summary
-- Open: 8
+- Open: 10
 - In Progress: 0
-- Completed: 10
+- Completed: 12
 
 ## Open Tasks
 ### High Priority
 - [ ] **Increase knowledge truncation limit from 80 to 120-150 chars in CLAUDE.md** (ID: 4688fe1e)
   - Created: 6/14/2025
+- [ ] **Test task** (ID: c8acfcbd)
+  - Created: 6/15/2025
 
 ### Medium Priority
 - [ ] **Test task with tag** (ID: 440d71c1)
@@ -23,6 +25,9 @@
   - Created: 6/8/2025
 - [ ] **Add Recent Changes section to CLAUDE.md showing latest features/decisions** (ID: cc788f33)
   - Created: 6/14/2025
+- [ ] **Another test** (ID: 86987af7)
+  - Assigned: Claude
+  - Created: 6/15/2025
 
 ### Low Priority
 - [ ] **Add task status update command (in-progress, blocked, etc)** (ID: 1e143f85)
@@ -33,6 +38,12 @@
 ## In Progress
 
 ## Recently Completed
+- [x] **Test with valid priority** (ID: 17c59ae3)
+  - Completed: 6/15/2025
+  - Outcome: Test cleanup
+- [x] **--priority** (ID: f71709e6)
+  - Completed: 6/15/2025
+  - Outcome: Test task cleanup
 - [x] **Fix --help flag handling in all subcommands (Issue #46)** (ID: 740437a2)
   - Completed: 6/14/2025
   - Outcome: Successfully implemented and released v1.10.1 with --help flag fixes for all subcommands

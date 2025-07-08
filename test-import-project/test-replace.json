@@ -1,0 +1,10 @@
+{
+  "tasks": [
+    {
+      "id": "replaced-task-1",
+      "description": "Replaced task",
+      "priority": "high",
+      "status": "pending"
+    }
+  ]
+}

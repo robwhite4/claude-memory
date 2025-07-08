@@ -1,0 +1,179 @@
+{
+  "sessions": [
+    {
+      "id": "2025-06-14-afternoon-development",
+      "name": "Afternoon Development",
+      "startTime": "2025-06-14T18:49:47.559Z",
+      "context": {
+        "auto": true,
+        "startTime": "2025-06-14T18:49:47.558Z"
+      },
+      "status": "active"
+    },
+    {
+      "id": "2025-06-14-project-setup",
+      "name": "Project Setup",
+      "startTime": "2025-06-14T18:49:47.582Z",
+      "context": {
+        "project": "Test v1.10.0",
+        "initialized": "2025-06-14T18:49:47.582Z",
+        "tool": "claude-memory"
+      },
+      "status": "active"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "bb6124f5",
+      "sessionId": "2025-06-14-project-setup",
+      "timestamp": "2025-06-14T18:49:47.591Z",
+      "decision": "Install Claude Memory",
+      "reasoning": "Enable persistent AI memory across sessions for better project intelligence",
+      "alternatives": [
+        "Manual documentation",
+        "External tools",
+        "No memory system"
+      ],
+      "outcome": null,
+      "context": {
+        "project": "Test v1.10.0",
+        "initialized": "2025-06-14T18:49:47.582Z",
+        "tool": "claude-memory"
+      }
+    }
+  ],
+  "patterns": [],
+  "actions": [
+    {
+      "id": "284752fb",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T18:49:47.561Z",
+      "actionType": "session_started",
+      "details": {
+        "sessionName": "Afternoon Development",
+        "context": {
+          "auto": true,
+          "startTime": "2025-06-14T18:49:47.558Z"
+        }
+      },
+      "result": ""
+    },
+    {
+      "id": "4c9b7ae3",
+      "sessionId": "2025-06-14-project-setup",
+      "timestamp": "2025-06-14T18:49:47.584Z",
+      "actionType": "session_started",
+      "details": {
+        "sessionName": "Project Setup",
+        "context": {
+          "project": "Test v1.10.0",
+          "initialized": "2025-06-14T18:49:47.582Z",
+          "tool": "claude-memory"
+        }
+      },
+      "result": ""
+    },
+    {
+      "id": "386e340f",
+      "sessionId": "2025-06-14-project-setup",
+      "timestamp": "2025-06-14T18:49:47.599Z",
+      "actionType": "claude_file_updated",
+      "details": {
+        "hasManualSections": false,
+        "backupCreated": false,
+        "preservedSections": []
+      },
+      "result": ""
+    },
+    {
+      "id": "187e7bad",
+      "sessionId": "2025-06-14-project-setup",
+      "timestamp": "2025-06-14T18:49:47.618Z",
+      "actionType": "decision_recorded",
+      "details": {
+        "decision": "Install Claude Memory",
+        "decisionId": "bb6124f5"
+      },
+      "result": ""
+    },
+    {
+      "id": "e6c5289a",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T18:51:50.424Z",
+      "actionType": "claude_file_updated",
+      "details": {
+        "hasManualSections": false,
+        "backupCreated": true,
+        "preservedSections": []
+      },
+      "result": ""
+    },
+    {
+      "id": "511e048f",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T18:51:50.439Z",
+      "actionType": "task_added",
+      "details": {
+        "taskId": "f9774ea9",
+        "description": "Task 1",
+        "priority": "high"
+      },
+      "result": ""
+    },
+    {
+      "id": "a30384f2",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T18:51:50.520Z",
+      "actionType": "claude_file_updated",
+      "details": {
+        "hasManualSections": false,
+        "backupCreated": true,
+        "preservedSections": []
+      },
+      "result": ""
+    },
+    {
+      "id": "1af0e9a9",
+      "sessionId": "2025-06-14-afternoon-development",
+      "timestamp": "2025-06-14T18:51:50.536Z",
+      "actionType": "task_added",
+      "details": {
+        "taskId": "043cd371",
+        "description": "Task 2",
+        "priority": "medium"
+      },
+      "result": ""
+    }
+  ],
+  "knowledge": {},
+  "tasks": [
+    {
+      "id": "f9774ea9",
+      "description": "Task 1",
+      "priority": "high",
+      "status": "open",
+      "assignee": null,
+      "dueDate": null,
+      "createdAt": "2025-06-14T18:51:50.415Z",
+      "sessionId": "2025-06-14-afternoon-development"
+    },
+    {
+      "id": "043cd371",
+      "description": "Task 2",
+      "priority": "medium",
+      "status": "open",
+      "assignee": null,
+      "dueDate": null,
+      "createdAt": "2025-06-14T18:51:50.508Z",
+      "sessionId": "2025-06-14-afternoon-development"
+    }
+  ],
+  "metadata": {
+    "created": "2025-06-14T18:49:47.547Z",
+    "version": "1.8.1",
+    "projectName": "Test v1.10.0",
+    "lastBackup": "2025-06-14T18:49:47.576Z",
+    "actionsSinceBackup": 7
+  },
+  "exportedAt": "2025-06-14T18:52:08.149Z"
+}
