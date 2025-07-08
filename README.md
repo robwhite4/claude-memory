@@ -9,9 +9,15 @@
 [![Downloads](https://img.shields.io/npm/dt/claude-memory.svg)](https://www.npmjs.com/package/claude-memory)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/robwhite4/claude-memory/pulls)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen.svg)](https://github.com/robwhite4/claude-memory)
-[![Test Coverage](https://img.shields.io/badge/coverage-78.79%25-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
+[![Test Coverage](https://img.shields.io/badge/coverage-85%25+-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
 [![Code Quality](https://img.shields.io/badge/eslint-passing-brightgreen.svg)](https://github.com/robwhite4/claude-memory)
-[![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
+[![Tests](https://img.shields.io/badge/tests-40%20passed-brightgreen.svg)](https://github.com/robwhite4/claude-memory/actions)
+
+## 🚀 Latest Release: v1.11.0
+
+**New Features:**
+- **Summary Management** - Create, list, and view project summaries
+- **Bug Fixes** - Knowledge counts update immediately, handoff saves to HANDOFF.md
 
 ## 🤖 Set and Forget
 
@@ -335,144 +341,49 @@ cmem session end "Completed Stripe integration"
 cmem session list
 ```
 
-### Import/Export (Enhanced in v1.10.0)
+### Import/Export (v1.10.0)
 ```bash
-# Basic export (JSON format)
-cmem export memory-backup.json
+# Export memory - supports JSON, YAML, CSV, Markdown formats
+cmem export backup.json                    # Full backup
+cmem export report.md --format markdown    # Human-readable report
+cmem export --types tasks,patterns         # Specific data types
+cmem export --from 2024-01-01 --sanitized # Date range + sanitized
 
-# Export with different formats
-cmem export report.md --format markdown
-cmem export data.yaml --format yaml
-cmem export tasks.csv --format csv
+# Import memory - merge or replace modes
+cmem import backup.json                    # Merge by default
+cmem import fresh.json --mode replace      # Replace existing
+cmem import tasks.yaml --dry-run          # Preview changes
 
-# Filter by data types
-cmem export tasks-only.json --types tasks
-cmem export --types tasks,patterns,decisions
-
-# Date range filtering
-cmem export --from 2024-01-01 --to 2024-12-31
-cmem export quarterly-report.md --format markdown --from 2024-10-01
-
-# Sanitize sensitive information
-cmem export --sanitized team-memory.json
-
-# Combine options for focused exports
-cmem export sprint-report.md --format markdown --types tasks,decisions --from 2024-01-01 --sanitized
-
-# Bulk task operations
-cmem task add-bulk tasks.json     # Import multiple tasks
-cmem task export json > tasks.json # Export tasks for backup
+# Bulk operations
+cmem task add-bulk tasks.json             # Import multiple tasks
+cmem task export json > tasks.json        # Export for backup
 ```
-
-**Export Formats:**
-- **JSON**: Complete data structure, perfect for backups and re-import
-- **YAML**: Human-readable, good for configuration management
-- **CSV**: Spreadsheet-compatible for analysis
-- **Markdown**: Documentation-ready reports
-
-### Import Command (v1.10.0)
-```bash
-# Basic import (merge mode by default)
-cmem import backup.json
-
-# Import with replace mode (clears existing data)
-cmem import fresh-start.json --mode replace
-
-# Preview import without making changes
-cmem import data.json --dry-run
-
-# Import specific data types only
-cmem import tasks.json --types tasks
-cmem import --types tasks,patterns archived-data.yaml
-
-# Import from YAML
-cmem import config.yaml
-
-# Combine options
-cmem import sprint-data.json --types tasks,decisions --dry-run
-```
-
-**Import Features:**
-- **Merge Mode** (default): Adds new items, skips duplicates by ID
-- **Replace Mode**: Clears existing data before importing
-- **Type Filtering**: Import only specific data types
-- **Format Support**: JSON and YAML files
-- **Validation**: Ensures data integrity before import
-- **Dry Run**: Preview changes without applying them
 
 ### Report Generation (v1.10.0)
 ```bash
-# Generate project summary report
-cmem report
-cmem report summary
-
-# Different report types
-cmem report tasks                  # Task-focused report
-cmem report patterns               # Pattern analysis
-cmem report decisions              # Decision log
-cmem report progress               # Progress timeline
-cmem report sprint                 # 2-week sprint summary
-
-# Output formats
-cmem report --format json          # JSON format
-cmem report --format markdown      # Markdown (default)
-
-# Save to file
-cmem report summary project-status.md
-cmem report sprint sprint-review.md
-
-# Auto-save with timestamps (v1.10.0)
-cmem report summary --save                        # Saves to .claude/reports/
-cmem report sprint --save --format json          # Auto-timestamp: sprint-20240115143022.json
-cmem report tasks --save --save-dir ./archives   # Custom directory
-
-# Date filtering
-cmem report --from 2024-01-01 --to 2024-01-31
-cmem report tasks monthly.md --from 2024-01-01
+# Generate reports - summary, tasks, patterns, decisions, progress, sprint
+cmem report                                # Default summary
+cmem report sprint --save                  # Auto-timestamped
+cmem report tasks --from 2024-01-01       # Date filtering
+cmem report --format json --save           # JSON output
 ```
 
-**Report Types:**
-- **Summary**: High-level project overview with statistics
-- **Tasks**: Detailed task breakdown by status
-- **Patterns**: Pattern analysis with priorities and solutions
-- **Decisions**: Chronological decision log with reasoning
-- **Progress**: Timeline of activities and completion metrics
-- **Sprint**: 2-week activity summary for agile workflows
-
-### Summary Management
+### Summary Management (v1.11.0)
 ```bash
-# Create a new summary with context
-cmem summary generate "Sprint Retrospective"
-
-# Link to specific session
-cmem summary generate "Feature Complete" --session 2025-01-15-morning
-
-# List all summaries
-cmem summary list
-
-# View a summary
-cmem summary view 2025-01-15-sprint-retrospective
+# Create contextual summaries
+cmem summary generate "Sprint Retrospective"              # With current session
+cmem summary generate "Release" --session morning-dev     # Specific session
+cmem summary list                                         # List all summaries
+cmem summary view 2025-01-15-sprint-retrospective        # View content
 ```
-
-The `.claude/summaries/` directory stores narrative documentation that complements your structured memory data. Generated summaries include context from your current session (tasks, decisions, patterns) and provide a template for adding your insights.
 
 ### AI Assistant Handoffs
 ```bash
-# Generate comprehensive handoff summary (saves to HANDOFF.md)
-cmem handoff
-
-# Output to console instead of file
-cmem handoff --stdout
-
-# JSON format for programmatic use
-cmem handoff --format=json
-
-# Focus on specific information
-cmem handoff --include=tasks
-cmem handoff --include=decisions
+# Generate handoff summary (saves to HANDOFF.md)
+cmem handoff                       # Comprehensive summary
+cmem handoff --stdout              # Output to console
+cmem handoff --format=json         # JSON format
 ```
-
-Perfect for transitioning between AI assistants or team members. The handoff summary is saved to `HANDOFF.md` by default to prevent accidental overwrites of `CLAUDE.md`. Includes active tasks, recent decisions, key patterns, and session context.
 
 ## 🔄 Workflow Examples
 
